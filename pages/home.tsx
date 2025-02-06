@@ -18,7 +18,7 @@ import { Featureone } from '@/webComponents/featureOne';
 import { Featuretwo } from '@/webComponents/featureTwo';
 import { Footer } from '@/webComponents/footer';
 import { Join } from '@/webComponents/join';
-import { LiveTranscription } from '@/components/LiveTranscription/LiveTranscription';
+
 
 interface MainProps {
     className?: string;
