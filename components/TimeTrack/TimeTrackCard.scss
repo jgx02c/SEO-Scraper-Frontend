@@ -1,0 +1,88 @@
+.root{
+    
+}
+
+.divMain{
+}
+.spanMain{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1.5px solid #d9d9d9;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: .5em;
+    border-radius: .5em;
+    padding-left: .45em;
+    padding-right: .45em;
+    padding-top: .5em;
+    padding-bottom: .5em;    
+}
+
+.divLeft{
+   
+
+}
+
+.divRight{
+
+
+}
+
+.spanLeft{
+    display: flex;
+    align-items: center;
+}
+
+.spanRight{
+    display: flex;
+    align-items: center;
+}
+
+.numberLabel{
+    border: 1.5px solid #d9d9d9;
+    border-radius: 10em;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+.number{
+    font-size: 1em;
+    color: blue;
+}
+
+.topic{
+    margin-left: .5em;
+    font-weight: 500;
+}
+
+
+.timeLeft{
+    margin-left: 2.25em;
+    background-color: #d9d9d9;
+    padding: .25em;
+    border-radius: .25em;
+    background-color: #f3f3f3;
+}
+
+.h4TimeLeft {
+   
+}
+
+.checkbox {
+    margin: .15em;
+  }
+  
+  .checkboxGreen:checked + .checkbox {
+    background-color: green;
+  }
+  
+  .checkboxYellow:checked + .checkbox {
+    color: yellow;
+  }
+  
+  .checkboxRed:checked + .checkbox {
+    color: red;
+  }
+
+

@@ -1,0 +1,22 @@
+.transcriptionBox {
+    width: 99.5%;
+    height: 100%;
+    border: 2px dashed rgba(10, 10, 237, 0.884);
+    border-radius: .5em;
+    background-image: radial-gradient(circle at 100% 100%, #ab87e165 0%, rgba(165, 105, 208, 0) 99%);
+    background-color: transparent;
+    background-position: 40% 17%;
+    background-size: 200% 200%;
+    background-repeat: repeat;
+    background-attachment: scroll;
+    background-origin: padding-box;
+    background-clip: border-box;
+    overflow-y: scroll;
+}
+
+.transcriptionText{
+    color: grey;
+    margin: .25em;
+    width: 100%;
+    height: 100%;
+}

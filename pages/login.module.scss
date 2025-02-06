@@ -1,0 +1,157 @@
+.root {
+    border-radius: 1em;
+    border: 1px solid #d9d9d9;
+    background-color: white;
+}
+
+.divSpanForm{
+    width: 100%;
+    height: 4em;
+    display: flex;
+    align-items: center;
+}
+
+
+.divInput {
+    height: 5em;
+    display: flex;
+    justify-content: start;
+    align-content: space-between;
+    align-items: start;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.error{
+    font-size: 1em;
+    margin-left: 1em;
+    height: .1em;
+    margin-top: -.5em;
+    color: red;
+}
+
+.spanError {
+
+    margin-left: 1em;
+}
+
+.errorBorder {
+    border: 1px solid red;
+}
+
+.forgotPassword{
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    height: 1em;
+}
+
+.divTop {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.divMiddle {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-items: center;
+}
+
+.divBottom {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-top: 1.5em;
+}
+
+
+
+.logoClass {
+    height: 5em;
+    width: 12em;
+}
+
+.mainDiv {
+    width: 26em;
+    margin: 0em;
+    padding: 1.5em 0.5em;
+}
+
+
+
+.showClass {
+    width: 100%;
+    height: 2.25em;
+    display: flex;
+    align-items: center;
+    margin-inline-end: 1em;
+    margin-inline-start: 1em;
+    justify-content: space-between;
+}
+
+.showButton{
+    border: none;
+    background-color: transparent;
+    text-decoration: underline;
+    color: blue;
+}
+
+.showButton:hover {
+    border: none;
+    background-color: transparent;
+    text-decoration: underline;
+    color: blue;
+}
+
+.formClass {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: start;
+    margin: 1em;
+  
+}
+
+.inputForm {
+    margin: 1em;
+    height: 3em;
+    width: 100%;
+}
+
+.signInButton {}
+
+.spanBottom {
+    display: flex;
+    margin: 1em;
+}
+
+.spanTop {}
+
+.divMiddleButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.button1Class {
+    width: 92%;
+    height: 2.5em;
+}
+
+.button2Class {
+    width: 92%;
+    height: 2.5em;
+}
+
+.bottomLink {
+    margin: 1em 0.5em 0em;
+}
+
+.linkClass {
+    text-decoration-line: underline;
+}

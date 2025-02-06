@@ -1,0 +1,38 @@
+/* Container for the entire time track section */
+.timeTrackContainer {
+    width: 100%;
+    height: 100%; /* Ensure it takes full height of its parent */
+    border: 1.5px solid #d9d9d9;
+    border-radius: 0.5em;
+    overflow-y: auto; /* Enable vertical scrolling */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Heading for the example script */
+.scriptHeading {
+    font-size: 1.2em;
+    margin-left: 0.25em;
+}
+
+/* Paragraph for the script text */
+.scriptText {
+    margin-left: 0.25em;
+    font-size: 1em;
+}
+
+/* Flex container for time tracking spans */
+.timeTrackSpan {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0.5em 1em;
+}
+
+/* Flex container aligned to the right */
+.timeTrackSpanRight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0.4em;
+    width: 50%;
+}

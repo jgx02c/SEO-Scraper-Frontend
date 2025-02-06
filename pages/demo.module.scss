@@ -1,0 +1,51 @@
+.root {
+    .modalOverlay {
+        backdrop-filter: blur(8px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+.divMain {
+    display: flex;
+    margin: 0; /* Remove margin to use full width and height */
+    height: 98vh; /* Full viewport height */
+}
+
+.divLeft {
+    margin-right: 0.5em; /* Space between left and right containers */
+    display: flex;
+    flex-direction: column;
+    width: 50%; /* Half of the width of .divMain */
+    height: 100%; /* Full height of .divMain */
+    gap: 1em;
+}
+
+.divRight {
+    margin-left: 0.5em; /* Space between left and right containers */
+    display: flex;
+    flex-direction: column;
+    width: 50%; /* Half of the width of .divMain */
+    height: 100%; /* Full height of .divMain */
+}
+
+.divUpperLeft{
+    height: 10vh;
+    width: 100%;
+}
+
+
+.divMidLeft {
+    width: 100%;
+    height: 45vh;
+}
+
+.divBottomLeft {
+    width: 100%;
+    height: 45vh;
+}
