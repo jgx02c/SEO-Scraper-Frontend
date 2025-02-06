@@ -6,9 +6,11 @@ import classNames from 'classnames';
 import styles from './index.module.scss';
 import { NavHeader } from '@/webComponents/mainnav';
 import { Main } from '@/webComponents/main';
-import { Reputation } from '@/webComponents/reputation';
-import { Featureone } from '@/webComponents/featureOne';
-import { Featuretwo } from '@/webComponents/featureTwo';
+import { CompanyGrid } from '@/components/Companies/companies';
+import { ChatTab } from '@/components/Chat/chat' 
+
+
+
 import { Footer } from '@/webComponents/footer';
 import { Join } from '@/webComponents/join';
 
@@ -17,17 +19,17 @@ interface MainProps {
 }
 
 export const Home: React.FC<MainProps> = ({ className }) => {
-    const [activeComponent, setActiveComponent] = useState<'myCompany' | 'companies' | 'addCompany' | 'chat'>('myCompany');
+    const [activeComponent, setActiveComponent] = useState<'My_Business' | 'Competators' | 'Settings' | 'Chat'>('Chat');
     
     const renderComponent = () => {
         switch (activeComponent) {
-            case 'myCompany':
-                return <Chat />;
-            case 'companies':
-                return <Companies />;
-            case 'addCompany':
-                return <MyCompany />;
-            case 'chat':
+            case 'Chat':
+                return <ChatTab/>;
+            case 'Competators':
+                return <CompanyGrid/>;
+            case 'My_Business':
+                return <CompanyGrid/>;
+            case 'Settings':
                 return <Settings />;
             default:
                 return <Main />;
@@ -37,18 +39,36 @@ export const Home: React.FC<MainProps> = ({ className }) => {
     return (
         <div className={classNames(styles.root)}>
             <div className={styles.sidebar}>
-                <div className={styles.profileSection}>
-                    <Image src={Profile} alt="Profile" width={50} height={50} />
-                </div>
-                <ul className={styles.menu}>
-                    <li onClick={() => setActiveComponent('myCompany')}>My Company</li>
-                    <li onClick={() => setActiveComponent('companies')}>Companies</li>
-                    <li onClick={() => setActiveComponent('addCompany')}>Add Company</li>
-                    <li onClick={() => setActiveComponent('chat')}>Chat</li>
-                </ul>
+               
+            <ul className={styles.menu}>
+    <li 
+        className={activeComponent === 'Chat' ? styles.activeTab : ''} 
+        onClick={() => setActiveComponent('Chat')}
+    >
+        Chat
+    </li>
+    <li 
+        className={activeComponent === 'Competators' ? styles.activeTab : ''} 
+        onClick={() => setActiveComponent('Competators')}
+    >
+        Competators
+    </li>
+    <li 
+        className={activeComponent === 'My_Business' ? styles.activeTab : ''} 
+        onClick={() => setActiveComponent('My_Business')}
+    >
+        My Business
+    </li>
+    <li 
+        className={activeComponent === 'Settings' ? styles.activeTab : ''} 
+        onClick={() => setActiveComponent('Settings')}
+    >
+        Settings
+    </li>
+</ul>
+
             </div>
             <div className={styles.mainContent}>
-                <NavHeader />
                 {renderComponent()}
             </div>
         </div>
