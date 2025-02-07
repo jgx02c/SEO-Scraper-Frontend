@@ -49,7 +49,12 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
             />
             <h2>{selectedCompany.name}</h2>
             <p>{selectedCompany.description}</p>
-            <button onClick={() => setSelectedCompany(null)}>Close</button>
+            <button
+              className="btn btn-secondary mt-3"
+              onClick={() => setSelectedCompany(null)}
+            >
+              Close
+            </button>
           </div>
         )}
       </Modal>
