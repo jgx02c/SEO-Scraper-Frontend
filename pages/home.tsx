@@ -9,7 +9,8 @@ import { Main } from '@/webComponents/main';
 import { CompanyGrid } from '@/components/Companies/companies';
 import { ChatTab } from '@/components/Chat/chat' 
 
-
+import { MyBusiness } from '@/components/MyBusiness/mybusiness'
+import { SettingsPage } from '@/components/Settings/settings'
 
 import { Footer } from '@/webComponents/footer';
 import { Join } from '@/webComponents/join';
@@ -28,9 +29,9 @@ export const Home: React.FC<MainProps> = ({ className }) => {
             case 'Competators':
                 return <CompanyGrid/>;
             case 'My_Business':
-                return <CompanyGrid/>;
+                return <MyBusiness/>;
             case 'Settings':
-                return <Settings />;
+                return <SettingsPage />;
             default:
                 return <Main />;
         }

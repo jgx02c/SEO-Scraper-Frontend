@@ -320,3 +320,47 @@
     max-height: 200px; /* Reduce max-height on smaller screens */
   }
 }
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[13].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[13].oneOf[9].use[5]!./components/Settings/settings.module.scss ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.settings_settings-container__Cxf8K {
+  text-align: center;
+  padding: 20px;
+}
+
+.settings_button-group___OBK6 {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.settings_button__B5E0H {
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.settings_button__B5E0H:hover {
+  transform: scale(1.05);
+}
+
+.settings_button__B5E0H:nth-child(1) {
+  background-color: #28a745;
+  color: white;
+} /* Add */
+.settings_button__B5E0H:nth-child(2) {
+  background-color: #dc3545;
+  color: white;
+} /* Delete */
+.settings_button__B5E0H:nth-child(3) {
+  background-color: #ff9800;
+  color: white;
+} /* Purge All */
+.settings_button__B5E0H:nth-child(4) {
+  background-color: #007bff;
+  color: white;
+} /* Re-run Scraper */
