@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CompanyCard } from '../CompanyCard/company-card';
 import styles from './companies.module.scss';
+import dummyCompanies from '@/dummyData';
 
 interface Company {
   id: number;
@@ -9,18 +10,20 @@ interface Company {
   description: string;
 }
 
-export const CompanyGrid: React.FC = () => {
-  const [companies, setCompanies] = useState<Company[]>([]);
 
-  useEffect(() => {
-    fetch('/api/companies')
-      .then((res) => res.json())
-      .then((data) => setCompanies(data));
-  }, []);
+
+export const CompanyGrid: React.FC = () => {
+  // const [companies, setCompanies] = useState<Company[]>([]);
+
+  // useEffect(() => {
+  //   fetch('/api/companies')
+  //     .then((res) => res.json())
+  //     .then((data) => setCompanies(data));
+  // }, []);
 
   return (
     <div className={styles.grid}>
-      {companies.map((company) => (
+      {dummyCompanies.map((company) => (
         <CompanyCard key={company.id} {...company} />
       ))}
     </div>
