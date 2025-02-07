@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './settings.module.scss';
+import styles from './mybusiness.module.scss';
 
 export const MyBusiness: React.FC = () => {
     const handleAction = async (action: string) => {
