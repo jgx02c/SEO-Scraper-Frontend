@@ -1,30 +1,39 @@
-import { useEffect, useState } from 'react';
-import { CompanyCard } from '../CompanyCard/company-card';
-import styles from './companies.module.scss';
-import dummyCompanies from '@/dummyData';
+import React, { useState } from "react";
+import styles from "./companies.module.scss";
+import dummyCompanies from "@/dummyData";
+import { CompanyCard } from "@/components/CompanyCard/company-card";
+import CompanyProps from "@/types";
 
-interface Company {
-  id: number;
-  name: string;
-  logo: string;
-  description: string;
+interface CompanyGridProps {
+  setSelectedCompany: (companyId: string | null) => void; // Accept companyId (string) instead of company
 }
 
+const [companies, setCompanies] = useState<CompanyProps>(); // Store company details
 
 
-export const CompanyGrid: React.FC = () => {
-  // const [companies, setCompanies] = useState<Company[]>([]);
+// Fetch company details by ID
+  const fetchCompanies = async (companyId: string) => {
+    try {
+      const response = await fetch(`/api/companies/${companyId}`);
+      const data: CompanyProps = await response.json();
+      setCompanies(data); // Set company details after fetch
+    } catch (error) {
+      console.error("Failed to fetch company details:", error);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetch('/api/companies')
-  //     .then((res) => res.json())
-  //     .then((data) => setCompanies(data));
-  // }, []);
-
+export const CompanyGrid: React.FC<CompanyGridProps> = ({ setSelectedCompany }) => {
   return (
     <div className={styles.grid}>
       {dummyCompanies.map((company) => (
-        <CompanyCard key={company.id} {...company} />
+        <CompanyCard
+          key={company.id} // Using company.id as the unique key
+          name={company.name}
+          logo={company.logo}
+          id={company.id}
+          description={company.description}
+          setSelectedCompany={setSelectedCompany} // Pass setSelectedCompany down
+        />
       ))}
     </div>
   );
