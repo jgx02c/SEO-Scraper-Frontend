@@ -4,9 +4,11 @@
 
 // Overview
 
-// Call to server for get_business_by_id
-
-// Call to server to get_all_business  
+//https://leaps-scraper.onrender.com/generate_insight
+//https://leaps-scraper.onrender.com/get_pages_by_business_id/1
+//https://leaps-scraper.onrender.com/get_page_by_id/1
+//https://leaps-scraper.onrender.com/get_business_by_id/1
+//https://leaps-scraper.onrender.com/get_all_businesses
 
 
 //Websocket for Chat
