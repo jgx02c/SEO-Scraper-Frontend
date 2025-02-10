@@ -637,7 +637,9 @@ const BusinessDetailPage = ()=>{
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const { id } = router.query; // Get business_id from URL
     const [business, setBusiness] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [webpages, setWebpages] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("overview");
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "BusinessDetailPage.useEffect": ()=>{
             if (!id) return;
@@ -659,6 +661,16 @@ const BusinessDetailPage = ()=>{
     }["BusinessDetailPage.useEffect"], [
         id
     ]);
+    const fetchWebpages = async ()=>{
+        if (!id) return;
+        try {
+            const response = await fetch(`https://leaps-scraper.onrender.com/get_pages_by_business_id/${id}`);
+            const result = await response.json();
+            setWebpages(result.data || []);
+        } catch (error) {
+            console.error("Error fetching webpages:", error);
+        }
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "min-h-screen bg-gray-900 p-6 text-white",
         children: [
@@ -671,7 +683,7 @@ const BusinessDetailPage = ()=>{
                         children: "Back to Businesses"
                     }, void 0, false, {
                         fileName: "[project]/src/pages/details/[id].tsx",
-                        lineNumber: 50,
+                        lineNumber: 71,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -679,13 +691,43 @@ const BusinessDetailPage = ()=>{
                         children: "Business Details"
                     }, void 0, false, {
                         fileName: "[project]/src/pages/details/[id].tsx",
-                        lineNumber: 53,
+                        lineNumber: 74,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/pages/details/[id].tsx",
-                lineNumber: 49,
+                lineNumber: 70,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "flex space-x-4 border-b border-gray-700 mb-6",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        className: `p-2 font-semibold ${activeTab === "overview" ? "border-b-2 border-blue-500 text-blue-400" : "text-gray-400"}`,
+                        onClick: ()=>setActiveTab("overview"),
+                        children: "Overview"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/details/[id].tsx",
+                        lineNumber: 79,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        className: `p-2 font-semibold ${activeTab === "webpages" ? "border-b-2 border-blue-500 text-blue-400" : "text-gray-400"}`,
+                        onClick: ()=>{
+                            setActiveTab("webpages");
+                            fetchWebpages(); // Fetch webpage data when tab is clicked
+                        },
+                        children: "Webpages"
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/details/[id].tsx",
+                        lineNumber: 85,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/pages/details/[id].tsx",
+                lineNumber: 78,
                 columnNumber: 7
             }, this),
             loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -693,337 +735,179 @@ const BusinessDetailPage = ()=>{
                 children: "Loading business details..."
             }, void 0, false, {
                 fileName: "[project]/src/pages/details/[id].tsx",
-                lineNumber: 57,
+                lineNumber: 97,
                 columnNumber: 9
             }, this) : business ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Card"], {
                 className: "bg-gray-800 shadow-lg",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["CardContent"], {
                     className: "p-6 space-y-6",
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        activeTab === "overview" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["Fragment"], {
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                    className: "text-3xl font-bold",
-                                    children: business.name
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 63,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    className: "text-gray-400 mt-2",
-                                    children: business.description
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 64,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/details/[id].tsx",
-                            lineNumber: 62,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                    className: "text-xl font-semibold",
-                                    children: "Contact Information"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 69,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    children: business.contact_information?.address || "No Address Available"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 70,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    children: business.contact_information?.email || "No Email Available"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 71,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    children: business.contact_information?.phone || "No Phone Available"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 72,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/details/[id].tsx",
-                            lineNumber: 68,
-                            columnNumber: 13
-                        }, this),
-                        business.benefits && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                    className: "text-xl font-semibold",
-                                    children: "Benefits"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 78,
-                                    columnNumber: 17
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                                    className: "list-disc list-inside text-gray-400",
-                                    children: business.benefits.map((benefit, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                            children: benefit
-                                        }, index, false, {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                            className: "text-3xl font-bold",
+                                            children: business.name
+                                        }, void 0, false, {
                                             fileName: "[project]/src/pages/details/[id].tsx",
-                                            lineNumber: 81,
-                                            columnNumber: 21
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 79,
-                                    columnNumber: 17
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/details/[id].tsx",
-                            lineNumber: 77,
-                            columnNumber: 15
-                        }, this),
-                        business.products && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                    className: "text-xl font-semibold",
-                                    children: "Products"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 90,
-                                    columnNumber: 17
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                                    className: "space-y-3",
-                                    children: business.products.map((product, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                            className: "p-3 bg-gray-700 rounded-lg",
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
-                                                    className: "font-semibold",
-                                                    children: product.name
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                                    lineNumber: 94,
-                                                    columnNumber: 23
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                    className: "text-gray-300",
-                                                    children: product.description
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                                    lineNumber: 95,
-                                                    columnNumber: 23
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    href: product.url,
-                                                    target: "_blank",
-                                                    className: "text-blue-400 hover:underline",
-                                                    children: "View Product"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                                    lineNumber: 96,
-                                                    columnNumber: 23
-                                                }, this)
-                                            ]
-                                        }, index, true, {
+                                            lineNumber: 105,
+                                            columnNumber: 19
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "text-gray-400 mt-2",
+                                            children: business.description
+                                        }, void 0, false, {
                                             fileName: "[project]/src/pages/details/[id].tsx",
-                                            lineNumber: 93,
-                                            columnNumber: 21
-                                        }, this))
-                                }, void 0, false, {
+                                            lineNumber: 106,
+                                            columnNumber: 19
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
                                     fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 91,
-                                    columnNumber: 17
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/details/[id].tsx",
-                            lineNumber: 89,
-                            columnNumber: 15
-                        }, this),
-                        business.promotions && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                    className: "text-xl font-semibold",
-                                    children: "Promotions"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 112,
-                                    columnNumber: 17
-                                }, this),
-                                business.promotions.map((promo, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "p-3 bg-green-700 rounded-lg",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
-                                                className: "font-semibold",
-                                                children: promo.title
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/details/[id].tsx",
-                                                lineNumber: 115,
-                                                columnNumber: 21
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-gray-300",
-                                                children: promo.discount
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/details/[id].tsx",
-                                                lineNumber: 116,
-                                                columnNumber: 21
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-sm",
-                                                children: promo.details
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/pages/details/[id].tsx",
-                                                lineNumber: 117,
-                                                columnNumber: 21
-                                            }, this)
-                                        ]
-                                    }, index, true, {
-                                        fileName: "[project]/src/pages/details/[id].tsx",
-                                        lineNumber: 114,
-                                        columnNumber: 19
-                                    }, this))
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/details/[id].tsx",
-                            lineNumber: 111,
-                            columnNumber: 15
-                        }, this),
-                        business.customer_reviews && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                    className: "text-xl font-semibold",
-                                    children: "Customer Reviews"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 126,
-                                    columnNumber: 17
-                                }, this),
-                                business.customer_reviews.map((review, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "p-3 bg-gray-700 rounded-lg",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "font-semibold",
-                                                children: [
-                                                    review.name,
-                                                    " (",
-                                                    review.location,
-                                                    ")"
-                                                ]
-                                            }, void 0, true, {
-                                                fileName: "[project]/src/pages/details/[id].tsx",
-                                                lineNumber: 129,
-                                                columnNumber: 21
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-gray-300",
-                                                children: [
-                                                    '"',
-                                                    review.comment,
-                                                    '"'
-                                                ]
-                                            }, void 0, true, {
-                                                fileName: "[project]/src/pages/details/[id].tsx",
-                                                lineNumber: 130,
-                                                columnNumber: 21
-                                            }, this)
-                                        ]
-                                    }, index, true, {
-                                        fileName: "[project]/src/pages/details/[id].tsx",
-                                        lineNumber: 128,
-                                        columnNumber: 19
-                                    }, this))
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/pages/details/[id].tsx",
-                            lineNumber: 125,
-                            columnNumber: 15
-                        }, this),
-                        business.social_media && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                    className: "text-xl font-semibold",
-                                    children: "Social Media"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 139,
+                                    lineNumber: 104,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "flex space-x-4",
-                                    children: business.social_media.map((social, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                            href: social.url,
-                                            target: "_blank",
-                                            className: "text-blue-400 hover:underline",
-                                            children: social.platform
-                                        }, index, false, {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                            className: "text-xl font-semibold",
+                                            children: "Contact Information"
+                                        }, void 0, false, {
                                             fileName: "[project]/src/pages/details/[id].tsx",
-                                            lineNumber: 142,
+                                            lineNumber: 110,
+                                            columnNumber: 19
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            children: business.contact_information?.address || "No Address Available"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/details/[id].tsx",
+                                            lineNumber: 111,
+                                            columnNumber: 19
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            children: business.contact_information?.email || "No Email Available"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/details/[id].tsx",
+                                            lineNumber: 112,
+                                            columnNumber: 19
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            children: business.contact_information?.phone || "No Phone Available"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/details/[id].tsx",
+                                            lineNumber: 113,
+                                            columnNumber: 19
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/pages/details/[id].tsx",
+                                    lineNumber: 109,
+                                    columnNumber: 17
+                                }, this),
+                                business.benefits && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                            className: "text-xl font-semibold",
+                                            children: "Benefits"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/details/[id].tsx",
+                                            lineNumber: 118,
                                             columnNumber: 21
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                            className: "list-disc list-inside text-gray-400",
+                                            children: business.benefits.map((benefit, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                    children: benefit
+                                                }, index, false, {
+                                                    fileName: "[project]/src/pages/details/[id].tsx",
+                                                    lineNumber: 121,
+                                                    columnNumber: 25
+                                                }, this))
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/details/[id].tsx",
+                                            lineNumber: 119,
+                                            columnNumber: 21
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/pages/details/[id].tsx",
+                                    lineNumber: 117,
+                                    columnNumber: 19
+                                }, this)
+                            ]
+                        }, void 0, true),
+                        activeTab === "webpages" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                    className: "text-xl font-semibold mb-4",
+                                    children: "Loaded Webpages"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/pages/details/[id].tsx",
+                                    lineNumber: 132,
+                                    columnNumber: 17
+                                }, this),
+                                webpages.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                    className: "space-y-3",
+                                    children: webpages.map((page)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                            className: "p-3 bg-gray-700 rounded-lg",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-gray-300",
+                                                children: page.filename
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/pages/details/[id].tsx",
+                                                lineNumber: 137,
+                                                columnNumber: 25
+                                            }, this)
+                                        }, page._id, false, {
+                                            fileName: "[project]/src/pages/details/[id].tsx",
+                                            lineNumber: 136,
+                                            columnNumber: 23
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/details/[id].tsx",
-                                    lineNumber: 140,
-                                    columnNumber: 17
+                                    lineNumber: 134,
+                                    columnNumber: 19
+                                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-400",
+                                    children: "No webpages available."
+                                }, void 0, false, {
+                                    fileName: "[project]/src/pages/details/[id].tsx",
+                                    lineNumber: 142,
+                                    columnNumber: 19
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/details/[id].tsx",
-                            lineNumber: 138,
-                            columnNumber: 15
-                        }, this),
-                        business.website && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "text-center",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                href: business.website,
-                                target: "_blank",
-                                className: "text-blue-400 hover:underline text-lg font-semibold",
-                                children: "Visit Website"
-                            }, void 0, false, {
-                                fileName: "[project]/src/pages/details/[id].tsx",
-                                lineNumber: 158,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "[project]/src/pages/details/[id].tsx",
-                            lineNumber: 157,
+                            lineNumber: 131,
                             columnNumber: 15
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/details/[id].tsx",
-                    lineNumber: 60,
+                    lineNumber: 100,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/details/[id].tsx",
-                lineNumber: 59,
+                lineNumber: 99,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 className: "text-center",
                 children: "Business not found."
             }, void 0, false, {
                 fileName: "[project]/src/pages/details/[id].tsx",
-                lineNumber: 170,
+                lineNumber: 149,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/details/[id].tsx",
-        lineNumber: 48,
+        lineNumber: 69,
         columnNumber: 5
     }, this);
 };
-_s(BusinessDetailPage, "LQ9x9Mj9JDQK1goovpeNQfoofqc=", false, function() {
+_s(BusinessDetailPage, "JzrqAnWpYGDsdJiWR4kWNx8hnGQ=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useRouter"]
     ];
