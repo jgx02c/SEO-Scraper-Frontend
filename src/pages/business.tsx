@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/card";
 import { Button } from "@/components/button";
 
-
 interface Business {
-  id: string;
+  _id: string;
   name: string;
-  category: string;
-  image: string;
+  description: string;
+  business_id: string;
 }
 
 const BusinessPage = () => {
@@ -20,18 +20,17 @@ const BusinessPage = () => {
     const fetchBusinesses = async () => {
       try {
         const response = await fetch("https://leaps-scraper.onrender.com/get_all_businesses");
-        const result = await response.json(); // Extract the full response
-        setBusinesses(result.data || []); // Ensure we set the correct array
+        const result = await response.json();
+        setBusinesses(result.data || []);
       } catch (error) {
         console.error("Error fetching businesses:", error);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchBusinesses();
   }, []);
-  
 
   return (
     <div className="min-h-screen bg-gray-900 p-6 text-white">
@@ -47,13 +46,14 @@ const BusinessPage = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {businesses.map((business) => (
-            <Card key={business.id} className="bg-gray-800 shadow-lg">
-              <CardContent className="p-4 text-center">
-                <img src={business.image} alt={business.name} className="h-32 w-full object-cover rounded-lg mb-3" />
-                <h2 className="text-lg font-bold">{business.name}</h2>
-                <p className="text-sm text-gray-400">{business.category}</p>
-              </CardContent>
-            </Card>
+            <Link key={business._id} href={`/details/${business.business_id}`} passHref>
+              <Card className="bg-gray-800 shadow-lg cursor-pointer hover:bg-gray-700 transition">
+                <CardContent className="p-4 text-center">
+                  <h2 className="text-lg font-bold">{business.name}</h2>
+                  <p className="text-sm text-gray-400">{business.description}</p>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       )}

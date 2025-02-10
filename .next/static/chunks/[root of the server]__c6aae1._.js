@@ -624,10 +624,12 @@ __turbopack_esm__({
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/react/jsx-dev-runtime.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/react/index.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/router.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/link.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/card.tsx [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$button$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/button.tsx [client] (ecmascript)");
 ;
 var _s = __turbopack_refresh__.signature();
+;
 ;
 ;
 ;
@@ -643,8 +645,8 @@ const BusinessPage = ()=>{
                 "BusinessPage.useEffect.fetchBusinesses": async ()=>{
                     try {
                         const response = await fetch("https://leaps-scraper.onrender.com/get_all_businesses");
-                        const result = await response.json(); // Extract the full response
-                        setBusinesses(result.data || []); // Ensure we set the correct array
+                        const result = await response.json();
+                        setBusinesses(result.data || []);
                     } catch (error) {
                         console.error("Error fetching businesses:", error);
                     } finally{
@@ -667,7 +669,7 @@ const BusinessPage = ()=>{
                         children: "Back to Chat"
                     }, void 0, false, {
                         fileName: "[project]/src/pages/business.tsx",
-                        lineNumber: 39,
+                        lineNumber: 38,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -675,13 +677,13 @@ const BusinessPage = ()=>{
                         children: "Businesses"
                     }, void 0, false, {
                         fileName: "[project]/src/pages/business.tsx",
-                        lineNumber: 42,
+                        lineNumber: 41,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/pages/business.tsx",
-                lineNumber: 38,
+                lineNumber: 37,
                 columnNumber: 7
             }, this),
             loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -689,60 +691,59 @@ const BusinessPage = ()=>{
                 children: "Loading businesses..."
             }, void 0, false, {
                 fileName: "[project]/src/pages/business.tsx",
-                lineNumber: 46,
+                lineNumber: 45,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6",
-                children: businesses.map((business)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Card"], {
-                        className: "bg-gray-800 shadow-lg",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["CardContent"], {
-                            className: "p-4 text-center",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                                    src: business.image,
-                                    alt: business.name,
-                                    className: "h-32 w-full object-cover rounded-lg mb-3"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/business.tsx",
-                                    lineNumber: 52,
-                                    columnNumber: 17
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                    className: "text-lg font-bold",
-                                    children: business.name
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/business.tsx",
-                                    lineNumber: 53,
-                                    columnNumber: 17
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    className: "text-sm text-gray-400",
-                                    children: business.category
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/business.tsx",
-                                    lineNumber: 54,
-                                    columnNumber: 17
-                                }, this)
-                            ]
-                        }, void 0, true, {
+                children: businesses.map((business)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                        href: `/details/${business.business_id}`,
+                        passHref: true,
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Card"], {
+                            className: "bg-gray-800 shadow-lg cursor-pointer hover:bg-gray-700 transition",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["CardContent"], {
+                                className: "p-4 text-center",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                        className: "text-lg font-bold",
+                                        children: business.name
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/business.tsx",
+                                        lineNumber: 52,
+                                        columnNumber: 19
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-sm text-gray-400",
+                                        children: business.description
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/business.tsx",
+                                        lineNumber: 53,
+                                        columnNumber: 19
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/business.tsx",
+                                lineNumber: 51,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
                             fileName: "[project]/src/pages/business.tsx",
-                            lineNumber: 51,
+                            lineNumber: 50,
                             columnNumber: 15
                         }, this)
-                    }, business.id, false, {
+                    }, business._id, false, {
                         fileName: "[project]/src/pages/business.tsx",
-                        lineNumber: 50,
+                        lineNumber: 49,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/pages/business.tsx",
-                lineNumber: 48,
+                lineNumber: 47,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/business.tsx",
-        lineNumber: 37,
+        lineNumber: 36,
         columnNumber: 5
     }, this);
 };
