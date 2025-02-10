@@ -3,6 +3,7 @@ import { Send } from "lucide-react";
 import { Input } from "@/components/input";
 import { Button } from "@/components/button";
 import { Card, CardContent } from "@/components/card";
+import { useRouter } from "next/router"; // Import router
 
 interface Message {
   role: string;
@@ -14,6 +15,7 @@ const ChatBot = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter(); // Router for navigation
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -45,11 +47,14 @@ const ChatBot = () => {
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-gray-900 p-4">
-      <Card className="w-full h-full max-w-3xl bg-gray-800 shadow-lg flex flex-col">
-        <CardContent className="p-6 flex flex-col flex-grow">
-          <h1 className="mb-4 text-center text-2xl font-bold text-white">
-            Leaps AI ChatBot V.1.0
-          </h1>
+    <Card className="w-full h-full max-w-3xl bg-gray-800 shadow-lg flex flex-col">
+      <CardContent className="p-6 flex flex-col flex-grow">
+        <div className="flex justify-between mb-4">
+          <Button className="bg-blue-600 text-white" onClick={() => router.push("/business")}>
+            View Businesses
+          </Button>
+          <h1 className="text-2xl font-bold text-white">Leaps AI ChatBot V.1.0</h1>
+        </div>
 
           {/* Message display area */}
           <div className="flex-grow overflow-y-auto space-y-4 bg-gray-900 p-4 rounded-lg">
@@ -89,7 +94,7 @@ const ChatBot = () => {
               <Send size={18} />
             </Button>
           </div>
-        </CardContent>
+          </CardContent>
       </Card>
     </div>
   );

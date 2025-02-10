@@ -1,0 +1,8 @@
+__turbopack_load_page_chunks__("/business", [
+  "static/chunks/node_modules_next_71458a._.js",
+  "static/chunks/node_modules_react-dom_82bb97._.js",
+  "static/chunks/node_modules_1b7400._.js",
+  "static/chunks/[root of the server]__c6aae1._.js",
+  "static/chunks/src_pages_business_5771e1._.js",
+  "static/chunks/src_pages_business_24c912._.js"
+])
