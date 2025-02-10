@@ -57,27 +57,28 @@ const ChatBot = () => {
         </div>
 
           {/* Message display area */}
-          <div className="flex-grow overflow-y-auto space-y-4 bg-gray-900 p-4 rounded-lg">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`max-w-[75%] rounded-lg p-3 ${
-                  msg.role === "user"
-                    ? "ml-auto bg-blue-600 text-right text-white"
-                    : "mr-auto bg-gray-700 text-white"
-                }`}
-              >
-                {msg.text}
-              </div>
-            ))}
-            {loading && (
-              <div className="mr-auto rounded-lg bg-gray-700 p-3 text-white">
-                AI is thinking...
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+          <div className="h-96 flex flex-col">
+      <div className="flex-1 flex-col overflow-y-auto space-y-4 bg-gray-900 p-4 rounded-lg">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`max-w-[75%] rounded-lg p-3 ${
+              msg.role === "user"
+                ? "ml-auto bg-blue-600 text-right text-white"
+                : "mr-auto bg-gray-700 text-white"
+            }`}
+          >
+            {msg.text}
           </div>
-
+        ))}
+        {loading && (
+          <div className="mr-auto rounded-lg bg-gray-700 p-3 text-white">
+            AI is thinking...
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+    </div>
           {/* Input area fixed at the bottom */}
           <div className="flex gap-1 mt-4 flex-shrink-0">
             <Input
