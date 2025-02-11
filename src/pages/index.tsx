@@ -57,19 +57,12 @@ const ChatBot = () => {
   const loadConversations = async () => {
     try {
       setConversationsError(false);
-      const response = await fetch("https://leaps-scraper.onrender.com/get_conversations");
-      
-      if (response.ok) {
-        const data = await response.json();
-        setConversations(data);
-      } else {
-        // If conversations fail to load, use empty array and show error state
-        setConversationsError(true);
-        setConversations([]);
-        console.error("Failed to load conversations, starting with empty list");
-      }
+      const response = await fetch("https://leaps-scraper.onrender.com/conversations/get_conversations");
+      if (!response.ok) throw new Error('Failed to load conversations');
+      const data = await response.json();
+      console.log('Conversations response:', data); // Debug log
+      setConversations(data.data || []);
     } catch (error) {
-      // Handle network errors or other issues
       console.error("Error loading conversations:", error);
       setConversationsError(true);
       setConversations([]);
@@ -79,7 +72,7 @@ const ChatBot = () => {
   const loadSettings = async () => {
     try {
       setSettingsError(false);
-      const response = await fetch("https://leaps-scraper.onrender.com/get_settings");
+      const response = await fetch("https://leaps-scraper.onrender.com/settings/get_settings");
       
       if (response.ok) {
         const settings = await response.json();
@@ -120,7 +113,7 @@ const ChatBot = () => {
 
   const saveSettings = async () => {
     try {
-      const response = await fetch("https://leaps-scraper.onrender.com/save_settings", {
+      const response = await fetch("https://leaps-scraper.onrender.com/settings/save_settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -177,7 +170,7 @@ const ChatBot = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://leaps-scraper.onrender.com/generate_insight", {
+      const response = await fetch("https://leaps-scraper.onrender.com/insights/generate_insight", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -224,7 +217,7 @@ const ChatBot = () => {
 
   const saveConversation = async (conversationId: string, messages: Message[]) => {
     try {
-      await fetch("https://leaps-scraper.onrender.com/save_conversation", {
+      await fetch("https://leaps-scraper.onrender.com/conversations/save_conversation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

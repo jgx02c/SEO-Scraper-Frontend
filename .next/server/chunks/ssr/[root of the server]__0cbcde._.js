@@ -256,7 +256,7 @@ const BusinessPage = ()=>{
     (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
         const fetchBusinesses = async ()=>{
             try {
-                const response = await fetch("https://leaps-scraper.onrender.com/get_all_businesses");
+                const response = await fetch("https://leaps-scraper.onrender.com/business/get_all_businesses");
                 const result = await response.json();
                 setBusinesses(result.data || []);
             } catch (error) {

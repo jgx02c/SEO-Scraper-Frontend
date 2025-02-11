@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Card, CardContent } from "@/components/card";
-import { Button } from "@/components/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Dialog } from "@headlessui/react"; // Import modal library
 
 interface BusinessDetails {
@@ -40,7 +40,7 @@ const BusinessDetailPage = () => {
 
     const fetchBusinessDetails = async () => {
       try {
-        const response = await fetch(`https://leaps-scraper.onrender.com/get_business_by_id/${id}`);
+        const response = await fetch(`https://leaps-scraper.onrender.com/business/get_business_by_id/${id}`);
         const result = await response.json();
         setBusiness(result.data);
       } catch (error) {
@@ -56,7 +56,7 @@ const BusinessDetailPage = () => {
   const fetchWebpages = async () => {
     if (!id) return;
     try {
-      const response = await fetch(`https://leaps-scraper.onrender.com/get_pages_by_business_id/${id}`);
+      const response = await fetch(`https://leaps-scraper.onrender.com/pages/get_pages_by_business_id/${id}`);
       const result = await response.json();
       setWebpages(result.data || []);
     } catch (error) {
@@ -68,7 +68,7 @@ const BusinessDetailPage = () => {
     setSelectedPage(page);
     setIsModalOpen(true);
     try {
-      const response = await fetch(`https://leaps-scraper.onrender.com/get_page_by_id/${page._id}`);
+      const response = await fetch(`https://leaps-scraper.onrender.com/pages/get_page_by_id/${page._id}`);
       const result = await response.json();
   
       // Fix: Extract correct content

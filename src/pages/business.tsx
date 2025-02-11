@@ -19,7 +19,7 @@ const BusinessPage = () => {
   useEffect(() => {
     const fetchBusinesses = async () => {
       try {
-        const response = await fetch("https://leaps-scraper.onrender.com/get_all_businesses");
+        const response = await fetch("https://leaps-scraper.onrender.com/business/get_all_businesses");
         const result = await response.json();
         setBusinesses(result.data || []);
       } catch (error) {

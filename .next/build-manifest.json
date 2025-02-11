@@ -9,14 +9,6 @@
       "static/chunks/src_pages__app_5771e1._.js",
       "static/chunks/src_pages__app_3aea2c._.js"
     ],
-    "/_error": [
-      "static/chunks/[root of the server]__31723f._.js",
-      "static/chunks/node_modules_react-dom_82bb97._.js",
-      "static/chunks/node_modules_beb007._.js",
-      "static/chunks/[root of the server]__e5d775._.js",
-      "static/chunks/src_pages__error_5771e1._.js",
-      "static/chunks/src_pages__error_ba917a._.js"
-    ],
     "/": [
       "static/chunks/node_modules_next_71458a._.js",
       "static/chunks/node_modules_react-dom_82bb97._.js",
@@ -25,6 +17,14 @@
       "static/chunks/src_pages_index_5771e1._.js",
       "static/chunks/src_pages_index_0a6d90._.js"
     ],
+    "/_error": [
+      "static/chunks/[root of the server]__31723f._.js",
+      "static/chunks/node_modules_react-dom_82bb97._.js",
+      "static/chunks/node_modules_beb007._.js",
+      "static/chunks/[root of the server]__e5d775._.js",
+      "static/chunks/src_pages__error_5771e1._.js",
+      "static/chunks/src_pages__error_ba917a._.js"
+    ],
     "/business": [
       "static/chunks/node_modules_next_0f88d9._.js",
       "static/chunks/node_modules_react-dom_82bb97._.js",
@@ -32,6 +32,15 @@
       "static/chunks/[root of the server]__a8e4ac._.js",
       "static/chunks/src_pages_business_5771e1._.js",
       "static/chunks/src_pages_business_ab3e5d._.js"
+    ],
+    "/details/[id]": [
+      "static/chunks/node_modules_next_71458a._.js",
+      "static/chunks/node_modules_react-dom_82bb97._.js",
+      "static/chunks/node_modules_@headlessui_react_dist_d80d7d._.js",
+      "static/chunks/node_modules_1b7400._.js",
+      "static/chunks/[root of the server]__99dbfa._.js",
+      "static/chunks/src_pages_details_[id]_tsx_5771e1._.js",
+      "static/chunks/src_pages_details_[id]_tsx_4fc601._.js"
     ]
   },
   "devFiles": [],
