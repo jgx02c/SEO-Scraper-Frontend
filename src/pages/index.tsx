@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 
 // Define the message type
 interface Message {
-  role: "user" | "ai";
+  role: string;
   text: string;
 }
 
@@ -25,21 +25,36 @@ const ChatBot = () => {
   const [vectorStores, setVectorStores] = useState<string[]>([]);
   const [selectedVectorStore, setSelectedVectorStore] = useState("1");
   const [prompt, setPrompt] = useState("Default prompt");
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    fetch("/api/get-settings")
-      .then((res) => res.json())
-      .then((data) => {
-        setOpenAiModel(data.model);
-        setTemperature(data.temperature);
-        setPresencePenalty(data.presence_penalty);
-        setVectorStores(data.vectorStores);
-        setSelectedVectorStore(data.vectorStores[0] || "1");
-        setPrompt(data.prompt);
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+    const newMessages: Message[] = [...messages, { role: "user", text: input }];
+    setMessages(newMessages);
+    setInput("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("https://leaps-scraper.onrender.com/generate_insight", {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: input,
       });
-  }, []);
+      const text = await response.text();
+      console.log("Response:", text);
+      setMessages([...newMessages, { role: "bot", text: text }]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Scroll to the latest message when messages update
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
   const saveSettings = () => {
     fetch("/api/save-settings", {
@@ -101,7 +116,7 @@ const ChatBot = () => {
       </Card>
       {/* Settings Popup */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent className="flex w-[90vw] h-[70vh] bg-gray-800 p-6 rounded-lg">
+        <DialogContent>
           <div className="w-1/3 space-y-4 p-4 border-r border-gray-600">
             <DialogHeader>
               <DialogTitle>Chatbot Settings</DialogTitle>
