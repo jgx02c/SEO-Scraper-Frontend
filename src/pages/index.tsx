@@ -9,7 +9,6 @@ import { Select, SelectItem } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useRouter } from "next/router";
 
-// Enhanced interfaces for type safety
 interface Message {
   role: string;
   text: string;
@@ -24,35 +23,69 @@ interface Conversation {
   lastUpdated: string;
 }
 
+interface SettingsResponse {
+  data: {
+    _id: string;
+    model: string;
+    temperature: number;
+    presence_penalty: number;
+    vectorStore: string;
+    prompt: string;
+    updatedAt: string;
+  };
+  timestamp: string;
+}
+
 const ChatBot = () => {
-  // Existing state
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [openAiModel, setOpenAiModel] = useState("gpt-4o");
-  const [temperature, setTemperature] = useState(0.7);
-  const [presencePenalty, setPresencePenalty] = useState(0.5);
-  const [vectorStores, setVectorStores] = useState<string[]>([]);
-  const [selectedVectorStore, setSelectedVectorStore] = useState("leaps");
-  const [prompt, setPrompt] = useState("Default prompt");
   
-  // Error states
+  // Settings state without defaults
+  const [openAiModel, setOpenAiModel] = useState<string>("");
+  const [temperature, setTemperature] = useState<number>(0);
+  const [presencePenalty, setPresencePenalty] = useState<number>(0);
+  const [selectedVectorStore, setSelectedVectorStore] = useState<string>("");
+  const [prompt, setPrompt] = useState<string>("");
+  
   const [settingsError, setSettingsError] = useState(false);
   const [conversationsError, setConversationsError] = useState(false);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
-  // New state for conversations
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
-  // Load conversations on mount
   useEffect(() => {
     loadConversations();
     loadSettings();
   }, []);
+
+  const loadSettings = async () => {
+    try {
+      setSettingsError(false);
+      const response = await fetch("https://leaps-scraper.onrender.com/settings/get_settings");
+      
+      if (!response.ok) throw new Error('Failed to load settings');
+      
+      const settingsResponse: SettingsResponse = await response.json();
+      const settings = settingsResponse.data;
+      
+      setOpenAiModel(settings.model);
+      setTemperature(settings.temperature);
+      setPresencePenalty(settings.presence_penalty);
+      setSelectedVectorStore(settings.vectorStore);
+      setPrompt(settings.prompt);
+      setSettingsLoaded(true);
+      
+    } catch (error) {
+      console.error("Error loading settings:", error);
+      setSettingsError(true);
+    }
+  };
 
   const loadConversations = async () => {
     try {
@@ -60,7 +93,6 @@ const ChatBot = () => {
       const response = await fetch("https://leaps-scraper.onrender.com/conversations/get_conversations");
       if (!response.ok) throw new Error('Failed to load conversations');
       const data = await response.json();
-      console.log('Conversations response:', data); // Debug log
       setConversations(data.data || []);
     } catch (error) {
       console.error("Error loading conversations:", error);
@@ -69,45 +101,35 @@ const ChatBot = () => {
     }
   };
 
-  const loadSettings = async () => {
+  const createNewConversation = async () => {
+    const newConversation: Conversation = {
+      id: Date.now().toString(),
+      title: "New Conversation",
+      messages: [],
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
+    };
+
+    setConversations([newConversation, ...conversations]);
+    setCurrentConversationId(newConversation.id);
+    setMessages([]);
+    return newConversation.id;
+  };
+
+  const saveConversation = async (conversationId: string, messages: Message[]) => {
     try {
-      setSettingsError(false);
-      const response = await fetch("https://leaps-scraper.onrender.com/settings/get_settings");
+      const response = await fetch("https://leaps-scraper.onrender.com/conversations/save_conversation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          conversationId,
+          messages
+        }),
+      });
       
-      if (response.ok) {
-        const settings = await response.json();
-        setOpenAiModel(settings.model);
-        setTemperature(settings.temperature);
-        setPresencePenalty(settings.presence_penalty);
-        setSelectedVectorStore(settings.vectorStore);
-        setPrompt(settings.prompt);
-        
-        if (settings.vectorStores && Array.isArray(settings.vectorStores)) {
-          setVectorStores(settings.vectorStores);
-        }
-      } else {
-        // If settings fail to load, use defaults and show error state
-        setSettingsError(true);
-        // Set default values
-        setOpenAiModel("gpt-4");
-        setTemperature(0.7);
-        setPresencePenalty(0.5);
-        setSelectedVectorStore("1");
-        setPrompt("Default prompt");
-        setVectorStores(["1", "2", "3"]); // Default vector stores
-        console.error("Failed to load settings, using defaults");
-      }
+      if (!response.ok) throw new Error('Failed to save conversation');
     } catch (error) {
-      // Handle network errors or other issues
-      console.error("Error loading settings:", error);
-      setSettingsError(true);
-      // Set the same default values
-      setOpenAiModel("gpt-4");
-      setTemperature(0.7);
-      setPresencePenalty(0.5);
-      setSelectedVectorStore("1");
-      setPrompt("Default prompt");
-      setVectorStores(["1", "2", "3"]); // Default vector stores
+      console.error("Error saving conversation:", error);
     }
   };
 
@@ -125,28 +147,12 @@ const ChatBot = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to save settings');
-      }
-
+      if (!response.ok) throw new Error('Failed to save settings');
       setSettingsOpen(false);
+      await loadSettings();
     } catch (error) {
       console.error("Error saving settings:", error);
     }
-  };
-
-  const createNewConversation = () => {
-    const newConversation: Conversation = {
-      id: Date.now().toString(),
-      title: "New Conversation",
-      messages: [],
-      createdAt: new Date().toISOString(),
-      lastUpdated: new Date().toISOString()
-    };
-
-    setConversations([newConversation, ...conversations]);
-    setCurrentConversationId(newConversation.id);
-    setMessages([]);
   };
 
   const sendMessage = async () => {
@@ -159,9 +165,9 @@ const ChatBot = () => {
       timestamp 
     };
 
-    // Create new conversation if none exists
-    if (!currentConversationId) {
-      createNewConversation();
+    let convId = currentConversationId;
+    if (!convId) {
+      convId = await createNewConversation();
     }
 
     const updatedMessages = [...messages, newMessage];
@@ -175,58 +181,45 @@ const ChatBot = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: input,
-          conversationId: currentConversationId,
-          timestamp
+          vector_store: selectedVectorStore,
+          model: openAiModel,
+          temperature: temperature,
+          presence_penalty: presencePenalty,
+          system_prompt: prompt
         }),
       });
 
-      const botResponse = await response.text();
+      if (!response.ok) throw new Error('Failed to generate insight');
+
+      const responseData = await response.json();
       const botMessage: Message = {
         role: "bot",
-        text: botResponse,
+        text: responseData.data,
         timestamp: new Date().toISOString()
       };
 
       const finalMessages = [...updatedMessages, botMessage];
       setMessages(finalMessages);
 
-      // Update conversation in state
       const updatedConversations = conversations.map(conv => {
-        if (conv.id === currentConversationId) {
+        if (conv.id === convId) {
           return {
             ...conv,
             messages: finalMessages,
             lastUpdated: new Date().toISOString(),
-            title: finalMessages[0].text.slice(0, 30) + "..."  // Set title to first message
+            title: input.slice(0, 30) + "..."
           };
         }
         return conv;
       });
 
       setConversations(updatedConversations);
-
-      // Save conversation to backend
-      await saveConversation(currentConversationId!, finalMessages);
+      await saveConversation(convId, finalMessages);
 
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const saveConversation = async (conversationId: string, messages: Message[]) => {
-    try {
-      await fetch("https://leaps-scraper.onrender.com/conversations/save_conversation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          conversationId,
-          messages
-        }),
-      });
-    } catch (error) {
-      console.error("Error saving conversation:", error);
     }
   };
 
@@ -242,10 +235,17 @@ const ChatBot = () => {
     }
   };
 
-  // Existing useEffect for scroll behavior
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  if (!settingsLoaded && !settingsError) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-900">
+        <div className="text-white">Loading settings...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen w-full bg-gray-900 p-4">
@@ -340,7 +340,7 @@ const ChatBot = () => {
               placeholder="Type a message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage()}
             />
             <Button onClick={sendMessage} className="bg-blue-600 text-white hover:bg-blue-700">
               <Send size={18} />
@@ -351,64 +351,68 @@ const ChatBot = () => {
 
       {/* Settings Dialog */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent className="flex">
-          <div className="w-1/4 space-y-4 p-4 border-r border-gray-600">
-            <DialogHeader>
-              <DialogTitle>Chatbot Settings</DialogTitle>
-            </DialogHeader>
-            {settingsError && (
-              <Alert variant="destructive" className="bg-red-900 border-red-800">
-                <AlertDescription className="flex items-center justify-between">
-                  Failed to load settings
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={loadSettings}
-                    className="ml-2"
-                  >
-                    <RefreshCw size={16} className="mr-1" />
-                    Retry
-                  </Button>
-                </AlertDescription>
-              </Alert>
-            )}
-            <Select value={openAiModel} onValueChange={setOpenAiModel}>
-              <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-              <SelectItem value="gpt-4o-mini">GPT-4o-Mini</SelectItem>
-              <SelectItem value="gpt-3o">GPT-3.5</SelectItem>
-            </Select>
-            <div className="space-y-2">
-              <label className="text-white text-sm">Temperature: {temperature}</label>
-              <Slider 
-                value={temperature} 
-                onValueChange={setTemperature}
-                min={0.1} 
-                max={1} 
-                step={0.1} 
-              />
+        <DialogContent className="bg-gray-800 text-white max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Settings</DialogTitle>
+          </DialogHeader>
+          
+          <div className="flex gap-6">
+            {/* Left Column - Controls */}
+            <div className="w-1/2 space-y-4">
+              <div className="space-y-2">
+                <label>Model</label>
+                <Select value={openAiModel} onValueChange={setOpenAiModel}>
+                  <SelectItem value="gpt-4o-2024-08-06">GPT-4o</SelectItem>
+                  <SelectItem value="gpt-4-turbo-2024-04-09">GPT-4-Turbo</SelectItem>
+                  <SelectItem value="gpt-4o-mini-2024-07-18">gpt-4o-mini</SelectItem>
+                  <SelectItem value="o1-mini-2024-09-12">o1-mini</SelectItem>
+                  <SelectItem value="o1-preview-2024-09-12">o1-preview</SelectItem>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label>Temperature: {temperature}</label>
+                <Slider 
+                  value={temperature}
+                  onValueChange={value => setTemperature(value)}
+                  min={0} 
+                  max={1} 
+                  step={0.1} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label>Presence Penalty: {presencePenalty}</label>
+                <Slider 
+                  value={presencePenalty}
+                  onValueChange={value => setPresencePenalty(value)}
+                  min={0} 
+                  max={1} 
+                  step={0.1} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label>Vector Store</label>
+                <Select value={selectedVectorStore} onValueChange={setSelectedVectorStore}>
+                  <SelectItem value="leaps">Leaps</SelectItem>
+                </Select>
+              </div>
+
+              <Button onClick={saveSettings} className="w-full bg-blue-600">
+                Save Settings
+              </Button>
             </div>
-            <div className="space-y-2">
-              <label className="text-white text-sm">Presence Penalty: {presencePenalty}</label>
-              <Slider 
-                value={presencePenalty} 
-                onValueChange={setPresencePenalty}
-                min={0.1} 
-                max={1} 
-                step={0.1} 
+
+            {/* Right Column - System Prompt */}
+            <div className="w-1/2 space-y-2">
+              <label>System Prompt</label>
+              <textarea 
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                className="w-full h-[400px] min-h-[200px] bg-gray-700 rounded p-2 resize"
+                style={{ resize: 'both' }}
               />
-            </div>
-            <Select value={selectedVectorStore} onValueChange={setSelectedVectorStore}>
-              {vectorStores.map((store) => (
-                <SelectItem key={store} value={store}>{store}</SelectItem>
-              ))}
-            </Select>
-            <Button onClick={saveSettings} className="bg-blue-600 text-white w-full">
-              Save Settings
-            </Button>
-          </div>
-          <div className="w-3/4 p-4">
-            <div className="h-full p-3 bg-gray-200 rounded-lg text-black overflow-auto">
-              {prompt}
             </div>
           </div>
         </DialogContent>

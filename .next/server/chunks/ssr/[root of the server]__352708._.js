@@ -567,37 +567,51 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 ;
 ;
 const ChatBot = ()=>{
-    // Existing state
     const [messages, setMessages] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
     const [input, setInput] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("");
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
     const [settingsOpen, setSettingsOpen] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
-    const [openAiModel, setOpenAiModel] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("gpt-4o");
-    const [temperature, setTemperature] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(0.7);
-    const [presencePenalty, setPresencePenalty] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(0.5);
-    const [vectorStores, setVectorStores] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
-    const [selectedVectorStore, setSelectedVectorStore] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("leaps");
-    const [prompt, setPrompt] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("Default prompt");
-    // Error states
+    // Settings state without defaults
+    const [openAiModel, setOpenAiModel] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("");
+    const [temperature, setTemperature] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(0);
+    const [presencePenalty, setPresencePenalty] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(0);
+    const [selectedVectorStore, setSelectedVectorStore] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("");
+    const [prompt, setPrompt] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("");
     const [settingsError, setSettingsError] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
     const [conversationsError, setConversationsError] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
-    // New state for conversations
+    const [settingsLoaded, setSettingsLoaded] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
     const [conversations, setConversations] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
     const [currentConversationId, setCurrentConversationId] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(null);
     const messagesEndRef = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useRef"])(null);
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
-    // Load conversations on mount
     (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
         loadConversations();
         loadSettings();
     }, []);
+    const loadSettings = async ()=>{
+        try {
+            setSettingsError(false);
+            const response = await fetch("https://leaps-scraper.onrender.com/settings/get_settings");
+            if (!response.ok) throw new Error('Failed to load settings');
+            const settingsResponse = await response.json();
+            const settings = settingsResponse.data;
+            setOpenAiModel(settings.model);
+            setTemperature(settings.temperature);
+            setPresencePenalty(settings.presence_penalty);
+            setSelectedVectorStore(settings.vectorStore);
+            setPrompt(settings.prompt);
+            setSettingsLoaded(true);
+        } catch (error) {
+            console.error("Error loading settings:", error);
+            setSettingsError(true);
+        }
+    };
     const loadConversations = async ()=>{
         try {
             setConversationsError(false);
             const response = await fetch("https://leaps-scraper.onrender.com/conversations/get_conversations");
             if (!response.ok) throw new Error('Failed to load conversations');
             const data = await response.json();
-            console.log('Conversations response:', data); // Debug log
             setConversations(data.data || []);
         } catch (error) {
             console.error("Error loading conversations:", error);
@@ -605,51 +619,37 @@ const ChatBot = ()=>{
             setConversations([]);
         }
     };
-    const loadSettings = async ()=>{
+    const createNewConversation = async ()=>{
+        const newConversation = {
+            id: Date.now().toString(),
+            title: "New Conversation",
+            messages: [],
+            createdAt: new Date().toISOString(),
+            lastUpdated: new Date().toISOString()
+        };
+        setConversations([
+            newConversation,
+            ...conversations
+        ]);
+        setCurrentConversationId(newConversation.id);
+        setMessages([]);
+        return newConversation.id;
+    };
+    const saveConversation = async (conversationId, messages)=>{
         try {
-            setSettingsError(false);
-            const response = await fetch("https://leaps-scraper.onrender.com/settings/get_settings");
-            if (response.ok) {
-                const settings = await response.json();
-                setOpenAiModel(settings.model);
-                setTemperature(settings.temperature);
-                setPresencePenalty(settings.presence_penalty);
-                setSelectedVectorStore(settings.vectorStore);
-                setPrompt(settings.prompt);
-                if (settings.vectorStores && Array.isArray(settings.vectorStores)) {
-                    setVectorStores(settings.vectorStores);
-                }
-            } else {
-                // If settings fail to load, use defaults and show error state
-                setSettingsError(true);
-                // Set default values
-                setOpenAiModel("gpt-4");
-                setTemperature(0.7);
-                setPresencePenalty(0.5);
-                setSelectedVectorStore("1");
-                setPrompt("Default prompt");
-                setVectorStores([
-                    "1",
-                    "2",
-                    "3"
-                ]); // Default vector stores
-                console.error("Failed to load settings, using defaults");
-            }
+            const response = await fetch("https://leaps-scraper.onrender.com/conversations/save_conversation", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    conversationId,
+                    messages
+                })
+            });
+            if (!response.ok) throw new Error('Failed to save conversation');
         } catch (error) {
-            // Handle network errors or other issues
-            console.error("Error loading settings:", error);
-            setSettingsError(true);
-            // Set the same default values
-            setOpenAiModel("gpt-4");
-            setTemperature(0.7);
-            setPresencePenalty(0.5);
-            setSelectedVectorStore("1");
-            setPrompt("Default prompt");
-            setVectorStores([
-                "1",
-                "2",
-                "3"
-            ]); // Default vector stores
+            console.error("Error saving conversation:", error);
         }
     };
     const saveSettings = async ()=>{
@@ -667,28 +667,12 @@ const ChatBot = ()=>{
                     prompt
                 })
             });
-            if (!response.ok) {
-                throw new Error('Failed to save settings');
-            }
+            if (!response.ok) throw new Error('Failed to save settings');
             setSettingsOpen(false);
+            await loadSettings();
         } catch (error) {
             console.error("Error saving settings:", error);
         }
-    };
-    const createNewConversation = ()=>{
-        const newConversation = {
-            id: Date.now().toString(),
-            title: "New Conversation",
-            messages: [],
-            createdAt: new Date().toISOString(),
-            lastUpdated: new Date().toISOString()
-        };
-        setConversations([
-            newConversation,
-            ...conversations
-        ]);
-        setCurrentConversationId(newConversation.id);
-        setMessages([]);
     };
     const sendMessage = async ()=>{
         if (!input.trim()) return;
@@ -698,9 +682,9 @@ const ChatBot = ()=>{
             text: input,
             timestamp
         };
-        // Create new conversation if none exists
-        if (!currentConversationId) {
-            createNewConversation();
+        let convId = currentConversationId;
+        if (!convId) {
+            convId = await createNewConversation();
         }
         const updatedMessages = [
             ...messages,
@@ -717,14 +701,18 @@ const ChatBot = ()=>{
                 },
                 body: JSON.stringify({
                     message: input,
-                    conversationId: currentConversationId,
-                    timestamp
+                    vector_store: selectedVectorStore,
+                    model: openAiModel,
+                    temperature: temperature,
+                    presence_penalty: presencePenalty,
+                    system_prompt: prompt
                 })
             });
-            const botResponse = await response.text();
+            if (!response.ok) throw new Error('Failed to generate insight');
+            const responseData = await response.json();
             const botMessage = {
                 role: "bot",
-                text: botResponse,
+                text: responseData.data,
                 timestamp: new Date().toISOString()
             };
             const finalMessages = [
@@ -732,41 +720,23 @@ const ChatBot = ()=>{
                 botMessage
             ];
             setMessages(finalMessages);
-            // Update conversation in state
             const updatedConversations = conversations.map((conv)=>{
-                if (conv.id === currentConversationId) {
+                if (conv.id === convId) {
                     return {
                         ...conv,
                         messages: finalMessages,
                         lastUpdated: new Date().toISOString(),
-                        title: finalMessages[0].text.slice(0, 30) + "..." // Set title to first message
+                        title: input.slice(0, 30) + "..."
                     };
                 }
                 return conv;
             });
             setConversations(updatedConversations);
-            // Save conversation to backend
-            await saveConversation(currentConversationId, finalMessages);
+            await saveConversation(convId, finalMessages);
         } catch (error) {
             console.error("Error sending message:", error);
         } finally{
             setLoading(false);
-        }
-    };
-    const saveConversation = async (conversationId, messages)=>{
-        try {
-            await fetch("https://leaps-scraper.onrender.com/conversations/save_conversation", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    conversationId,
-                    messages
-                })
-            });
-        } catch (error) {
-            console.error("Error saving conversation:", error);
         }
     };
     const loadConversation = async (conversationId)=>{
@@ -780,7 +750,6 @@ const ChatBot = ()=>{
             console.error("Error loading conversation:", error);
         }
     };
-    // Existing useEffect for scroll behavior
     (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
         messagesEndRef.current?.scrollIntoView({
             behavior: "smooth"
@@ -789,6 +758,23 @@ const ChatBot = ()=>{
         messages,
         loading
     ]);
+    if (!settingsLoaded && !settingsError) {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+            className: "flex h-screen items-center justify-center bg-gray-900",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                className: "text-white",
+                children: "Loading settings..."
+            }, void 0, false, {
+                fileName: "[project]/src/pages/index.tsx",
+                lineNumber: 245,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "[project]/src/pages/index.tsx",
+            lineNumber: 244,
+            columnNumber: 7
+        }, this);
+    }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
         className: "flex h-screen w-full bg-gray-900 p-4",
         children: [
@@ -1009,7 +995,7 @@ const ChatBot = ()=>{
                                     placeholder: "Type a message...",
                                     value: input,
                                     onChange: (e)=>setInput(e.target.value),
-                                    onKeyDown: (e)=>e.key === "Enter" && sendMessage()
+                                    onKeyDown: (e)=>e.key === "Enter" && !e.shiftKey && sendMessage()
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
                                     lineNumber: 338,
@@ -1051,203 +1037,232 @@ const ChatBot = ()=>{
                 open: settingsOpen,
                 onOpenChange: setSettingsOpen,
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["DialogContent"], {
-                    className: "flex",
+                    className: "bg-gray-800 text-white max-w-4xl",
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
-                            className: "w-1/4 space-y-4 p-4 border-r border-gray-600",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["DialogHeader"], {
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["DialogTitle"], {
-                                        children: "Chatbot Settings"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/pages/index.tsx",
-                                        lineNumber: 357,
-                                        columnNumber: 15
-                                    }, this)
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 356,
-                                    columnNumber: 13
-                                }, this),
-                                settingsError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Alert"], {
-                                    variant: "destructive",
-                                    className: "bg-red-900 border-red-800",
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["AlertDescription"], {
-                                        className: "flex items-center justify-between",
-                                        children: [
-                                            "Failed to load settings",
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                                variant: "outline",
-                                                size: "sm",
-                                                onClick: loadSettings,
-                                                className: "ml-2",
-                                                children: [
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__["RefreshCw"], {
-                                                        size: 16,
-                                                        className: "mr-1"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/pages/index.tsx",
-                                                        lineNumber: 369,
-                                                        columnNumber: 21
-                                                    }, this),
-                                                    "Retry"
-                                                ]
-                                            }, void 0, true, {
-                                                fileName: "[project]/src/pages/index.tsx",
-                                                lineNumber: 363,
-                                                columnNumber: 19
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/pages/index.tsx",
-                                        lineNumber: 361,
-                                        columnNumber: 17
-                                    }, this)
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 360,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Select"], {
-                                    value: openAiModel,
-                                    onValueChange: setOpenAiModel,
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                            value: "gpt-4o",
-                                            children: "GPT-4o"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 376,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                            value: "gpt-4o-mini",
-                                            children: "GPT-4o-Mini"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 377,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                            value: "gpt-3o",
-                                            children: "GPT-3.5"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 378,
-                                            columnNumber: 15
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 375,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
-                                    className: "space-y-2",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("label", {
-                                            className: "text-white text-sm",
-                                            children: [
-                                                "Temperature: ",
-                                                temperature
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 381,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$slider$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Slider"], {
-                                            value: temperature,
-                                            onValueChange: setTemperature,
-                                            min: 0.1,
-                                            max: 1,
-                                            step: 0.1
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 382,
-                                            columnNumber: 15
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 380,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
-                                    className: "space-y-2",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("label", {
-                                            className: "text-white text-sm",
-                                            children: [
-                                                "Presence Penalty: ",
-                                                presencePenalty
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 391,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$slider$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Slider"], {
-                                            value: presencePenalty,
-                                            onValueChange: setPresencePenalty,
-                                            min: 0.1,
-                                            max: 1,
-                                            step: 0.1
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 392,
-                                            columnNumber: 15
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 390,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Select"], {
-                                    value: selectedVectorStore,
-                                    onValueChange: setSelectedVectorStore,
-                                    children: vectorStores.map((store)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                            value: store,
-                                            children: store
-                                        }, store, false, {
-                                            fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 402,
-                                            columnNumber: 17
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 400,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                    onClick: saveSettings,
-                                    className: "bg-blue-600 text-white w-full",
-                                    children: "Save Settings"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 405,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["DialogHeader"], {
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["DialogTitle"], {
+                                children: "Settings"
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/index.tsx",
+                                lineNumber: 356,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
                             fileName: "[project]/src/pages/index.tsx",
                             lineNumber: 355,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
-                            className: "w-3/4 p-4",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
-                                className: "h-full p-3 bg-gray-200 rounded-lg text-black overflow-auto",
-                                children: prompt
-                            }, void 0, false, {
-                                fileName: "[project]/src/pages/index.tsx",
-                                lineNumber: 410,
-                                columnNumber: 13
-                            }, this)
-                        }, void 0, false, {
+                            className: "flex gap-6",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                    className: "w-1/2 space-y-4",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                            className: "space-y-2",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("label", {
+                                                    children: "Model"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 363,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Select"], {
+                                                    value: openAiModel,
+                                                    onValueChange: setOpenAiModel,
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                            value: "gpt-4o-2024-08-06",
+                                                            children: "GPT-4o"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/index.tsx",
+                                                            lineNumber: 365,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                            value: "gpt-4-turbo-2024-04-09",
+                                                            children: "GPT-4-Turbo"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/index.tsx",
+                                                            lineNumber: 366,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                            value: "gpt-4o-mini-2024-07-18",
+                                                            children: "gpt-4o-mini"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/index.tsx",
+                                                            lineNumber: 367,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                            value: "o1-mini-2024-09-12",
+                                                            children: "o1-mini"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/index.tsx",
+                                                            lineNumber: 368,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                            value: "o1-preview-2024-09-12",
+                                                            children: "o1-preview"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/index.tsx",
+                                                            lineNumber: 369,
+                                                            columnNumber: 19
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 364,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/pages/index.tsx",
+                                            lineNumber: 362,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                            className: "space-y-2",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("label", {
+                                                    children: [
+                                                        "Temperature: ",
+                                                        temperature
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 374,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$slider$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Slider"], {
+                                                    value: temperature,
+                                                    onValueChange: (value)=>setTemperature(value),
+                                                    min: 0,
+                                                    max: 1,
+                                                    step: 0.1
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 375,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/pages/index.tsx",
+                                            lineNumber: 373,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                            className: "space-y-2",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("label", {
+                                                    children: [
+                                                        "Presence Penalty: ",
+                                                        presencePenalty
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 385,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$slider$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Slider"], {
+                                                    value: presencePenalty,
+                                                    onValueChange: (value)=>setPresencePenalty(value),
+                                                    min: 0,
+                                                    max: 1,
+                                                    step: 0.1
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 386,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/pages/index.tsx",
+                                            lineNumber: 384,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                            className: "space-y-2",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("label", {
+                                                    children: "Vector Store"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 396,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Select"], {
+                                                    value: selectedVectorStore,
+                                                    onValueChange: setSelectedVectorStore,
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                        value: "leaps",
+                                                        children: "Leaps"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/index.tsx",
+                                                        lineNumber: 398,
+                                                        columnNumber: 19
+                                                    }, this)
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 397,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/pages/index.tsx",
+                                            lineNumber: 395,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                            onClick: saveSettings,
+                                            className: "w-full bg-blue-600",
+                                            children: "Save Settings"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/index.tsx",
+                                            lineNumber: 402,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/pages/index.tsx",
+                                    lineNumber: 361,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                    className: "w-1/2 space-y-2",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("label", {
+                                            children: "System Prompt"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/index.tsx",
+                                            lineNumber: 409,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("textarea", {
+                                            value: prompt,
+                                            onChange: (e)=>setPrompt(e.target.value),
+                                            className: "w-full h-[400px] min-h-[200px] bg-gray-700 rounded p-2 resize",
+                                            style: {
+                                                resize: 'both'
+                                            }
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/index.tsx",
+                                            lineNumber: 410,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/pages/index.tsx",
+                                    lineNumber: 408,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/src/pages/index.tsx",
-                            lineNumber: 409,
+                            lineNumber: 359,
                             columnNumber: 11
                         }, this)
                     ]
