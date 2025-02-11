@@ -1,16 +1,17 @@
+// components/Select.tsx
 import React from "react";
 
 interface SelectProps {
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onValueChange: (value: string) => void;
   children: React.ReactNode;
 }
 
-export const Select: React.FC<SelectProps> = ({ value, onChange, children }) => {
+export const Select: React.FC<SelectProps> = ({ value, onValueChange, children }) => {
   return (
     <select
       value={value}
-      onChange={onChange}
+      onChange={(e) => onValueChange(e.target.value)}
       className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md"
     >
       {children}

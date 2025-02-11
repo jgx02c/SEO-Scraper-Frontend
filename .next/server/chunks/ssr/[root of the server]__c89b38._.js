@@ -188,13 +188,44 @@ __turbopack_esm__({
 });
 var __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__ = __turbopack_import__("[externals]/react/jsx-dev-runtime [external] (react/jsx-dev-runtime, cjs)");
 ;
-const Button = ({ className = "", children, ...props })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("button", {
-        className: `px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`,
+const getVariantStyles = (variant = 'default')=>{
+    const variants = {
+        default: 'bg-primary text-white hover:bg-primary/90',
+        destructive: 'bg-red-600 text-white hover:bg-red-700',
+        outline: 'border border-gray-300 bg-transparent hover:bg-gray-100',
+        secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
+        ghost: 'hover:bg-gray-100',
+        link: 'text-blue-600 underline-offset-4 hover:underline'
+    };
+    return variants[variant];
+};
+const getSizeStyles = (size = 'default')=>{
+    const sizes = {
+        default: 'h-9 px-4 py-2',
+        sm: 'h-8 px-3 py-1 text-sm',
+        lg: 'h-10 px-8 py-3',
+        icon: 'h-9 w-9 p-2'
+    };
+    return sizes[size];
+};
+const Button = ({ className = "", children, variant = 'default', size = 'default', ...props })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("button", {
+        className: `
+      rounded-lg 
+      font-medium 
+      transition-colors 
+      duration-200 
+      focus:outline-none 
+      focus:ring-2 
+      focus:ring-blue-500 
+      ${getVariantStyles(variant)}
+      ${getSizeStyles(size)}
+      ${className}
+    `,
         ...props,
         children: children
     }, void 0, false, {
         fileName: "[project]/src/components/button.tsx",
-        lineNumber: 10,
+        lineNumber: 40,
         columnNumber: 3
     }, this);
 }}),

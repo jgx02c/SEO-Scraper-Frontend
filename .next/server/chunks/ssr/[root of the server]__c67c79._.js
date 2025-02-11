@@ -384,7 +384,19 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dialog$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/dialog.tsx [ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$slider$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/slider.tsx [ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/select.tsx [ssr] (ecmascript)");
+(()=>{
+    const e = new Error("Cannot find module '@/components/ui/use-toast'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
+(()=>{
+    const e = new Error("Cannot find module '@/components/ui/alert'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/router.js [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$plus$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Plus$3e$__ = __turbopack_import__("[project]/node_modules/lucide-react/dist/esm/icons/plus.js [ssr] (ecmascript) <export default as Plus>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__ = __turbopack_import__("[project]/node_modules/lucide-react/dist/esm/icons/refresh-cw.js [ssr] (ecmascript) <export default as RefreshCw>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$settings$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Settings$3e$__ = __turbopack_import__("[project]/node_modules/lucide-react/dist/esm/icons/settings.js [ssr] (ecmascript) <export default as Settings>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$send$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Send$3e$__ = __turbopack_import__("[project]/node_modules/lucide-react/dist/esm/icons/send.js [ssr] (ecmascript) <export default as Send>");
 ;
@@ -397,8 +409,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 ;
 ;
 ;
+;
+;
 const ChatBot = ()=>{
-    const [messages, setMessages] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]); // Explicitly define the state type
+    // Existing state
+    const [messages, setMessages] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
     const [input, setInput] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("");
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
     const [settingsOpen, setSettingsOpen] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
@@ -408,44 +423,190 @@ const ChatBot = ()=>{
     const [vectorStores, setVectorStores] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
     const [selectedVectorStore, setSelectedVectorStore] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("1");
     const [prompt, setPrompt] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("Default prompt");
+    // Error states
+    const [settingsError, setSettingsError] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
+    const [conversationsError, setConversationsError] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
+    const { toast } = useToast();
+    // New state for conversations
+    const [conversations, setConversations] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
+    const [currentConversationId, setCurrentConversationId] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(null);
     const messagesEndRef = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useRef"])(null);
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$router$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
+    // Load conversations on mount
+    (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
+        loadConversations();
+        loadSettings();
+    }, []);
+    const loadConversations = async ()=>{
+        try {
+            setConversationsError(false);
+            const response = await fetch("https://leaps-scraper.onrender.com/get_conversations");
+            if (!response.ok) throw new Error('Failed to load conversations');
+            const data = await response.json();
+            setConversations(data);
+        } catch (error) {
+            console.error("Error loading conversations:", error);
+            setConversationsError(true);
+            toast({
+                title: "Error",
+                description: "Failed to load conversations. You can retry using the button above.",
+                variant: "destructive"
+            });
+        }
+    };
+    const loadSettings = async ()=>{
+        try {
+            setSettingsError(false);
+            const response = await fetch("https://leaps-scraper.onrender.com/get_settings");
+            if (!response.ok) throw new Error('Failed to load settings');
+            const settings = await response.json();
+            setOpenAiModel(settings.model || "gpt-4");
+            setTemperature(settings.temperature || 0.7);
+            setPresencePenalty(settings.presence_penalty || 0.5);
+            setSelectedVectorStore(settings.vectorStore || "1");
+            setPrompt(settings.prompt || "Default prompt");
+            if (settings.vectorStores && Array.isArray(settings.vectorStores)) {
+                setVectorStores(settings.vectorStores);
+            }
+        } catch (error) {
+            console.error("Error loading settings:", error);
+            setSettingsError(true);
+            toast({
+                title: "Error",
+                description: "Failed to load settings. You can retry using the button in the settings panel.",
+                variant: "destructive"
+            });
+        }
+    };
+    const saveSettings = async ()=>{
+        try {
+            const response = await fetch("https://leaps-scraper.onrender.com/save_settings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: openAiModel,
+                    temperature,
+                    presence_penalty: presencePenalty,
+                    vectorStore: selectedVectorStore,
+                    prompt
+                })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save settings');
+            }
+            setSettingsOpen(false);
+        } catch (error) {
+            console.error("Error saving settings:", error);
+        }
+    };
+    const createNewConversation = ()=>{
+        const newConversation = {
+            id: Date.now().toString(),
+            title: "New Conversation",
+            messages: [],
+            createdAt: new Date().toISOString(),
+            lastUpdated: new Date().toISOString()
+        };
+        setConversations([
+            newConversation,
+            ...conversations
+        ]);
+        setCurrentConversationId(newConversation.id);
+        setMessages([]);
+    };
     const sendMessage = async ()=>{
         if (!input.trim()) return;
-        const newMessages = [
+        const timestamp = new Date().toISOString();
+        const newMessage = {
+            role: "user",
+            text: input,
+            timestamp
+        };
+        // Create new conversation if none exists
+        if (!currentConversationId) {
+            createNewConversation();
+        }
+        const updatedMessages = [
             ...messages,
-            {
-                role: "user",
-                text: input
-            }
+            newMessage
         ];
-        setMessages(newMessages);
+        setMessages(updatedMessages);
         setInput("");
         setLoading(true);
         try {
             const response = await fetch("https://leaps-scraper.onrender.com/generate_insight", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "text/plain"
+                    "Content-Type": "application/json"
                 },
-                body: input
+                body: JSON.stringify({
+                    message: input,
+                    conversationId: currentConversationId,
+                    timestamp
+                })
             });
-            const text = await response.text();
-            console.log("Response:", text);
-            setMessages([
-                ...newMessages,
-                {
-                    role: "bot",
-                    text: text
+            const botResponse = await response.text();
+            const botMessage = {
+                role: "bot",
+                text: botResponse,
+                timestamp: new Date().toISOString()
+            };
+            const finalMessages = [
+                ...updatedMessages,
+                botMessage
+            ];
+            setMessages(finalMessages);
+            // Update conversation in state
+            const updatedConversations = conversations.map((conv)=>{
+                if (conv.id === currentConversationId) {
+                    return {
+                        ...conv,
+                        messages: finalMessages,
+                        lastUpdated: new Date().toISOString(),
+                        title: finalMessages[0].text.slice(0, 30) + "..." // Set title to first message
+                    };
                 }
-            ]);
+                return conv;
+            });
+            setConversations(updatedConversations);
+            // Save conversation to backend
+            await saveConversation(currentConversationId, finalMessages);
         } catch (error) {
             console.error("Error sending message:", error);
         } finally{
             setLoading(false);
         }
     };
-    // Scroll to the latest message when messages update
+    const saveConversation = async (conversationId, messages)=>{
+        try {
+            await fetch("https://leaps-scraper.onrender.com/save_conversation", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    conversationId,
+                    messages
+                })
+            });
+        } catch (error) {
+            console.error("Error saving conversation:", error);
+        }
+    };
+    const loadConversation = async (conversationId)=>{
+        try {
+            const conversation = conversations.find((c)=>c.id === conversationId);
+            if (conversation) {
+                setMessages(conversation.messages);
+                setCurrentConversationId(conversationId);
+            }
+        } catch (error) {
+            console.error("Error loading conversation:", error);
+        }
+    };
+    // Existing useEffect for scroll behavior
     (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
         messagesEndRef.current?.scrollIntoView({
             behavior: "smooth"
@@ -454,27 +615,119 @@ const ChatBot = ()=>{
         messages,
         loading
     ]);
-    const saveSettings = ()=>{
-        fetch("/https://leaps-scraper.onrender.com/save_settings", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: openAiModel,
-                temperature,
-                presence_penalty: presencePenalty,
-                vectorStore: selectedVectorStore,
-                prompt
-            })
-        });
-        setSettingsOpen(false);
-    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
-        className: "flex h-screen w-full items-center justify-center bg-gray-900 p-4",
+        className: "flex h-screen w-full bg-gray-900 p-4",
         children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                className: "w-64 bg-gray-800 mr-4 rounded-lg flex flex-col",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                        className: "p-4 border-b border-gray-700 space-y-2",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                className: "w-full bg-blue-600 text-white flex items-center justify-center gap-2",
+                                onClick: createNewConversation,
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$plus$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Plus$3e$__["Plus"], {
+                                        size: 18
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/index.tsx",
+                                        lineNumber: 250,
+                                        columnNumber: 13
+                                    }, this),
+                                    "New Chat"
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/pages/index.tsx",
+                                lineNumber: 246,
+                                columnNumber: 11
+                            }, this),
+                            conversationsError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(Alert, {
+                                variant: "destructive",
+                                className: "bg-red-900 border-red-800",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(AlertDescription, {
+                                    className: "flex items-center justify-between",
+                                    children: [
+                                        "Failed to load chats",
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                            variant: "outline",
+                                            size: "sm",
+                                            onClick: loadConversations,
+                                            className: "ml-2",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__["RefreshCw"], {
+                                                    size: 16,
+                                                    className: "mr-1"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 263,
+                                                    columnNumber: 19
+                                                }, this),
+                                                "Retry"
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/pages/index.tsx",
+                                            lineNumber: 257,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/pages/index.tsx",
+                                    lineNumber: 255,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/pages/index.tsx",
+                                lineNumber: 254,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/pages/index.tsx",
+                        lineNumber: 245,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                        className: "flex-1 overflow-y-auto",
+                        children: conversations.map((conversation)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                className: `p-3 cursor-pointer hover:bg-gray-700 ${currentConversationId === conversation.id ? 'bg-gray-700' : ''}`,
+                                onClick: ()=>loadConversation(conversation.id),
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                        className: "text-white truncate",
+                                        children: conversation.title
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/index.tsx",
+                                        lineNumber: 279,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                        className: "text-gray-400 text-sm",
+                                        children: new Date(conversation.lastUpdated).toLocaleDateString()
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/pages/index.tsx",
+                                        lineNumber: 280,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, conversation.id, true, {
+                                fileName: "[project]/src/pages/index.tsx",
+                                lineNumber: 272,
+                                columnNumber: 13
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/src/pages/index.tsx",
+                        lineNumber: 270,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/pages/index.tsx",
+                lineNumber: 244,
+                columnNumber: 7
+            }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                className: "w-full h-full max-w-6xl bg-gray-800 shadow-lg flex flex-col",
+                className: "flex-1 bg-gray-800 shadow-lg flex flex-col",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
                     className: "flex flex-col h-full p-6",
                     children: [
@@ -487,16 +740,16 @@ const ChatBot = ()=>{
                                     children: "View Businesses"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 80,
-                                    columnNumber: 11
+                                    lineNumber: 293,
+                                    columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("h1", {
                                     className: "text-2xl font-bold text-white",
                                     children: "Leaps AI ChatBot V.1.0"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 83,
-                                    columnNumber: 11
+                                    lineNumber: 296,
+                                    columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                     className: "bg-gray-600 text-white",
@@ -505,19 +758,19 @@ const ChatBot = ()=>{
                                         size: 18
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/index.tsx",
-                                        lineNumber: 85,
-                                        columnNumber: 13
+                                        lineNumber: 298,
+                                        columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 84,
-                                    columnNumber: 11
+                                    lineNumber: 297,
+                                    columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/index.tsx",
-                            lineNumber: 79,
-                            columnNumber: 9
+                            lineNumber: 292,
+                            columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                             className: "flex-grow overflow-hidden flex flex-col min-h-0",
@@ -526,37 +779,53 @@ const ChatBot = ()=>{
                                 children: [
                                     messages.map((msg, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                                             className: `max-w-[75%] rounded-lg p-3 ${msg.role === "user" ? "ml-auto bg-blue-600 text-right text-white" : "mr-auto bg-gray-700 text-white"}`,
-                                            children: msg.text
-                                        }, index, false, {
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                                    children: msg.text
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 312,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
+                                                    className: "text-xs opacity-50 mt-1",
+                                                    children: new Date(msg.timestamp).toLocaleTimeString()
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/pages/index.tsx",
+                                                    lineNumber: 313,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, index, true, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 93,
-                                            columnNumber: 15
+                                            lineNumber: 306,
+                                            columnNumber: 17
                                         }, this)),
                                     loading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                                         className: "mr-auto rounded-lg bg-gray-700 p-3 text-white",
                                         children: "AI is thinking..."
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/index.tsx",
-                                        lineNumber: 103,
-                                        columnNumber: 15
+                                        lineNumber: 319,
+                                        columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                                         ref: messagesEndRef
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/index.tsx",
-                                        lineNumber: 107,
-                                        columnNumber: 13
+                                        lineNumber: 323,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/index.tsx",
-                                lineNumber: 91,
-                                columnNumber: 11
+                                lineNumber: 304,
+                                columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/pages/index.tsx",
-                            lineNumber: 90,
-                            columnNumber: 9
+                            lineNumber: 303,
+                            columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                             className: "flex gap-2 mt-4 flex-shrink-0",
@@ -569,8 +838,8 @@ const ChatBot = ()=>{
                                     onKeyDown: (e)=>e.key === "Enter" && sendMessage()
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 113,
-                                    columnNumber: 11
+                                    lineNumber: 329,
+                                    columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                     onClick: sendMessage,
@@ -579,35 +848,34 @@ const ChatBot = ()=>{
                                         size: 18
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/index.tsx",
-                                        lineNumber: 121,
-                                        columnNumber: 13
+                                        lineNumber: 337,
+                                        columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 120,
-                                    columnNumber: 11
+                                    lineNumber: 336,
+                                    columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/index.tsx",
-                            lineNumber: 112,
-                            columnNumber: 9
+                            lineNumber: 328,
+                            columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/index.tsx",
-                    lineNumber: 77,
-                    columnNumber: 7
+                    lineNumber: 290,
+                    columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/index.tsx",
-                lineNumber: 76,
-                columnNumber: 5
+                lineNumber: 289,
+                columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dialog$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Dialog"], {
                 open: settingsOpen,
                 onOpenChange: setSettingsOpen,
-                className: "w-11/12 max-w-7xl",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dialog$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["DialogContent"], {
                     className: "flex",
                     children: [
@@ -619,24 +887,63 @@ const ChatBot = ()=>{
                                         children: "Chatbot Settings"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/index.tsx",
-                                        lineNumber: 131,
+                                        lineNumber: 348,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 130,
+                                    lineNumber: 347,
                                     columnNumber: 13
+                                }, this),
+                                settingsError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(Alert, {
+                                    variant: "destructive",
+                                    className: "bg-red-900 border-red-800",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(AlertDescription, {
+                                        className: "flex items-center justify-between",
+                                        children: [
+                                            "Failed to load settings",
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                                variant: "outline",
+                                                size: "sm",
+                                                onClick: loadSettings,
+                                                className: "ml-2",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__["RefreshCw"], {
+                                                        size: 16,
+                                                        className: "mr-1"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/index.tsx",
+                                                        lineNumber: 360,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    "Retry"
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/pages/index.tsx",
+                                                lineNumber: 354,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/pages/index.tsx",
+                                        lineNumber: 352,
+                                        columnNumber: 17
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/pages/index.tsx",
+                                    lineNumber: 351,
+                                    columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Select"], {
                                     value: openAiModel,
-                                    onChange: (e)=>setOpenAiModel(e.target.value),
+                                    onValueChange: setOpenAiModel,
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
                                             value: "gpt-4o",
                                             children: "GPT-4o"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 134,
+                                            lineNumber: 367,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -644,7 +951,7 @@ const ChatBot = ()=>{
                                             children: "GPT-4o-Mini"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 135,
+                                            lineNumber: 368,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -652,13 +959,13 @@ const ChatBot = ()=>{
                                             children: "GPT-3.5"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 136,
+                                            lineNumber: 369,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 133,
+                                    lineNumber: 366,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -672,24 +979,26 @@ const ChatBot = ()=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 139,
+                                            lineNumber: 372,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$slider$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Slider"], {
-                                            value: temperature,
-                                            onChange: (e)=>setTemperature(parseFloat(e.target.value)),
+                                            value: [
+                                                temperature
+                                            ],
+                                            onValueChange: (value)=>setTemperature(value[0]),
                                             min: 0.1,
                                             max: 1,
                                             step: 0.1
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 140,
+                                            lineNumber: 373,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 138,
+                                    lineNumber: 371,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -703,51 +1012,42 @@ const ChatBot = ()=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 143,
+                                            lineNumber: 382,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$slider$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Slider"], {
-                                            value: presencePenalty,
-                                            onChange: (e)=>setPresencePenalty(parseFloat(e.target.value)),
+                                            value: [
+                                                presencePenalty
+                                            ],
+                                            onValueChange: (value)=>setPresencePenalty(value[0]),
                                             min: 0.1,
                                             max: 1,
                                             step: 0.1
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 144,
+                                            lineNumber: 383,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 142,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("label", {
-                                    className: "text-white text-sm",
-                                    children: [
-                                        "Database: ",
-                                        selectedVectorStore
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 146,
+                                    lineNumber: 381,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Select"], {
                                     value: selectedVectorStore,
-                                    onChange: (e)=>setSelectedVectorStore(e.target.value),
+                                    onValueChange: setSelectedVectorStore,
                                     children: vectorStores.map((store)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
                                             value: store,
                                             children: store
                                         }, store, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 149,
+                                            lineNumber: 393,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 147,
+                                    lineNumber: 391,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$button$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -756,13 +1056,13 @@ const ChatBot = ()=>{
                                     children: "Save Settings"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 152,
+                                    lineNumber: 396,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/index.tsx",
-                            lineNumber: 129,
+                            lineNumber: 346,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -772,29 +1072,29 @@ const ChatBot = ()=>{
                                 children: prompt
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/index.tsx",
-                                lineNumber: 155,
+                                lineNumber: 401,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/pages/index.tsx",
-                            lineNumber: 154,
+                            lineNumber: 400,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/index.tsx",
-                    lineNumber: 128,
+                    lineNumber: 345,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/index.tsx",
-                lineNumber: 127,
+                lineNumber: 344,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/index.tsx",
-        lineNumber: 75,
+        lineNumber: 242,
         columnNumber: 5
     }, this);
 };

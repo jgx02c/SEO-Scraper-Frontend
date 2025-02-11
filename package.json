@@ -11,8 +11,10 @@
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@tailwindcss/postcss7-compat": "^2.2.17",
+    "class-variance-authority": "^0.7.1",
     "classname": "^0.0.0",
     "classnames": "^2.5.1",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
     "next": "^15.1.6",
     "react": "^19.0.0",
@@ -20,7 +22,8 @@
     "sass": "^1.84.0",
     "scss": "^0.2.4",
     "socket.io-client": "^4.8.1",
-    "tailwind": "^4.0.0"
+    "tailwind": "^4.0.0",
+    "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

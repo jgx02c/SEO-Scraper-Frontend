@@ -1,21 +1,22 @@
+// components/Slider.tsx
 import React from "react";
 
 interface SliderProps {
   value: number;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onValueChange: (value: number) => void;
   min: number;
   max: number;
   step: number;
 }
 
-export const Slider: React.FC<SliderProps> = ({ value, onChange, min, max, step }) => {
+export const Slider: React.FC<SliderProps> = ({ value, onValueChange, min, max, step }) => {
   return (
     <div className="flex flex-col space-y-2">
       <input
         type="range"
         className="w-full"
         value={value}
-        onChange={onChange}
+        onChange={(e) => onValueChange(parseFloat(e.target.value))}
         min={min}
         max={max}
         step={step}
