@@ -396,6 +396,7 @@ const ChatBot = () => {
                 <label>Vector Store</label>
                 <Select value={selectedVectorStore} onValueChange={setSelectedVectorStore}>
                   <SelectItem value="leaps">Leaps</SelectItem>
+                  <SelectItem value="leapsjson">Leaps Json</SelectItem>
                 </Select>
               </div>
 
