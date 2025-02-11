@@ -30,11 +30,11 @@ const ChatBot = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [openAiModel, setOpenAiModel] = useState("gpt-4");
+  const [openAiModel, setOpenAiModel] = useState("gpt-4o");
   const [temperature, setTemperature] = useState(0.7);
   const [presencePenalty, setPresencePenalty] = useState(0.5);
   const [vectorStores, setVectorStores] = useState<string[]>([]);
-  const [selectedVectorStore, setSelectedVectorStore] = useState("1");
+  const [selectedVectorStore, setSelectedVectorStore] = useState("leaps");
   const [prompt, setPrompt] = useState("Default prompt");
   
   // Error states
@@ -76,11 +76,11 @@ const ChatBot = () => {
       
       if (response.ok) {
         const settings = await response.json();
-        setOpenAiModel(settings.model || "gpt-4");
-        setTemperature(settings.temperature || 0.7);
-        setPresencePenalty(settings.presence_penalty || 0.5);
-        setSelectedVectorStore(settings.vectorStore || "1");
-        setPrompt(settings.prompt || "Default prompt");
+        setOpenAiModel(settings.model);
+        setTemperature(settings.temperature);
+        setPresencePenalty(settings.presence_penalty);
+        setSelectedVectorStore(settings.vectorStore);
+        setPrompt(settings.prompt);
         
         if (settings.vectorStores && Array.isArray(settings.vectorStores)) {
           setVectorStores(settings.vectorStores);

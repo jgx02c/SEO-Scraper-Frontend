@@ -572,11 +572,11 @@ const ChatBot = ()=>{
     const [input, setInput] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("");
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
     const [settingsOpen, setSettingsOpen] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
-    const [openAiModel, setOpenAiModel] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("gpt-4");
+    const [openAiModel, setOpenAiModel] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("gpt-4o");
     const [temperature, setTemperature] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(0.7);
     const [presencePenalty, setPresencePenalty] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(0.5);
     const [vectorStores, setVectorStores] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
-    const [selectedVectorStore, setSelectedVectorStore] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("1");
+    const [selectedVectorStore, setSelectedVectorStore] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("leaps");
     const [prompt, setPrompt] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("Default prompt");
     // Error states
     const [settingsError, setSettingsError] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
@@ -611,11 +611,11 @@ const ChatBot = ()=>{
             const response = await fetch("https://leaps-scraper.onrender.com/settings/get_settings");
             if (response.ok) {
                 const settings = await response.json();
-                setOpenAiModel(settings.model || "gpt-4");
-                setTemperature(settings.temperature || 0.7);
-                setPresencePenalty(settings.presence_penalty || 0.5);
-                setSelectedVectorStore(settings.vectorStore || "1");
-                setPrompt(settings.prompt || "Default prompt");
+                setOpenAiModel(settings.model);
+                setTemperature(settings.temperature);
+                setPresencePenalty(settings.presence_penalty);
+                setSelectedVectorStore(settings.vectorStore);
+                setPrompt(settings.prompt);
                 if (settings.vectorStores && Array.isArray(settings.vectorStores)) {
                     setVectorStores(settings.vectorStores);
                 }
