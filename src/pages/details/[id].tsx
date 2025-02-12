@@ -2,28 +2,23 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Dialog } from "@headlessui/react";
-import ReportSection from "@/components/ReportSection"; // Import the new component
-import { Report } from '@/types'
-
-interface BusinessDetails {
-  _id: string;
-  name: string;
-  description: string;
-  contact_information?: {
-    address?: string;
-    email?: string;
-    phone?: string;
-  };
-  benefits?: string[];
-  website?: string;
-}
-
-interface Webpage {
-  _id: string;
-  filename: string;
-}
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown";
+import ReportSection from "@/components/ReportSection";
+import {OverviewTab} from "@/components/OverviewTab";
+import {WebpagesTab} from "@/components/WebpagesTab";
+import { TabNavigation } from "@/components/ui/tabs";
+import { ChatTab } from "@/components/ChatTab";
+import { CompetitorLookupTab } from "@/components/CompetitorLookupTab";
+import { BusinessDetails, Webpage, Report } from "@/types";
+import { businessApi } from "@/services/businessAPI";
+import { UserCircle } from "lucide-react";
+import OverviewReport from "@/components/OverviewReport";
 
 const BusinessDetailPage = () => {
   const router = useRouter();
@@ -33,184 +28,123 @@ const BusinessDetailPage = () => {
   const [webpages, setWebpages] = useState<Webpage[]>([]);
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"report" | "webpages" | "overview">("report");
-
-  const [selectedPage, setSelectedPage] = useState<Webpage | null>(null);
-  const [pageContent, setPageContent] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"overview" | "traffic" | "analytics" | "pageReports" | "webpages" | "files" | "chat" | "competitor" | "profile">("overview");
 
   useEffect(() => {
     if (!id) return;
 
-    const fetchBusinessDetails = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`https://leaps-scraper.onrender.com/business/get_business_by_id/${id}`);
-        const result = await response.json();
-        setBusiness(result.data);
-      } catch (error) {
-        console.error("Error fetching business details:", error);
-      }
-    };
-
-    const fetchReport = async () => {
-      try {
-        const response = await fetch(`https://leaps-scraper.onrender.com/report/get_report_for_business/${id}`);
-        const result = await response.json();
-        console.log('API Response:', result);
+        const [businessData, reportData] = await Promise.all([
+          businessApi.getBusinessById(id as string),
+          businessApi.getReportForBusiness(id as string)
+        ]);
         
-        if (result && result.data) {
-          setReport(result.data);
-        } else {
-          console.error('Invalid report data structure:', result);
-          setReport(null);
-        }
+        setBusiness(businessData);
+        setReport(reportData);
       } catch (error) {
-        console.error("Error fetching report:", error);
-        setReport(null);
+        console.error("Error fetching initial data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBusinessDetails();
-    fetchReport();
+    fetchData();
   }, [id]);
 
   const fetchWebpages = async () => {
     if (!id) return;
     try {
-      const response = await fetch(`https://leaps-scraper.onrender.com/pages/get_pages_by_business_id/${id}`);
-      const result = await response.json();
-      setWebpages(result.data || []);
+      const pages = await businessApi.getPagesByBusinessId(id as string);
+      setWebpages(pages);
     } catch (error) {
       console.error("Error fetching webpages:", error);
     }
   };
 
-  const openWebpageModal = async (page: Webpage) => {
-    setSelectedPage(page);
-    setIsModalOpen(true);
-    try {
-      const response = await fetch(`https://leaps-scraper.onrender.com/pages/get_page_by_id/${page._id}`);
-      const result = await response.json();
-      setPageContent(result.data?.data?.content || "No content available.");
-    } catch (error) {
-      console.error("Error fetching webpage content:", error);
-      setPageContent("Error loading page content.");
+  const handlePageClick = async (page: Webpage) => {
+    return await businessApi.getPageById(page._id);
+  };
+
+  const leftTabs = [
+    { id: "overview", label: "Overview" },
+    { id: "traffic", label: "Traffic" },
+    { id: "analytics", label: "Analytics" },
+    { id: "pageReports", label: "Reports" },
+    { id: "webpages", label: "Webpages" },
+    { id: "files", label: "Files" }
+  ];
+
+  const rightTabs = [
+    { id: "chat", label: "Chat" },
+    { id: "competitor", label: "Competitor Lookup" },
+    { id: "profile", label: "Profile" }
+  ];
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab as typeof activeTab);
+    if (tab === "webpages") {
+      fetchWebpages();
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-900 p-6 text-white">
       <div className="flex justify-between items-center mb-6">
-        <Button className="bg-blue-600 text-white" onClick={() => router.push("/business")}>
-          Back to Businesses
-        </Button>
-        <h1 className="text-2xl font-bold">Business Details</h1>
+        <span className="text-gray-400">Built by: @jgx02 v0.1.10</span>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold">Leaps & Rebounds</h1>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="outline-none">
+                <UserCircle className="h-8 w-8 text-gray-400 hover:text-white cursor-pointer" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48 bg-gray-800 border-gray-700">
+              <DropdownMenuItem className="text-gray-200 focus:text-white focus:bg-gray-700">
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-gray-700" />
+              <DropdownMenuItem className="text-gray-200 focus:text-white focus:bg-gray-700">
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
-      {/* TAB NAVIGATION */}
-      <div className="flex space-x-4 border-b border-gray-700 mb-6">
-        <button
-          className={`p-2 font-semibold ${activeTab === "report" ? "border-b-2 border-blue-500 text-blue-400" : "text-gray-400"}`}
-          onClick={() => setActiveTab("report")}
-        >
-          Report
-        </button>
-        <button
-          className={`p-2 font-semibold ${activeTab === "webpages" ? "border-b-2 border-blue-500 text-blue-400" : "text-gray-400"}`}
-          onClick={() => {
-            setActiveTab("webpages");
-            fetchWebpages();
-          }}
-        >
-          Webpages
-        </button>
-        <button
-          className={`p-2 font-semibold ${activeTab === "overview" ? "border-b-2 border-blue-500 text-blue-400" : "text-gray-400"}`}
-          onClick={() => setActiveTab("overview")}
-        >
-          Overview
-        </button>
-      </div>
+      <TabNavigation 
+        activeTab={activeTab} 
+        onTabChange={handleTabChange} 
+        leftTabs={leftTabs} 
+        rightTabs={rightTabs} 
+      />
 
       {loading ? (
         <p className="text-center">Loading business details...</p>
       ) : business ? (
         <Card className="bg-gray-800 shadow-lg">
           <CardContent className="p-6">
-            {/* Report Tab Content */}
-            {activeTab === "report" && (
-              <ReportSection report={report} />
+            {activeTab === "overview" && <OverviewReport report={report} />}
+            {activeTab === "traffic" && (
+              <div className="text-center text-gray-400 py-8">Traffic view coming soon</div>
             )}
- 
-            {/* Webpages Tab Content */}
-            {activeTab === "webpages" && (
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Loaded Webpages</h3>
-                {webpages.length > 0 ? (
-                  <ul className="space-y-3">
-                    {webpages.map((page) => (
-                      <li
-                        key={page._id}
-                        className="p-3 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition"
-                        onClick={() => openWebpageModal(page)}
-                      >
-                        <p className="text-gray-300">{page.filename}</p>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-400">No webpages available.</p>
-                )}
-              </div>
+            {activeTab === "analytics" && (
+              <div className="text-center text-gray-400 py-8">Analytics view coming soon</div>
             )}
-
-            {/* Overview Tab Content */}
-            {activeTab === "overview" && (
-              <>
-                <div>
-                  <h2 className="text-3xl font-bold">{business.name}</h2>
-                  <p className="text-gray-400 mt-2">{business.description}</p>
-                </div>
-
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold mb-2">Contact Information</h3>
-                  <p>{business.contact_information?.address || "No Address Available"}</p>
-                  <p>{business.contact_information?.email || "No Email Available"}</p>
-                  <p>{business.contact_information?.phone || "No Phone Available"}</p>
-                </div>
-              </>
+            {activeTab === "pageReports" && <ReportSection report={report} />}
+            {activeTab === "webpages" && <WebpagesTab webpages={webpages} onPageClick={handlePageClick} />}
+            {activeTab === "files" && (
+              <div className="text-center text-gray-400 py-8">Files view coming soon</div>
             )}
+            {activeTab === "chat" && <ChatTab />}
+            {activeTab === "competitor" && <CompetitorLookupTab />}
+            {activeTab === "profile" && <OverviewTab business={business} />}
           </CardContent>
         </Card>
       ) : (
         <p className="text-center">Business not found.</p>
       )}
-
-      {/* Webpage Content Modal */}
-      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="fixed inset-0 z-50 bg-black/50" aria-hidden="true" />
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-          <div className="w-full max-w-3xl h-4/5 flex flex-col bg-gray-800 rounded-lg shadow-xl mx-4">
-            <div className="p-4 border-b border-gray-700">
-              <h2 className="text-2xl font-bold text-gray-100">{selectedPage?.filename}</h2>
-            </div>
-            <div className="flex-1 min-h-0 p-4">
-              <div className="h-full overflow-y-auto bg-gray-900 rounded-lg border border-gray-700 p-4">
-                <p className="text-gray-300 whitespace-pre-wrap">{pageContent || "Loading..."}</p>
-              </div>
-            </div>
-            <div className="p-4 border-t border-gray-700">
-              <div className="flex justify-end">
-                <Button onClick={() => setIsModalOpen(false)} className="bg-red-600 hover:bg-red-700 text-white">
-                  Close
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Dialog>
     </div>
   );
 };
