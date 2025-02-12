@@ -1197,15 +1197,25 @@ const ChatBot = ()=>{
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Select"], {
                                                     value: selectedVectorStore,
                                                     onValueChange: setSelectedVectorStore,
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                                        value: "leaps",
-                                                        children: "Leaps"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/pages/index.tsx",
-                                                        lineNumber: 398,
-                                                        columnNumber: 19
-                                                    }, this)
-                                                }, void 0, false, {
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                            value: "leaps",
+                                                            children: "Leaps"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/index.tsx",
+                                                            lineNumber: 398,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                            value: "leapsjson",
+                                                            children: "Leaps Json"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/pages/index.tsx",
+                                                            lineNumber: 399,
+                                                            columnNumber: 19
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
                                                     fileName: "[project]/src/pages/index.tsx",
                                                     lineNumber: 397,
                                                     columnNumber: 17
@@ -1222,7 +1232,7 @@ const ChatBot = ()=>{
                                             children: "Save Settings"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 402,
+                                            lineNumber: 403,
                                             columnNumber: 15
                                         }, this)
                                     ]
@@ -1238,7 +1248,7 @@ const ChatBot = ()=>{
                                             children: "System Prompt"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 409,
+                                            lineNumber: 410,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("textarea", {
@@ -1250,13 +1260,13 @@ const ChatBot = ()=>{
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/index.tsx",
-                                            lineNumber: 410,
+                                            lineNumber: 411,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/index.tsx",
-                                    lineNumber: 408,
+                                    lineNumber: 409,
                                     columnNumber: 13
                                 }, this)
                             ]
