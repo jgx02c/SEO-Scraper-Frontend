@@ -3,39 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertTriangle, BarChart2, CheckCircle, FileText } from 'lucide-react';
-
-type InsightCategory = "Immediate Action Required" | "Needs Attention" | "Good Practice";
-
-interface ErrorCitation {
-  section: InsightCategory;
-  insight: string;
-  webpage_url: string;
-  filename?: string;
-  business_id?: number;
-}
-
-interface PageReport {
-  website_url: string;
-  insights_count: Record<InsightCategory, number>;
-  error_citations: ErrorCitation[];
-  filename?: string;
-}
-
-interface InsightsCount {
-  "Immediate Action Required": number;
-  "Needs Attention": number;
-  "Good Practice": number;
-}
-
-interface Report {
-  _id: string;
-  business_id: number;
-  report_date: string;
-  insights_count: InsightsCount;
-  insights_breakdown: Record<string, number>;
-  total_insights: number;
-  page_reports: PageReport[];
-}
+import { Report, InsightCategory } from '@/types';
 
 interface ReportSectionProps {
   report: Report | null;

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@headlessui/react";
 import ReportSection from "@/components/ReportSection"; // Import the new component
+import { Report } from '@/types'
 
 interface BusinessDetails {
   _id: string;
@@ -142,7 +143,7 @@ const BusinessDetailPage = () => {
             {activeTab === "report" && (
               <ReportSection report={report} />
             )}
-
+ 
             {/* Webpages Tab Content */}
             {activeTab === "webpages" && (
               <div>
