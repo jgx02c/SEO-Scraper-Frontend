@@ -974,19 +974,19 @@ const OverviewTab = ({ business })=>{
                                         size: 16
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 27,
+                                        lineNumber: 29,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/OverviewTab.tsx",
-                                lineNumber: 20,
+                                lineNumber: 22,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 17,
+                        lineNumber: 19,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -994,16 +994,16 @@ const OverviewTab = ({ business })=>{
                         children: business.description
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 31,
+                        lineNumber: 33,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/OverviewTab.tsx",
-                lineNumber: 16,
+                lineNumber: 18,
                 columnNumber: 7
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Card"], {
+            business.additional_info && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Card"], {
                 className: "bg-gray-800/50 border-gray-700",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
@@ -1014,20 +1014,20 @@ const OverviewTab = ({ business })=>{
                                     className: "w-5 h-5"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/OverviewTab.tsx",
-                                    lineNumber: 38,
-                                    columnNumber: 13
+                                    lineNumber: 41,
+                                    columnNumber: 15
                                 }, this),
                                 "BBB Information"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 37,
-                            columnNumber: 11
+                            lineNumber: 40,
+                            columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 36,
-                        columnNumber: 9
+                        lineNumber: 39,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
                         className: "space-y-2",
@@ -1038,16 +1038,16 @@ const OverviewTab = ({ business })=>{
                                         children: "Rating:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 43,
-                                        columnNumber: 14
+                                        lineNumber: 46,
+                                        columnNumber: 16
                                     }, this),
                                     " ",
                                     business.additional_info.BBB_rating
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/OverviewTab.tsx",
-                                lineNumber: 43,
-                                columnNumber: 11
+                                lineNumber: 46,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
                                 children: [
@@ -1055,16 +1055,16 @@ const OverviewTab = ({ business })=>{
                                         children: "Accreditation:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 44,
-                                        columnNumber: 14
+                                        lineNumber: 47,
+                                        columnNumber: 16
                                     }, this),
                                     " ",
                                     business.additional_info.BBB_accreditation
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/OverviewTab.tsx",
-                                lineNumber: 44,
-                                columnNumber: 11
+                                lineNumber: 47,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
                                 children: [
@@ -1072,28 +1072,28 @@ const OverviewTab = ({ business })=>{
                                         children: "Reason:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 45,
-                                        columnNumber: 14
+                                        lineNumber: 48,
+                                        columnNumber: 16
                                     }, this),
                                     " ",
                                     business.additional_info.BBB_reason_for_rating
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/OverviewTab.tsx",
-                                lineNumber: 45,
-                                columnNumber: 11
+                                lineNumber: 48,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 42,
-                        columnNumber: 9
+                        lineNumber: 45,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/OverviewTab.tsx",
-                lineNumber: 35,
-                columnNumber: 7
+                lineNumber: 38,
+                columnNumber: 9
             }, this),
             business.contact_information && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Card"], {
                 className: "bg-gray-800/50 border-gray-700",
@@ -1103,12 +1103,12 @@ const OverviewTab = ({ business })=>{
                             children: "Contact Information"
                         }, void 0, false, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 53,
+                            lineNumber: 57,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 52,
+                        lineNumber: 56,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1121,14 +1121,14 @@ const OverviewTab = ({ business })=>{
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 58,
+                                        lineNumber: 62,
                                         columnNumber: 17
                                     }, this),
                                     business.contact_information.address
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/OverviewTab.tsx",
-                                lineNumber: 57,
+                                lineNumber: 61,
                                 columnNumber: 15
                             }, this),
                             business.contact_information.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -1138,14 +1138,14 @@ const OverviewTab = ({ business })=>{
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 64,
+                                        lineNumber: 68,
                                         columnNumber: 17
                                     }, this),
                                     business.contact_information.email
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/OverviewTab.tsx",
-                                lineNumber: 63,
+                                lineNumber: 67,
                                 columnNumber: 15
                             }, this),
                             business.contact_information.phone && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -1155,26 +1155,26 @@ const OverviewTab = ({ business })=>{
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 70,
+                                        lineNumber: 74,
                                         columnNumber: 17
                                     }, this),
                                     business.contact_information.phone
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/OverviewTab.tsx",
-                                lineNumber: 69,
+                                lineNumber: 73,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 55,
+                        lineNumber: 59,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/OverviewTab.tsx",
-                lineNumber: 51,
+                lineNumber: 55,
                 columnNumber: 9
             }, this),
             business.benefits && business.benefits.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -1185,12 +1185,12 @@ const OverviewTab = ({ business })=>{
                             children: "Benefits"
                         }, void 0, false, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 82,
+                            lineNumber: 86,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 81,
+                        lineNumber: 85,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1201,23 +1201,23 @@ const OverviewTab = ({ business })=>{
                                     children: benefit
                                 }, index, false, {
                                     fileName: "[project]/src/components/OverviewTab.tsx",
-                                    lineNumber: 87,
+                                    lineNumber: 91,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 85,
+                            lineNumber: 89,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 84,
+                        lineNumber: 88,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/OverviewTab.tsx",
-                lineNumber: 80,
+                lineNumber: 84,
                 columnNumber: 9
             }, this),
             business.products && business.products.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -1228,12 +1228,12 @@ const OverviewTab = ({ business })=>{
                             children: "Products"
                         }, void 0, false, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 98,
+                            lineNumber: 102,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 97,
+                        lineNumber: 101,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1247,7 +1247,7 @@ const OverviewTab = ({ business })=>{
                                             children: product.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/OverviewTab.tsx",
-                                            lineNumber: 104,
+                                            lineNumber: 108,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -1255,7 +1255,7 @@ const OverviewTab = ({ business })=>{
                                             children: product.description
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/OverviewTab.tsx",
-                                            lineNumber: 105,
+                                            lineNumber: 109,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("a", {
@@ -1269,35 +1269,35 @@ const OverviewTab = ({ business })=>{
                                                     size: 14
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/OverviewTab.tsx",
-                                                    lineNumber: 113,
+                                                    lineNumber: 117,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/OverviewTab.tsx",
-                                            lineNumber: 106,
+                                            lineNumber: 110,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, index, true, {
                                     fileName: "[project]/src/components/OverviewTab.tsx",
-                                    lineNumber: 103,
+                                    lineNumber: 107,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 101,
+                            lineNumber: 105,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 100,
+                        lineNumber: 104,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/OverviewTab.tsx",
-                lineNumber: 96,
+                lineNumber: 100,
                 columnNumber: 9
             }, this),
             business.customer_reviews && business.customer_reviews.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -1308,12 +1308,12 @@ const OverviewTab = ({ business })=>{
                             children: "Customer Reviews"
                         }, void 0, false, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 126,
+                            lineNumber: 130,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 125,
+                        lineNumber: 129,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1324,14 +1324,10 @@ const OverviewTab = ({ business })=>{
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
                                             className: "italic text-gray-300",
-                                            children: [
-                                                '"',
-                                                review.comment,
-                                                '"'
-                                            ]
-                                        }, void 0, true, {
+                                            children: review.comment
+                                        }, void 0, false, {
                                             fileName: "[project]/src/components/OverviewTab.tsx",
-                                            lineNumber: 132,
+                                            lineNumber: 136,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -1345,29 +1341,29 @@ const OverviewTab = ({ business })=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/OverviewTab.tsx",
-                                            lineNumber: 133,
+                                            lineNumber: 137,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, index, true, {
                                     fileName: "[project]/src/components/OverviewTab.tsx",
-                                    lineNumber: 131,
+                                    lineNumber: 135,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 129,
+                            lineNumber: 133,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 128,
+                        lineNumber: 132,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/OverviewTab.tsx",
-                lineNumber: 124,
+                lineNumber: 128,
                 columnNumber: 9
             }, this),
             business.promotions && business.promotions.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -1381,19 +1377,19 @@ const OverviewTab = ({ business })=>{
                                     className: "w-5 h-5"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/OverviewTab.tsx",
-                                    lineNumber: 148,
+                                    lineNumber: 152,
                                     columnNumber: 15
                                 }, this),
                                 "Current Promotions"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 147,
+                            lineNumber: 151,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 146,
+                        lineNumber: 150,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1405,7 +1401,7 @@ const OverviewTab = ({ business })=>{
                                         children: promo.discount
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 155,
+                                        lineNumber: 159,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$badge$2e$tsx__$5b$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1413,7 +1409,7 @@ const OverviewTab = ({ business })=>{
                                         children: promo.title
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 156,
+                                        lineNumber: 160,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -1421,24 +1417,24 @@ const OverviewTab = ({ business })=>{
                                         children: promo.details
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/OverviewTab.tsx",
-                                        lineNumber: 157,
+                                        lineNumber: 161,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, index, true, {
                                 fileName: "[project]/src/components/OverviewTab.tsx",
-                                lineNumber: 154,
+                                lineNumber: 158,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 152,
+                        lineNumber: 156,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/OverviewTab.tsx",
-                lineNumber: 145,
+                lineNumber: 149,
                 columnNumber: 9
             }, this),
             business.social_media && business.social_media.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -1450,23 +1446,23 @@ const OverviewTab = ({ business })=>{
                         className: "text-gray-400 hover:text-white transition-colors",
                         children: social.platform === "Facebook" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$facebook$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Facebook$3e$__["Facebook"], {}, void 0, false, {
                             fileName: "[project]/src/components/OverviewTab.tsx",
-                            lineNumber: 175,
+                            lineNumber: 179,
                             columnNumber: 50
                         }, this)
                     }, index, false, {
                         fileName: "[project]/src/components/OverviewTab.tsx",
-                        lineNumber: 168,
+                        lineNumber: 172,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/OverviewTab.tsx",
-                lineNumber: 166,
+                lineNumber: 170,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/OverviewTab.tsx",
-        lineNumber: 14,
+        lineNumber: 16,
         columnNumber: 5
     }, this);
 };

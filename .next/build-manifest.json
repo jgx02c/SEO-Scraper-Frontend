@@ -26,14 +26,6 @@
       "static/chunks/[root of the server]__e5d775._.js",
       "static/chunks/src_pages__error_5771e1._.js",
       "static/chunks/src_pages__error_ba917a._.js"
-    ],
-    "/": [
-      "static/chunks/node_modules_next_71458a._.js",
-      "static/chunks/node_modules_react-dom_82bb97._.js",
-      "static/chunks/node_modules_ae1422._.js",
-      "static/chunks/[root of the server]__bc48e3._.js",
-      "static/chunks/src_pages_index_5771e1._.js",
-      "static/chunks/src_pages_index_4504f3._.js"
     ]
   },
   "devFiles": [],

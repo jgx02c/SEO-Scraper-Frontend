@@ -1,12 +1,14 @@
 // components/tabs/OverviewTab.tsx
-import { BusinessDetails } from "@/types";
-import { ExtendedBusinessDetails } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Star, MapPin, Mail, Phone, Gift, Facebook } from "lucide-react";
+import { BusinessDetails, ExtendedBusinessDetails } from "@/types";
+
+// Create a type that makes the extended properties optional
+type PartialExtendedBusinessDetails = BusinessDetails & Partial<Omit<ExtendedBusinessDetails, keyof BusinessDetails>>;
 
 interface OverviewTabProps {
-  business: ExtendedBusinessDetails;
+  business: PartialExtendedBusinessDetails;
 }
 
 export const OverviewTab = ({ business }: OverviewTabProps) => {
@@ -32,19 +34,21 @@ export const OverviewTab = ({ business }: OverviewTabProps) => {
       </div>
 
       {/* BBB Rating */}
-      <Card className="bg-gray-800/50 border-gray-700">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Star className="w-5 h-5" />
-            BBB Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <p><strong>Rating:</strong> {business.additional_info.BBB_rating}</p>
-          <p><strong>Accreditation:</strong> {business.additional_info.BBB_accreditation}</p>
-          <p><strong>Reason:</strong> {business.additional_info.BBB_reason_for_rating}</p>
-        </CardContent>
-      </Card>
+      {business.additional_info && (
+        <Card className="bg-gray-800/50 border-gray-700">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="w-5 h-5" />
+              BBB Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p><strong>Rating:</strong> {business.additional_info.BBB_rating}</p>
+            <p><strong>Accreditation:</strong> {business.additional_info.BBB_accreditation}</p>
+            <p><strong>Reason:</strong> {business.additional_info.BBB_reason_for_rating}</p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Contact Information */}
       {business.contact_information && (
@@ -129,7 +133,7 @@ export const OverviewTab = ({ business }: OverviewTabProps) => {
             <div className="grid gap-4">
               {business.customer_reviews.map((review, index) => (
                 <div key={index} className="border border-gray-700 rounded-lg p-4">
-                  <p className="italic text-gray-300">"{review.comment}"</p>
+                  <p className="italic text-gray-300">{review.comment}</p>
                   <div className="mt-2 text-sm text-gray-400">
                     {review.name}, {review.age} • {review.location}
                   </div>

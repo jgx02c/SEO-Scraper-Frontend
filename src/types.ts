@@ -30,19 +30,6 @@ export interface Report {
   page_reports: PageReport[];
 }
 
-export interface BusinessDetails {
-  _id: string;
-  name: string;
-  description: string;
-  contact_information?: {
-    address?: string;
-    email?: string;
-    phone?: string;
-  };
-  benefits?: string[];
-  website?: string;
-}
-
 export interface Webpage {
   _id: string;
   filename: string;
@@ -99,6 +86,19 @@ export interface Promotion {
 export interface SocialMedia {
   platform: string;
   url: string;
+}
+
+export interface BusinessDetails {
+  _id: string;
+  name: string;
+  description: string;
+  contact_information?: {
+    address?: string;
+    email?: string;
+    phone?: string;
+  };
+  benefits?: string[];
+  website?: string;
 }
 
 export interface ExtendedBusinessDetails extends BusinessDetails {
