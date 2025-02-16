@@ -1,4 +1,3 @@
-// components/dashboard/tabs/Overview/Overview.tsx
 import { Card } from "@/components/ui/card";
 import { 
   LineChart, 
@@ -8,6 +7,14 @@ import {
   ArrowUp,
   ArrowDown
 } from "lucide-react";
+
+// Define an interface for the stat structure
+interface Stat {
+  title: string;
+  value: string;
+  change: number;
+  icon: React.ReactNode;
+}
 
 interface StatCardProps {
   title: string;
@@ -43,8 +50,9 @@ const StatCard = ({ title, value, change, icon }: StatCardProps) => (
   </Card>
 );
 
-export const Overview = () => {
-  const stats = [
+export const Overview = ({ stats }: { stats?: Stat[] }) => {
+  // Use provided stats if available, otherwise use default stats
+  const displayStats: Stat[] = stats?.length ? stats : [
     {
       title: "Total Website Traffic",
       value: "48,325",
@@ -79,7 +87,7 @@ export const Overview = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
+        {displayStats.map((stat: Stat, index: number) => (
           <StatCard key={index} {...stat} />
         ))}
       </div>

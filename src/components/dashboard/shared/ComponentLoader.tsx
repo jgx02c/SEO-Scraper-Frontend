@@ -1,4 +1,3 @@
-// components/dashboard/shared/ComponentLoader.tsx
 import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
 import {
@@ -12,10 +11,17 @@ import {
   // Import other components as needed
 } from '@/components/dashboard';
 
+// Define a more specific type for data based on your components' requirements
+interface ComponentData {
+  stats?: any;
+  data?: any;
+  timeRange?: string;
+}
+
 interface ComponentLoaderProps {
   activeTab: string;
   activeSubItem: string | null;
-  data?: any;
+  data?: ComponentData;
 }
 
 const LoadingFallback = () => (
@@ -32,30 +38,30 @@ export const ComponentLoader: React.FC<ComponentLoaderProps> = ({
   const renderComponent = () => {
     switch (activeTab) {
       case 'overview':
-        return <Overview stats={data} />;
+        return <Overview stats={data?.stats} />;
       
-      case 'traffic':
+      case 'traffic': 
         switch (activeSubItem) {
           case 'website-traffic':
-            return <WebsiteTraffic data={data} timeRange="7d" />;
+            return <WebsiteTraffic data={data?.data} timeRange={data?.timeRange || "7d"} />;
           case 'social-traffic':
-            return <SocialMediaTraffic data={data} timeRange="7d" />;
+            return <SocialMediaTraffic data={data?.data} timeRange={data?.timeRange || "7d"} />;
           case 'ads-performance':
-            return <AdsPerformance data={data} timeRange="7d" />;
+            return <AdsPerformance data={data?.data} timeRange={data?.timeRange || "7d"} />;
           default:
-            return <WebsiteTraffic data={data} timeRange="7d" />;
+            return <WebsiteTraffic data={data?.data} timeRange={data?.timeRange || "7d"} />;
         }
       
       case 'analytics':
         switch (activeSubItem) {
           case 'seo-performance':
-            return <SEOPerformance data={data} timeRange="7d" />;
+            return <SEOPerformance data={data?.data} timeRange={data?.timeRange || "7d"} />;
           case 'user-behavior':
-            return <UserBehavior data={data} timeRange="7d" />;
+            return <UserBehavior data={data?.data} timeRange={data?.timeRange || "7d"} />;
           case 'historical-data':
-            return <HistoricalData data={data} timeRange="7d" />;
+            return <HistoricalData data={data?.data} timeRange={data?.timeRange || "7d"} />;
           default:
-            return <SEOPerformance data={data} timeRange="7d" />;
+            return <SEOPerformance data={data?.data} timeRange={data?.timeRange || "7d"} />;
         }
       
       // Add other cases as components are built

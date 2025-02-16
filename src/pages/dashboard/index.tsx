@@ -10,7 +10,9 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown";
 import { Button } from "@/components/ui/button";
-import { navigationData, dummyUserProfile, type NavigationItem, type UserMenuItem } from "./types";
+import { type NavigationItem, type UserMenuItem } from "./types";
+import { dummyUserProfile, parseNavigationData } from './parsedata';
+const { mainNavigation, userMenu } = parseNavigationData();
 import { Activity } from "lucide-react";
 import { ComponentLoader } from "@/components/dashboard/shared/ComponentLoader";
 
@@ -44,19 +46,11 @@ const DashboardPage = () => {
                   className="relative h-8 w-8 rounded-full p-0 hover:bg-gray-800"
                 >
                   <span className="sr-only">Open user menu</span>
-                  {dummyUserProfile.avatar ? (
-                    <img
-                      src={dummyUserProfile.avatar}
-                      alt={dummyUserProfile.name}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <div className="h-full w-full rounded-full bg-indigo-600 flex items-center justify-center">
-                      <span className="text-sm font-semibold text-white">
-                        {dummyUserProfile.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
+                  <div className="h-full w-full rounded-full bg-indigo-600 flex items-center justify-center">
+                    <span className="text-sm font-semibold text-white">
+                      {dummyUserProfile.name.charAt(0)}
+                    </span>
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 mt-1 bg-gray-800 border-gray-700 text-gray-300">
@@ -64,7 +58,7 @@ const DashboardPage = () => {
                   <p className="text-sm font-medium text-white">{dummyUserProfile.name}</p>
                   <p className="text-xs text-gray-400">{dummyUserProfile.email}</p>
                 </div>
-                {navigationData.userMenu.map((item: UserMenuItem) => (
+                {userMenu.map((item: UserMenuItem) => (
                   <DropdownMenuItem 
                     key={item.id}
                     className="px-4 py-2 text-sm hover:bg-gray-700/50 cursor-pointer"
@@ -82,7 +76,7 @@ const DashboardPage = () => {
       <div className="flex h-[calc(100vh-73px)]">
         {/* Side Navigation */}
         <nav className="w-64 border-r border-gray-800 bg-gray-900/50 backdrop-blur-xl py-6 px-3 space-y-1">
-          {navigationData.mainNavigation.map((item: NavigationItem) => {
+          {mainNavigation.map((item: NavigationItem) => {
             const IconComponent = item.icon;
             return (
               <div key={item.id}>
@@ -128,7 +122,7 @@ const DashboardPage = () => {
               <ComponentLoader 
                 activeTab={activeTab} 
                 activeSubItem={activeSubItem}
-                data={null} // Replace with actual data when available
+               
               />
             </CardContent>
           </Card>
