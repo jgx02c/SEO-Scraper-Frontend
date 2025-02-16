@@ -738,16 +738,16 @@ var { r: __turbopack_require__, f: __turbopack_module_context__, i: __turbopack_
 {
 // utils/auth-api.ts
 __turbopack_esm__({
-    "checkReportsStatus": (()=>checkReportsStatus),
     "checkUserState": (()=>checkUserState),
     "forgotPassword": (()=>forgotPassword),
+    "resetPassword": (()=>resetPassword),
     "signIn": (()=>signIn),
-    "signUp": (()=>signUp)
+    "signUp": (()=>signUp),
+    "updateOnboardingStatus": (()=>updateOnboardingStatus)
 });
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/dist/build/polyfills/process.js [client] (ecmascript)");
 const signIn = async (email, password)=>{
     try {
-        const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL}/api/auth/signin`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/auth/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -759,7 +759,7 @@ const signIn = async (email, password)=>{
         });
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || 'Failed to sign in');
+            throw new Error(data.detail || 'Failed to sign in');
         }
         // Store JWT token
         if (data.token) {
@@ -768,6 +768,7 @@ const signIn = async (email, password)=>{
         return {
             success: true,
             token: data.token,
+            token_type: data.token_type,
             user: data.user
         };
     } catch (error) {
@@ -779,7 +780,7 @@ const signIn = async (email, password)=>{
 };
 const signUp = async (email, password)=>{
     try {
-        const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL}/api/auth/signup`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/auth/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -791,7 +792,7 @@ const signUp = async (email, password)=>{
         });
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || 'Failed to sign up');
+            throw new Error(data.detail || 'Failed to sign up');
         }
         // Store JWT token
         if (data.token) {
@@ -800,6 +801,7 @@ const signUp = async (email, password)=>{
         return {
             success: true,
             token: data.token,
+            token_type: data.token_type,
             user: data.user
         };
     } catch (error) {
@@ -811,7 +813,7 @@ const signUp = async (email, password)=>{
 };
 const forgotPassword = async (email)=>{
     try {
-        const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL}/api/auth/forgot-password`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/auth/forgot-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -822,11 +824,38 @@ const forgotPassword = async (email)=>{
         });
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || 'Failed to send reset email');
+            throw new Error(data.detail || 'Failed to process request');
         }
         return {
             success: true,
-            message: 'Password reset link sent to your email'
+            message: data.message
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An unknown error occurred'
+        };
+    }
+};
+const resetPassword = async (token, newPassword)=>{
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/auth/reset-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                token,
+                new_password: newPassword
+            })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || 'Failed to reset password');
+        }
+        return {
+            success: true,
+            message: data.message
         };
     } catch (error) {
         return {
@@ -841,7 +870,7 @@ const checkUserState = async ()=>{
         if (!token) {
             throw new Error('No authentication token found');
         }
-        const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL}/api/user/state`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/user/state`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -850,32 +879,41 @@ const checkUserState = async ()=>{
             throw new Error('Failed to fetch user state');
         }
         const data = await response.json();
-        return {
-            hasCompletedOnboarding: data.hasCompletedOnboarding,
-            reportsGenerated: data.reportsGenerated
-        };
+        return data.state;
     } catch (error) {
-        throw error;
+        console.error('Error checking user state:', error);
+        return null;
     }
 };
-const checkReportsStatus = async ()=>{
+const updateOnboardingStatus = async (completed)=>{
     try {
         const token = localStorage.getItem('jwt_token');
         if (!token) {
             throw new Error('No authentication token found');
         }
-        const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL}/api/reports/status`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/user/onboarding`, {
+            method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`
-            }
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                completed
+            })
         });
-        if (!response.ok) {
-            throw new Error('Failed to fetch reports status');
-        }
         const data = await response.json();
-        return data.isComplete;
+        if (!response.ok) {
+            throw new Error(data.detail || 'Failed to update onboarding status');
+        }
+        return {
+            success: true,
+            message: data.message
+        };
     } catch (error) {
-        throw error;
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'An unknown error occurred'
+        };
     }
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
@@ -926,11 +964,14 @@ const SignInPage = ()=>{
         setIsLoading(true);
         try {
             const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$pages$2f$api$2f$authAPI$2e$ts__$5b$client$5d$__$28$ecmascript$29$__["signIn"])(formData.email, formData.password);
-            if (!result.success) {
-                throw new Error(result.error);
+            if (!result.success || !result.token) {
+                throw new Error(result.error || 'Failed to sign in');
             }
             // Check user's onboarding status
             const userState = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$pages$2f$api$2f$authAPI$2e$ts__$5b$client$5d$__$28$ecmascript$29$__["checkUserState"])();
+            if (!userState) {
+                throw new Error('Failed to get user state');
+            }
             // Route based on onboarding status
             if (!userState.hasCompletedOnboarding) {
                 router.push("/onboarding");
@@ -939,20 +980,24 @@ const SignInPage = ()=>{
             }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally{
             setIsLoading(false);
         }
     };
     const handleForgotPassword = async (e)=>{
         e.preventDefault();
+        if (!formData.email) {
+            setError('Please enter your email address');
+            return;
+        }
         setError(null);
         setIsLoading(true);
         try {
             const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$pages$2f$api$2f$authAPI$2e$ts__$5b$client$5d$__$28$ecmascript$29$__["forgotPassword"])(formData.email);
             if (!result.success) {
-                throw new Error(result.error);
+                throw new Error(result.error || 'Failed to send reset email');
             }
-            setError(result.message || 'Password reset link sent to your email');
+            // Show success message in alert but keep it friendly
+            setError('Password reset instructions sent to your email');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
         } finally{
@@ -966,7 +1011,7 @@ const SignInPage = ()=>{
                 className: "absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"
             }, void 0, false, {
                 fileName: "[project]/src/pages/signin.tsx",
-                lineNumber: 76,
+                lineNumber: 85,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -980,7 +1025,7 @@ const SignInPage = ()=>{
                             className: "h-4 w-4 mr-2 flex-shrink-0"
                         }, void 0, false, {
                             fileName: "[project]/src/pages/signin.tsx",
-                            lineNumber: 85,
+                            lineNumber: 94,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -988,18 +1033,18 @@ const SignInPage = ()=>{
                             children: "Back to home"
                         }, void 0, false, {
                             fileName: "[project]/src/pages/signin.tsx",
-                            lineNumber: 86,
+                            lineNumber: 95,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/signin.tsx",
-                    lineNumber: 80,
+                    lineNumber: 89,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/signin.tsx",
-                lineNumber: 79,
+                lineNumber: 88,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1013,7 +1058,7 @@ const SignInPage = ()=>{
                                 children: "Welcome Back"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 92,
+                                lineNumber: 101,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1021,13 +1066,13 @@ const SignInPage = ()=>{
                                 children: showForgotPassword ? "Reset your password" : "Sign in to your account"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 93,
+                                lineNumber: 102,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/signin.tsx",
-                        lineNumber: 91,
+                        lineNumber: 100,
                         columnNumber: 9
                     }, this),
                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Alert"], {
@@ -1036,12 +1081,12 @@ const SignInPage = ()=>{
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/src/pages/signin.tsx",
-                            lineNumber: 100,
+                            lineNumber: 109,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/pages/signin.tsx",
-                        lineNumber: 99,
+                        lineNumber: 108,
                         columnNumber: 11
                     }, this),
                     !showForgotPassword ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1060,7 +1105,7 @@ const SignInPage = ()=>{
                                                 children: "Email"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signin.tsx",
-                                                lineNumber: 108,
+                                                lineNumber: 117,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1077,13 +1122,13 @@ const SignInPage = ()=>{
                                                 disabled: isLoading
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signin.tsx",
-                                                lineNumber: 111,
+                                                lineNumber: 120,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/signin.tsx",
-                                        lineNumber: 107,
+                                        lineNumber: 116,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1095,7 +1140,7 @@ const SignInPage = ()=>{
                                                 children: "Password"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signin.tsx",
-                                                lineNumber: 123,
+                                                lineNumber: 132,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1112,19 +1157,19 @@ const SignInPage = ()=>{
                                                 disabled: isLoading
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signin.tsx",
-                                                lineNumber: 126,
+                                                lineNumber: 135,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/signin.tsx",
-                                        lineNumber: 122,
+                                        lineNumber: 131,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 106,
+                                lineNumber: 115,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1136,12 +1181,12 @@ const SignInPage = ()=>{
                                     children: "Forgot your password?"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/signin.tsx",
-                                    lineNumber: 140,
+                                    lineNumber: 149,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 139,
+                                lineNumber: 148,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1155,7 +1200,7 @@ const SignInPage = ()=>{
                                             className: "mr-2 h-4 w-4 animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/signin.tsx",
-                                            lineNumber: 157,
+                                            lineNumber: 166,
                                             columnNumber: 19
                                         }, this),
                                         "Signing in..."
@@ -1163,13 +1208,13 @@ const SignInPage = ()=>{
                                 }, void 0, true) : "Sign In"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 149,
+                                lineNumber: 158,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/signin.tsx",
-                        lineNumber: 105,
+                        lineNumber: 114,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                         onSubmit: handleForgotPassword,
@@ -1184,7 +1229,7 @@ const SignInPage = ()=>{
                                         children: "Email"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/signin.tsx",
-                                        lineNumber: 168,
+                                        lineNumber: 177,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1201,13 +1246,13 @@ const SignInPage = ()=>{
                                         disabled: isLoading
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/signin.tsx",
-                                        lineNumber: 171,
+                                        lineNumber: 180,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 167,
+                                lineNumber: 176,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1224,7 +1269,7 @@ const SignInPage = ()=>{
                                                     className: "mr-2 h-4 w-4 animate-spin"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/pages/signin.tsx",
-                                                    lineNumber: 192,
+                                                    lineNumber: 201,
                                                     columnNumber: 21
                                                 }, this),
                                                 "Sending reset link..."
@@ -1232,7 +1277,7 @@ const SignInPage = ()=>{
                                         }, void 0, true) : "Send Reset Link"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/signin.tsx",
-                                        lineNumber: 184,
+                                        lineNumber: 193,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1244,19 +1289,19 @@ const SignInPage = ()=>{
                                         children: "Back to Sign In"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/signin.tsx",
-                                        lineNumber: 199,
+                                        lineNumber: 208,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 183,
+                                lineNumber: 192,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/signin.tsx",
-                        lineNumber: 166,
+                        lineNumber: 175,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1267,7 +1312,7 @@ const SignInPage = ()=>{
                                 children: "Or"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 213,
+                                lineNumber: 222,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1281,31 +1326,31 @@ const SignInPage = ()=>{
                                         children: "Sign up"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/signin.tsx",
-                                        lineNumber: 217,
+                                        lineNumber: 226,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/signin.tsx",
-                                lineNumber: 215,
+                                lineNumber: 224,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/signin.tsx",
-                        lineNumber: 212,
-                        columnNumber: 19
+                        lineNumber: 221,
+                        columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/pages/signin.tsx",
-                lineNumber: 90,
+                lineNumber: 99,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/signin.tsx",
-        lineNumber: 74,
+        lineNumber: 83,
         columnNumber: 5
     }, this);
 };

@@ -30,12 +30,16 @@ const SignInPage = () => {
     try {
       const result = await signIn(formData.email, formData.password);
 
-      if (!result.success) {
-        throw new Error(result.error);
+      if (!result.success || !result.token) {
+        throw new Error(result.error || 'Failed to sign in');
       }
 
       // Check user's onboarding status
       const userState = await checkUserState();
+      
+      if (!userState) {
+        throw new Error('Failed to get user state');
+      }
 
       // Route based on onboarding status
       if (!userState.hasCompletedOnboarding) {
@@ -45,13 +49,17 @@ const SignInPage = () => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
       setIsLoading(false);
     }
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.email) {
+      setError('Please enter your email address');
+      return;
+    }
+
     setError(null);
     setIsLoading(true);
 
@@ -59,10 +67,11 @@ const SignInPage = () => {
       const result = await forgotPassword(formData.email);
 
       if (!result.success) {
-        throw new Error(result.error);
+        throw new Error(result.error || 'Failed to send reset email');
       }
 
-      setError(result.message || 'Password reset link sent to your email');
+      // Show success message in alert but keep it friendly
+      setError('Password reset instructions sent to your email');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -209,7 +218,7 @@ const SignInPage = () => {
           </form>
         )}
 
-                  <div className="space-y-4 text-center">
+        <div className="space-y-4 text-center">
           <p className="text-gray-400">Or</p>
 
           <p className="text-gray-400">

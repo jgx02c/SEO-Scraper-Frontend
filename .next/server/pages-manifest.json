@@ -4,5 +4,7 @@
   "/": "pages/index.js",
   "/_error": "pages/_error.js",
   "/signin": "pages/signin.js",
-  "/signup": "pages/signup.js"
+  "/signup": "pages/signup.js",
+  "/onboarding": "pages/onboarding.js",
+  "/dashboard": "pages/dashboard.js"
 }

@@ -351,15 +351,12 @@ var { r: __turbopack_require__, f: __turbopack_module_context__, i: __turbopack_
 {
 // utils/auth-api.ts
 __turbopack_esm__({
-    "checkReportsStatus": (()=>checkReportsStatus),
-    "checkUserState": (()=>checkUserState),
-    "forgotPassword": (()=>forgotPassword),
     "signIn": (()=>signIn),
     "signUp": (()=>signUp)
 });
 const signIn = async (email, password)=>{
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signin`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/auth/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -371,7 +368,7 @@ const signIn = async (email, password)=>{
         });
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || 'Failed to sign in');
+            throw new Error(data.detail || 'Failed to sign in');
         }
         // Store JWT token
         if (data.token) {
@@ -380,6 +377,7 @@ const signIn = async (email, password)=>{
         return {
             success: true,
             token: data.token,
+            token_type: data.token_type,
             user: data.user
         };
     } catch (error) {
@@ -391,7 +389,7 @@ const signIn = async (email, password)=>{
 };
 const signUp = async (email, password)=>{
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/auth/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -403,7 +401,7 @@ const signUp = async (email, password)=>{
         });
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || 'Failed to sign up');
+            throw new Error(data.detail || 'Failed to sign up');
         }
         // Store JWT token
         if (data.token) {
@@ -412,6 +410,7 @@ const signUp = async (email, password)=>{
         return {
             success: true,
             token: data.token,
+            token_type: data.token_type,
             user: data.user
         };
     } catch (error) {
@@ -419,75 +418,6 @@ const signUp = async (email, password)=>{
             success: false,
             error: error instanceof Error ? error.message : 'An unknown error occurred'
         };
-    }
-};
-const forgotPassword = async (email)=>{
-    try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/forgot-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email
-            })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || 'Failed to send reset email');
-        }
-        return {
-            success: true,
-            message: 'Password reset link sent to your email'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An unknown error occurred'
-        };
-    }
-};
-const checkUserState = async ()=>{
-    try {
-        const token = localStorage.getItem('jwt_token');
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/state`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        if (!response.ok) {
-            throw new Error('Failed to fetch user state');
-        }
-        const data = await response.json();
-        return {
-            hasCompletedOnboarding: data.hasCompletedOnboarding,
-            reportsGenerated: data.reportsGenerated
-        };
-    } catch (error) {
-        throw error;
-    }
-};
-const checkReportsStatus = async ()=>{
-    try {
-        const token = localStorage.getItem('jwt_token');
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports/status`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        if (!response.ok) {
-            throw new Error('Failed to fetch reports status');
-        }
-        const data = await response.json();
-        return data.isComplete;
-    } catch (error) {
-        throw error;
     }
 };
 }}),
