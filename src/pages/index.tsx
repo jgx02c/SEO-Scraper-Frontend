@@ -1,36 +1,117 @@
 // pages/index.tsx
-import { useRouter } from "next/router";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import Head from "next/head";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Hero } from "@/components/landing/Hero";
+import { Features } from "@/components/landing/Features";
+import { Dashboard } from "@/components/landing/Dashboard";
+import { Reports } from "@/components/landing/Reports";
+import { ChatSection } from "@/components/landing/ChatSection";
+import { CompetitorTracker } from "@/components/landing/CompetitorTracker";
+import { AdCampaigns } from "@/components/landing/AdCampaigns";
+import { ContentAnalysis } from "@/components/landing/ContentAnalysis";
+import { AIAutomation } from "@/components/landing/AIAutomation";
+import { CTA } from "@/components/landing/CTA";
+import { useEffect, useRef } from "react";
 
 const HomePage = () => {
-  const router = useRouter();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        const opacity = entry.intersectionRatio;
+        const scale = 0.9 + (entry.intersectionRatio * 0.1);
+        const translateY = (1 - entry.intersectionRatio) * 20;
+        
+        if (entry.target instanceof HTMLElement) {
+          entry.target.style.opacity = opacity.toString();
+          entry.target.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const sections = document.querySelectorAll('.scroll-section');
+    sections.forEach(section => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6">
-      <div className="text-center space-y-8 flex flex-col items-center">
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-white">Welcome, Leaps & Rebounds</h1>
-          <p className="text-gray-400 text-lg max-w-2xl">
-            Your comprehensive platform for business insights and analysis.
-          </p>
+    <>
+      <Head>
+        <title>Scope Labs | AI-Powered Digital Competition Analysis</title>
+        <meta 
+          name="description" 
+          content="Dominate your market with Scope Labs' AI-powered competitor analysis, content generation, and automated optimizations. Stay ahead with real-time insights and automated implementations."
+        />
+        <meta 
+          name="keywords" 
+          content="competitor analysis, AI automation, content generation, website optimization, digital strategy, market intelligence"
+        />
+      </Head>
+
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+        <Header />
+
+        {/* Hero Section */}
+        <div className="relative z-10">
+          <Hero />
         </div>
 
-        <div className="flex justify-center w-full">
-          <Button 
-            onClick={() => router.push("/details/1")} 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-lg flex items-center gap-2 transition-all"
-          >
-            Launch Application
-            <ArrowRight className="w-5 h-5" />
-          </Button>
+        {/* Scrolling Container */}
+        <div ref={scrollContainerRef} className="relative">
+          {/* AI Intelligence Section */}
+          <div className="scroll-section transition-all duration-700 ease-in-out">
+            <CompetitorTracker />
+          </div>
+
+          <div className="scroll-section transition-all duration-700 ease-in-out">
+            <AdCampaigns />
+          </div>
+
+          {/* AI Implementation Section */}
+          <div className="scroll-section transition-all duration-700 ease-in-out">
+            <ContentAnalysis />
+          </div>
+
+          <div className="scroll-section transition-all duration-700 ease-in-out">
+            <AIAutomation />
+          </div>
+
+          {/* Website Tools Section */}
+          <div className="scroll-section transition-all duration-700 ease-in-out">
+            <Features />
+          </div>
+
+          <div className="scroll-section transition-all duration-700 ease-in-out">
+            <ChatSection />
+          </div>
+
+          <div className="scroll-section transition-all duration-700 ease-in-out">
+            <Dashboard />
+          </div>
+
+          <div className="scroll-section transition-all duration-700 ease-in-out">
+            <Reports />
+          </div>
         </div>
 
-        <div className="text-gray-500 text-sm mt-12">
-          Built by: @jgx02 v0.1.10
+        {/* CTA Section */}
+        <div className="relative z-10">
+          <CTA />
         </div>
+
+        <Footer />
       </div>
-    </div>
+    </>
   );
 };
 
