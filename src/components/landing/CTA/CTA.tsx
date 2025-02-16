@@ -1,4 +1,3 @@
-// components/landing/CTA/CTA.tsx
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { ctaData } from "./data";
@@ -49,7 +48,9 @@ export const CTA = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
               onClick={() => router.push(primaryButton.href)} 
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-6 text-lg rounded-lg transition-all group"
+              variant="purple"
+              size="lg"
+              className="text-base font-semibold group"
             >
               <span>{primaryButton.text}</span>
               <span className="inline-block transition-transform group-hover:translate-x-1 ml-2">
@@ -59,8 +60,9 @@ export const CTA = () => {
             {secondaryButton && (
               <Button 
                 onClick={() => router.push(secondaryButton.href)}
-                variant="outline" 
-                className="border-gray-700 bg-gray-800/50 text-white hover:bg-gray-700 px-8 py-6 text-lg rounded-lg transition-all backdrop-blur-sm"
+                variant="outline"
+                size="lg"
+                className="text-indigo-600 border-indigo-600 hover:bg-indigo-600/10 text-base font-semibold"
               >
                 {secondaryButton.text}
               </Button>

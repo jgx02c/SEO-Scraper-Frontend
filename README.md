@@ -40,36 +40,26 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
 
 
-Dashboard
-├── Overview
-├── Traffic
-│   ├── Website Traffic
-│   ├── Social Media Traffic
-│   ├── Ads Performance
-├── Analytics
-│   ├── SEO Performance
-│   ├── User Behavior
-│   ├── Historical Data
-├── Reports
-│   ├── SEO Reports
-│   ├── Traffic Reports
-│   ├── Competitor Reports
-│   ├── Ads Reports
-├── Files
-│   ├── Scraped Webpages
-│   ├── Reports & Documents
-│   ├── Competitor Data
-├── Ads
-│   ├── My Ads
-│   ├── Competitor Ads
-├── Competitor Lookup
-│   ├── Grid View
-│   ├── Detailed Insights
-├── AI & Automation
-│   ├── AI Fixes
-│   ├── Alerts & Monitoring
-│   ├── AI Content Generation
-├── Chatbot
-│   ├── SEO Insights
-│   ├── Competitor Q&A
-│   ├── AI Actions
+## Layout
+src/
+├── pages/
+│   ├── dashboard/
+│   │   └── index.tsx       # Main dashboard page (previously BusinessDetailPage)
+│   └── index.tsx           # Landing page
+├── components/
+│   ├── dashboard/          # Dashboard-specific components
+│   │   ├── tabs/          # Individual tab components
+│   │   │   ├── Overview/
+│   │   │   ├── Traffic/
+│   │   │   ├── Analytics/
+│   │   │   ├── Reports/
+│   │   │   ├── Files/
+│   │   │   ├── Ads/
+│   │   │   ├── CompetitorLookup/
+│   │   │   ├── AI/
+│   │   │   └── Chat/
+│   │   └── shared/        # Shared dashboard components
+│   │       └── ComponentLoader.tsx
+│   └── ui/                # Generic UI components
+└── types/
+    └── dashboard.ts       # Dashboard-related types
