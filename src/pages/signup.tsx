@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { signUp } from "./api/authAPI";
 
 interface FormState {
   email: string;
@@ -31,6 +32,12 @@ const SignUpPage = () => {
       setError("Password must be at least 8 characters long");
       return false;
     }
+    // Add any additional password validation rules here
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      setError("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character");
+      return false;
+    }
     return true;
   };
 
@@ -43,23 +50,14 @@ const SignUpPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        }),
-      });
+      const result = await signUp(formData.email, formData.password);
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to sign up');
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
-      // Handle successful sign up
+      // The signUp utility has already stored the JWT token
+      // Now we can redirect to onboarding
       router.push("/onboarding");
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -128,6 +126,10 @@ const SignUpPage = () => {
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 disabled={isLoading}
               />
+              <p className="text-xs text-gray-400 mt-1">
+                Password must be at least 8 characters long and contain uppercase, lowercase, 
+                number, and special character
+              </p>
             </div>
             <div className="space-y-2">
               <label htmlFor="confirm-password" className="text-sm font-medium text-gray-300">

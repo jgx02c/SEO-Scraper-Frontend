@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { signIn, forgotPassword, checkUserState } from "./api/authAPI";
 
 interface FormState {
   email: string;
@@ -27,21 +28,21 @@ const SignInPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await signIn(formData.email, formData.password);
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to sign in');
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
-      // Handle successful sign in
-      router.push("/dashboard");
+      // Check user's onboarding status
+      const userState = await checkUserState();
+
+      // Route based on onboarding status
+      if (!userState.hasCompletedOnboarding) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -55,21 +56,13 @@ const SignInPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: formData.email }),
-      });
+      const result = await forgotPassword(formData.email);
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to send reset email');
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
-      // Show success message
-      setError('Password reset link sent to your email');
+      setError(result.message || 'Password reset link sent to your email');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
