@@ -25,7 +25,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900/40 to-indigo-400/10">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-900/20 to-gray-900">
       {/* Top Navigation */}
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-xl">
         <div className="px-6 py-4 flex justify-between items-center max-w-[1400px] mx-auto">
