@@ -1,171 +1,222 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Card, CardContent } from "@/components/ui/card";
 import Head from "next/head";
-import { Check, X } from "lucide-react";
+import { Check, X, Bot, Zap, Users, Building2, ArrowRight, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import BackgroundPattern from "@/components/layout/background";
+
+const plans = [
+  {
+    name: "Startup Team",
+    price: 149,
+    billingPeriod: "month",
+    description: "Perfect for small businesses ready to scale",
+    teamSize: "1-2 AI Agents",
+    color: "from-blue-400/10 to-blue-600/10",
+    features: [
+      "Technical SEO Agent",
+      "Content Analysis Agent",
+      "Basic Competitor Tracking",
+      "Single Platform Integration",
+      "Monthly Strategy Updates",
+      "8/5 AI Support"
+    ],
+    unavailableFeatures: [
+      "SEO Intelligence Agent",
+      "Multi-Platform Support",
+      "Advanced AI Recommendations",
+      "24/7 Priority Support"
+    ],
+    icon: Users
+  },
+  {
+    name: "Growth Team",
+    price: 299,
+    billingPeriod: "month",
+    description: "Ideal for growing businesses needing comprehensive optimization",
+    teamSize: "3-5 AI Agents",
+    color: "from-indigo-400/10 to-indigo-600/10",
+    features: [
+      "Technical SEO Agent",
+      "SEO Intelligence Agent",
+      "Content Analysis Agent",
+      "Competitor Analysis Agent",
+      "Multi-Platform Support",
+      "Weekly Strategy Updates",
+      "Advanced AI Recommendations",
+      "24/7 AI Support"
+    ],
+    unavailableFeatures: [
+      "Custom AI Agent Development",
+      "Enterprise Integration",
+      "Dedicated Success Manager"
+    ],
+    recommended: true,
+    icon: Zap
+  },
+  {
+    name: "Enterprise Team",
+    price: "Custom",
+    description: "Full-scale AI team for enterprise needs",
+    teamSize: "Unlimited AI Agents",
+    color: "from-purple-400/10 to-purple-600/10",
+    features: [
+      "Custom AI Agent Development",
+      "Unlimited Platform Support",
+      "Enterprise-Grade Integration",
+      "Advanced Security Features",
+      "Custom Reporting",
+      "Dedicated Success Manager",
+      "Priority 24/7 Support",
+      "Custom Training & Onboarding"
+    ],
+    unavailableFeatures: [],
+    icon: Building2
+  }
+];
+
+const integrations = [
+  "Shopify", "WordPress", "Wix", "Squarespace", "Webflow", "Custom Platforms"
+];
 
 const PricingPage = () => {
-  const plans = [
-    {
-      name: "Starter",
-      price: 49,
-      description: "Perfect for small businesses and individual entrepreneurs",
-      features: [
-        "Competitor Tracking (1 Domain)",
-        "Basic Content Analysis",
-        "Monthly Performance Report",
-        "Email Support"
-      ],
-      unavailableFeatures: [
-        "Advanced AI Insights",
-        "Multi-Domain Tracking",
-        "Automated Campaign Optimization",
-        "Priority Support"
-      ]
-    },
-    {
-      name: "Pro",
-      price: 199,
-      description: "Ideal for growing businesses seeking comprehensive insights",
-      features: [
-        "Competitor Tracking (5 Domains)",
-        "Advanced Content Analysis",
-        "Weekly Performance Reports",
-        "AI-Powered Recommendations",
-        "Email & Chat Support",
-        "Automated Campaign Optimization"
-      ],
-      unavailableFeatures: [
-        "Enterprise-Level Analytics",
-        "Dedicated Account Manager",
-        "Custom Integration"
-      ],
-      recommended: true
-    },
-    {
-      name: "Enterprise",
-      price: "Custom",
-      description: "Tailored solutions for large organizations with complex needs",
-      features: [
-        "Unlimited Domain Tracking",
-        "Comprehensive AI Insights",
-        "Daily Performance Reports",
-        "Advanced Content Generation",
-        "Dedicated Account Manager",
-        "Custom Integration",
-        "Priority Enterprise Support"
-      ],
-      unavailableFeatures: []
-    }
-  ];
-
   return (
     <>
       <Head>
-        <title>Pricing | Scope Labs AI Intelligence Platform</title>
+        <title>AI Team Pricing | Scope Labs</title>
         <meta 
           name="description" 
-          content="Choose the perfect Scope Labs plan for your business. From startups to enterprises, we have flexible pricing to meet your digital intelligence needs."
+          content="Deploy your AI SEO team with Scope Labs. Choose the perfect team size and capabilities for your business needs."
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
-        <Header />
+      <div className="relative min-h-screen">
+        <BackgroundPattern />
+        
+        <div className="relative z-10">
+          <Header />
 
-        {/* Spacer to push content down */}
-        <div className="h-32"></div>
-
-        {/* Main Content */}
-        <div className="container mx-auto px-6 py-12">
-          <Card className="bg-white max-w-6xl mx-auto shadow-lg">
-            <CardContent className="p-8">
-              <div className="text-center mb-12">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">Transparent Pricing</h1>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Flexible plans designed to scale with your business. From startups to enterprises, 
-                  we have a solution that fits your digital intelligence needs.
+          <div className="pt-32 pb-20 px-4">
+            <div className="max-w-7xl mx-auto">
+              {/* Header */}
+              <div className="text-center mb-16">
+                <div className="inline-flex items-center px-4 py-2 bg-indigo-900/30 rounded-full text-indigo-400 mb-4 space-x-2">
+                  <Bot className="w-4 h-4" />
+                  <span>AI Team Pricing</span>
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  Choose Your AI Team
+                </h1>
+                <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                  Select the perfect AI team size and capabilities for your business. 
+                  Scale your team as you grow.
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6">
+              {/* Pricing Cards */}
+              <div className="grid md:grid-cols-3 gap-6 mb-16">
                 {plans.map((plan) => (
-                  <div 
-                    key={plan.name}
-                    className={`
-                      border rounded-lg p-6 
-                      ${plan.recommended 
-                        ? 'border-indigo-600 bg-indigo-50 shadow-md' 
-                        : 'border-gray-200 bg-white'}
-                    `}
-                  >
+                  <div key={plan.name} className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 to-gray-800/90 backdrop-blur-xl rounded-lg" />
+                    <div className={`absolute inset-0 bg-gradient-to-r ${plan.color} rounded-lg`} />
+                    <div className="absolute inset-0 border border-gray-700/50 rounded-lg" />
                     {plan.recommended && (
-                      <div className="text-center bg-indigo-600 text-white py-1 -mt-6 -mx-6 mb-4 rounded-t-lg">
-                        Most Popular
+                      <div className="absolute -top-4 left-0 right-0 text-center">
+                        <span className="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm">
+                          Most Popular
+                        </span>
                       </div>
                     )}
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">{plan.name}</h2>
-                    <p className="text-gray-600 mb-4">{plan.description}</p>
-                    
-                    <div className="mb-6">
-                      <span className="text-4xl font-bold text-gray-900">
-                        {plan.price === "Custom" ? plan.price : `$${plan.price}`}
-                      </span>
-                      {plan.price !== "Custom" && (
-                        <span className="text-gray-600 ml-2">/ month</span>
-                      )}
-                    </div>
+                    <div className="relative p-6">
+                      <div className="flex items-center space-x-4 mb-6">
+                        <div className="p-2 rounded-lg bg-gray-800">
+                          <plan.icon className="w-6 h-6 text-indigo-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold text-white">{plan.name}</h3>
+                          <p className="text-gray-400">{plan.teamSize}</p>
+                        </div>
+                      </div>
 
-                    <a 
-                      href="#contact" 
-                      className={`
-                        block text-center w-full py-3 rounded-lg transition-colors
-                        ${plan.recommended 
-                          ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
-                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200'}
-                      `}
-                    >
-                      {plan.price === "Custom" ? "Contact Sales" : "Get Started"}
-                    </a>
+                      <div className="mb-6">
+                        <div className="flex items-baseline">
+                          {plan.price === "Custom" ? (
+                            <span className="text-4xl font-bold text-white">Custom</span>
+                          ) : (
+                            <>
+                              <span className="text-4xl font-bold text-white">${plan.price}</span>
+                              <span className="text-gray-400 ml-2">/{plan.billingPeriod}</span>
+                            </>
+                          )}
+                        </div>
+                        <p className="text-gray-400 mt-2">{plan.description}</p>
+                      </div>
 
-                    <div className="mt-6">
-                      <h3 className="font-semibold text-gray-900 mb-4">Features</h3>
-                      <ul className="space-y-3 mb-6">
-                        {plan.features.map((feature) => (
-                          <li key={feature} className="flex items-center text-gray-700">
-                            <Check className="h-5 w-5 text-green-500 mr-2" />
-                            {feature}
-                          </li>
-                        ))}
-                        {plan.unavailableFeatures.map((feature) => (
-                          <li key={feature} className="flex items-center text-gray-400">
-                            <X className="h-5 w-5 text-red-400 mr-2" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
+                      <div className="flex-grow">
+                        <div className="space-y-3 mb-6">
+                          {plan.features.map((feature) => (
+                            <div key={feature} className="flex items-center text-gray-300">
+                              <Check className="h-5 w-5 text-green-400 mr-2 flex-shrink-0" />
+                              <span>{feature}</span>
+                            </div>
+                          ))}
+                          {plan.unavailableFeatures.map((feature) => (
+                            <div key={feature} className="flex items-center text-gray-500">
+                              <X className="h-5 w-5 text-gray-600 mr-2 flex-shrink-0" />
+                              <span>{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <Button 
+                        className={`w-full ${
+                          plan.recommended 
+                            ? 'bg-indigo-600 hover:bg-indigo-500' 
+                            : 'bg-gray-800 hover:bg-gray-700'
+                        } inline-flex items-center justify-center`}
+                      >
+                        {plan.price === "Custom" ? "Contact Sales" : "Deploy Your Team"}
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="text-center mt-12 bg-gray-100 p-6 rounded-lg">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Need a Custom Solution?</h2>
-                <p className="text-gray-700 mb-6">
-                  Every business is unique. If none of our standard plans meet your specific 
-                  requirements, we're happy to create a tailored solution just for you.
-                </p>
-                <a 
-                  href="mailto:sales@scopelabsai.com" 
-                  className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
-                >
-                  Contact Enterprise Sales
-                </a>
+              {/* Platform Support */}
+              <div className="relative overflow-hidden rounded-lg">
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 to-gray-800/90 backdrop-blur-xl" />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/5 to-blue-600/5" />
+                <div className="absolute inset-0 border border-gray-700/50" />
+                <div className="relative p-8">
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className="p-2 rounded-lg bg-gray-800">
+                      <Globe className="w-6 h-6 text-indigo-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-white">Platform Support</h3>
+                      <p className="text-gray-400">Seamless integration with your existing platform</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    {integrations.map((platform) => (
+                      <div key={platform} className="relative p-4 rounded-lg text-center">
+                        <div className="absolute inset-0 bg-gray-800/50 rounded-lg" />
+                        <div className="relative">
+                          <span className="text-gray-300">{platform}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </div>
 
-        <Footer />
+          <Footer />
+        </div>
       </div>
     </>
   );

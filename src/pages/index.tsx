@@ -14,6 +14,7 @@ import { AIAutomation } from "@/components/landing/AIAutomation";
 import { CTA } from "@/components/landing/CTA";
 import  BackgroundPattern  from "@/components/layout/background";
 import { useEffect, useRef } from "react";
+import IntegrationCard from "@/components/IntegrationCard";
 
 const HomePage = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -74,12 +75,13 @@ const HomePage = () => {
 
           {/* Scrolling Container */}
           <div ref={scrollContainerRef} className="relative">
+
             <div className="scroll-section transition-all duration-700 ease-in-out">
-              <CompetitorTracker />
+              <IntegrationCard />
             </div>
 
             <div className="scroll-section transition-all duration-700 ease-in-out">
-              <AdCampaigns />
+              <CompetitorTracker />
             </div>
 
             <div className="scroll-section transition-all duration-700 ease-in-out">
@@ -87,9 +89,16 @@ const HomePage = () => {
             </div>
 
             <div className="scroll-section transition-all duration-700 ease-in-out">
+              <AdCampaigns />
+            </div>
+
+           
+
+            <div className="scroll-section transition-all duration-700 ease-in-out">
               <ChatSection />
             </div>
             
+           
            
             <div className="scroll-section transition-all duration-700 ease-in-out">
               <Reports />
