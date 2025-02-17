@@ -1,10 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/_error": "pages/_error.js",
-  "/signin": "pages/signin.js",
-  "/signup": "pages/signup.js",
-  "/onboarding": "pages/onboarding.js",
-  "/dashboard": "pages/dashboard.js"
-}
+{"/_app":"pages/_app.js","/_document":"pages/_document.js","/about":"pages/about.html","/api/calls":"pages/api/calls.js","/blog":"pages/blog.html","/careers":"pages/careers.html","/blog/[postId]":"pages/blog/[postId].html","/dashboard":"pages/dashboard.html","/dashboard/types":"pages/dashboard/types.html","/":"pages/index.html","/security":"pages/security.html","/privacy":"pages/privacy.html","/onboarding":"pages/onboarding.html","/pricing":"pages/pricing.html","/signin":"pages/signin.html","/terms":"pages/terms.html","/signup":"pages/signup.html","/_error":"pages/_error.js","/api/onboardingAPI":"pages/api/onboardingAPI.js","/dashboard/parsedata":"pages/dashboard/parsedata.html","/api/authAPI":"pages/api/authAPI.js","/404":"pages/404.html"}

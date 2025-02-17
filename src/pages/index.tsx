@@ -12,6 +12,7 @@ import { AdCampaigns } from "@/components/landing/AdCampaigns";
 import { ContentAnalysis } from "@/components/landing/ContentAnalysis";
 import { AIAutomation } from "@/components/landing/AIAutomation";
 import { CTA } from "@/components/landing/CTA";
+import  BackgroundPattern  from "@/components/layout/background";
 import { useEffect, useRef } from "react";
 
 const HomePage = () => {
@@ -47,69 +48,61 @@ const HomePage = () => {
   return (
     <>
       <Head>
-        <title>Scope Labs | AI-Powered Digital Competition Analysis</title>
+        <title>Scope Labs | AI-Powered SEO Team Integration</title>
         <meta 
           name="description" 
-          content="Dominate your market with Scope Labs' AI-powered competitor analysis, content generation, and automated optimizations. Stay ahead with real-time insights and automated implementations."
+          content="Deploy your personalized AI SEO team that seamlessly integrates with your existing website. Get expert optimization and ranking improvements without changing platforms."
         />
         <meta 
           name="keywords" 
-          content="competitor analysis, AI automation, content generation, website optimization, digital strategy, market intelligence"
+          content="SEO integration, AI SEO, website optimization, digital strategy, content optimization, Shopify SEO, Wix SEO, Squarespace SEO, WordPress SEO"
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
-        <Header />
-
-        {/* Hero Section */}
+      <div className="relative min-h-screen">
+        {/* Background Pattern */}
+        <BackgroundPattern />
+        
+        {/* Content Container */}
         <div className="relative z-10">
-          <Hero />
+          <Header />
+
+          {/* Hero Section */}
+          <div className="relative">
+            <Hero />
+          </div>
+
+          {/* Scrolling Container */}
+          <div ref={scrollContainerRef} className="relative">
+            <div className="scroll-section transition-all duration-700 ease-in-out">
+              <CompetitorTracker />
+            </div>
+
+            <div className="scroll-section transition-all duration-700 ease-in-out">
+              <AdCampaigns />
+            </div>
+
+            <div className="scroll-section transition-all duration-700 ease-in-out">
+              <ContentAnalysis />
+            </div>
+
+            <div className="scroll-section transition-all duration-700 ease-in-out">
+              <ChatSection />
+            </div>
+            
+           
+            <div className="scroll-section transition-all duration-700 ease-in-out">
+              <Reports />
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className="relative">
+            <CTA />
+          </div>
+
+          <Footer />
         </div>
-
-        {/* Scrolling Container */}
-        <div ref={scrollContainerRef} className="relative">
-          {/* AI Intelligence Section */}
-          <div className="scroll-section transition-all duration-700 ease-in-out">
-            <CompetitorTracker />
-          </div>
-
-          <div className="scroll-section transition-all duration-700 ease-in-out">
-            <AdCampaigns />
-          </div>
-
-          {/* AI Implementation Section */}
-          <div className="scroll-section transition-all duration-700 ease-in-out">
-            <ContentAnalysis />
-          </div>
-
-          <div className="scroll-section transition-all duration-700 ease-in-out">
-            <AIAutomation />
-          </div>
-
-          {/* Website Tools Section */}
-          <div className="scroll-section transition-all duration-700 ease-in-out">
-            <Features />
-          </div>
-
-          <div className="scroll-section transition-all duration-700 ease-in-out">
-            <ChatSection />
-          </div>
-
-          <div className="scroll-section transition-all duration-700 ease-in-out">
-            <Dashboard />
-          </div>
-
-          <div className="scroll-section transition-all duration-700 ease-in-out">
-            <Reports />
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="relative z-10">
-          <CTA />
-        </div>
-
-        <Footer />
       </div>
     </>
   );
