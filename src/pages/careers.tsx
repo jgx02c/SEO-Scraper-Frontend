@@ -1,189 +1,217 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Card, CardContent } from "@/components/ui/card";
 import Head from "next/head";
-import { Briefcase, Palette, MessageCircle, Code, Database, Megaphone } from "lucide-react";
+import BackgroundPattern from "@/components/layout/background";
+import { Bot, Code, Brain, Users, Rocket, FileSearch, Laptop, Briefcase, Building2 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
-// Job listing type
-type JobListing = {
-  id: string;
-  title: string;
-  department: string;
-  location: string;
-  type: string;
-  icon: React.ElementType;
-  linkedinUrl: string;
-};
-
-// Array of job listings
-const jobListings: JobListing[] = [
-  // Software Engineering Roles
+const jobListings = [
   {
-    id: 'se-1',
+    id: 'ai-1',
+    title: 'AI Research Engineer',
+    department: 'AI Development',
+    location: 'San Francisco, CA / Remote',
+    type: 'Full-time',
+    icon: Brain,
+    linkedinUrl: 'https://linkedin.com/...',
+    description: 'Building next-generation SEO intelligence algorithms'
+  },
+  {
+    id: 'ai-2',
+    title: 'Machine Learning Engineer',
+    department: 'AI Development',
+    location: 'San Francisco, CA / Remote',
+    type: 'Full-time',
+    icon: Bot,
+    linkedinUrl: 'https://linkedin.com/...',
+    description: 'Developing AI agents for platform integration'
+  },
+  {
+    id: 'eng-1',
     title: 'Senior Full-Stack Engineer',
-    department: 'Software Engineering',
-    location: 'San Francisco, CA',
+    department: 'Engineering',
+    location: 'San Francisco, CA / Remote',
+    type: 'Full-time',
+    icon: Laptop,
+    linkedinUrl: 'https://linkedin.com/...',
+    description: 'Building seamless platform integration systems'
+  },
+  {
+    id: 'eng-2',
+    title: 'Platform Integration Specialist',
+    department: 'Engineering',
+    location: 'San Francisco, CA / Remote',
     type: 'Full-time',
     icon: Code,
-    linkedinUrl: 'https://www.linkedin.com/jobs/view/senior-full-stack-engineer-at-scope-labs-3//'
+    linkedinUrl: 'https://linkedin.com/...',
+    description: 'Creating multi-platform deployment solutions'
   },
   {
-    id: 'se-2',
-    title: 'AI Machine Learning Engineer',
-    department: 'Software Engineering',
-    location: 'San Francisco, CA',
+    id: 'product-1',
+    title: 'Product Strategist',
+    department: 'Product',
+    location: 'San Francisco, CA / Remote',
     type: 'Full-time',
-    icon: Database,
-    linkedinUrl: 'https://www.linkedin.com/jobs/view/ai-ml-engineer-at-scope-labs-3//'
+    icon: Rocket,
+    linkedinUrl: 'https://linkedin.com/...',
+    description: 'Shaping the future of AI SEO teams'
   },
-  
-  // Design Roles
-  {
-    id: 'design-1',
-    title: 'Product Designer',
-    department: 'Design',
-    location: 'San Francisco, CA',
-    type: 'Full-time',
-    icon: Palette,
-    linkedinUrl: 'https://www.linkedin.com/jobs/view/product-designer-at-scope-labs-3//'
-  },
-  {
-    id: 'design-2',
-    title: 'UX Research Specialist',
-    department: 'Design',
-    location: 'San Francisco, CA',
-    type: 'Full-time',
-    icon: Palette,
-    linkedinUrl: 'https://www.linkedin.com/jobs/view/ux-researcher-at-scope-labs-3//'
-  },
-  
-  // Marketing Roles
-  {
-    id: 'marketing-1',
-    title: 'Digital Marketing Manager',
-    department: 'Marketing',
-    location: 'San Francisco, CA',
-    type: 'Full-time',
-    icon: Megaphone,
-    linkedinUrl: 'https://www.linkedin.com/jobs/view/digital-marketing-manager-at-scope-labs-3//'
-  },
-  {
-    id: 'marketing-2',
-    title: 'Content Strategy Lead',
-    department: 'Marketing',
-    location: 'San Francisco, CA',
-    type: 'Full-time',
-    icon: MessageCircle,
-    linkedinUrl: 'https://www.linkedin.com/jobs/view/content-strategy-lead-at-scope-labs-3//'
-  },
-  
-  // Sales Roles
   {
     id: 'sales-1',
-    title: 'Enterprise Sales Representative',
+    title: 'Enterprise Solutions Consultant',
     department: 'Sales',
-    location: 'San Francisco, CA',
+    location: 'San Francisco, CA / Remote',
     type: 'Full-time',
-    icon: Briefcase,
-    linkedinUrl: 'https://www.linkedin.com/jobs/view/enterprise-sales-rep-at-scope-labs-3//'
+    icon: Building2,
+    linkedinUrl: 'https://linkedin.com/...',
+    description: 'Helping enterprises deploy AI teams'
   }
 ];
 
 const CareersPage = () => {
-  // Group jobs by department
   const jobsByDepartment = jobListings.reduce((acc, job) => {
     if (!acc[job.department]) {
       acc[job.department] = [];
     }
     acc[job.department].push(job);
     return acc;
-  }, {} as Record<string, JobListing[]>);
+  }, {} as Record<string, typeof jobListings>);
 
   return (
     <>
       <Head>
-        <title>Careers at Scope Labs | Join Our Team</title>
+        <title>Careers at Scope Labs | Join Our AI Revolution</title>
         <meta 
           name="description" 
-          content="Explore exciting career opportunities at Scope Labs. We're looking for talented individuals to help us revolutionize digital intelligence."
+          content="Join Scope Labs in revolutionizing SEO through AI team integration. Help us build the future of digital optimization."
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
-        <Header />
+      <div className="relative min-h-screen">
+        <BackgroundPattern />
+        
+        <div className="relative z-10">
+          <Header />
 
-        {/* Spacer to push content down */}
-        <div className="h-32"></div>
+          <div className="pt-32 pb-20 px-4">
+            <div className="max-w-7xl mx-auto">
+              {/* Header */}
+              <div className="text-center mb-16">
+                <div className="inline-flex items-center px-4 py-2 bg-indigo-900/30 rounded-full text-indigo-400 mb-4 space-x-2">
+                  <Bot className="w-4 h-4" />
+                  <span>Join Our Team</span>
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  Build the Future of AI Teams
+                </h1>
+                <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                  Help us revolutionize how businesses optimize their digital presence through AI-powered teams and seamless integration.
+                </p>
+              </div>
 
-        {/* Main Content */}
-        <div className="container mx-auto px-6 py-12">
-          <Card className="bg-white max-w-5xl mx-auto shadow-lg">
-            <CardContent className="p-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">Careers at Scope Labs</h1>
-              
-              <div className="space-y-8 text-gray-700">
-                <section>
-                  <p className="mb-6">
-                    At Scope Labs, we're building the future of AI-driven digital intelligence. 
-                    We're looking for passionate, innovative individuals who want to make a significant 
-                    impact in the world of technology and business strategy.
-                  </p>
+              {/* Mission Statement */}
+              <div className="relative overflow-hidden rounded-lg mb-12">
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 to-gray-800/90 backdrop-blur-xl" />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/5 to-blue-600/5" />
+                <div className="absolute inset-0 border border-gray-700/50 rounded-lg" />
+                <div className="relative p-8 text-center">
+                  <h2 className="text-2xl font-bold text-white mb-4">Why Join Scope Labs?</h2>
+                  <div className="grid md:grid-cols-3 gap-6 mt-8">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-indigo-900/50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <Rocket className="w-6 h-6 text-indigo-400" />
+                      </div>
+                      <h3 className="text-white font-medium mb-2">Innovation First</h3>
+                      <p className="text-gray-400">Work on cutting-edge AI technology that's changing the industry</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-indigo-900/50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <Users className="w-6 h-6 text-indigo-400" />
+                      </div>
+                      <h3 className="text-white font-medium mb-2">Remote-First</h3>
+                      <p className="text-gray-400">Work from anywhere with our distributed global team</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-indigo-900/50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <Brain className="w-6 h-6 text-indigo-400" />
+                      </div>
+                      <h3 className="text-white font-medium mb-2">Continuous Growth</h3>
+                      <p className="text-gray-400">Learn and grow with industry-leading experts</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                  {Object.entries(jobsByDepartment).map(([department, jobs]) => (
-                    <div key={department} className="mb-8">
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-4">{department} Opportunities</h2>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {jobs.map((job) => {
-                          const Icon = job.icon;
-                          return (
-                            <div 
-                              key={job.id} 
-                              className="bg-gray-100 p-4 rounded-lg border border-gray-200 hover:border-indigo-600 transition-all"
-                            >
-                              <div className="flex items-center mb-3">
-                                <Icon className="h-6 w-6 text-indigo-600 mr-3" />
-                                <h3 className="text-xl font-semibold text-gray-900">{job.title}</h3>
+              {/* Job Listings */}
+              {Object.entries(jobsByDepartment).map(([department, jobs]) => (
+                <div key={department} className="mb-8">
+                  <h2 className="text-2xl font-bold text-white mb-6">{department}</h2>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {jobs.map((job) => {
+                      const Icon = job.icon;
+                      return (
+                        <div key={job.id} className="relative overflow-hidden rounded-lg group">
+                          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 to-gray-800/90 backdrop-blur-xl" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/5 to-blue-600/5 group-hover:from-indigo-600/10 group-hover:to-blue-600/10 transition-all duration-300" />
+                          <div className="absolute inset-0 border border-gray-700/50 group-hover:border-indigo-500/50 rounded-lg transition-all duration-300" />
+                          <div className="relative p-6">
+                            <div className="flex items-center space-x-4 mb-4">
+                              <div className="p-2 rounded-lg bg-gray-800">
+                                <Icon className="w-5 h-5 text-indigo-400" />
                               </div>
-                              <div className="space-y-2 text-gray-600">
-                                <p>{job.location}</p>
-                                <p>{job.type}</p>
-                                <a 
-                                  href={job.linkedinUrl} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="inline-block mt-3 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                                >
-                                  Apply on LinkedIn
-                                </a>
+                              <div>
+                                <h3 className="text-xl font-semibold text-white">{job.title}</h3>
+                                <p className="text-gray-400">{job.location}</p>
                               </div>
                             </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </section>
+                            <p className="text-gray-300 mb-6">{job.description}</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-400">{job.type}</span>
+                              <a 
+                                href={job.linkedinUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Button className="bg-indigo-600 hover:bg-indigo-500">
+                                  Apply Now
+                                </Button>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
 
-                <section className="bg-indigo-100 p-6 rounded-lg border border-indigo-200">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Don't See Your Perfect Role?</h2>
-                  <p className="mb-4 text-gray-700">
-                    We're always looking for talented individuals who are passionate about 
-                    technology and innovation. Even if you don't see an exact match, we'd love 
-                    to hear from you.
+              {/* Contact Section */}
+              <div className="relative overflow-hidden rounded-lg mt-12">
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 to-gray-800/90 backdrop-blur-xl" />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-blue-600/10" />
+                <div className="absolute inset-0 border border-gray-700/50 rounded-lg" />
+                <div className="relative p-8 text-center">
+                  <FileSearch className="w-12 h-12 text-indigo-400 mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold text-white mb-4">Don't See Your Perfect Role?</h2>
+                  <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    We're always looking for exceptional talent to join our mission. 
+                    If you're passionate about AI and SEO, we'd love to hear from you.
                   </p>
                   <a 
-                    href="mailto:contact@scopelabsai.com" 
-                    className="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                    href="mailto:careers@scopelabsai.com"
+                    className="inline-block"
                   >
-                    Send Your Resume
+                    <Button className="bg-indigo-600 hover:bg-indigo-500">
+                      Send Your Resume
+                    </Button>
                   </a>
-                </section>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </div>
 
-        <Footer />
+          <Footer />
+        </div>
       </div>
     </>
   );

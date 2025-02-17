@@ -88,35 +88,46 @@ export const Header: React.FC = () => {
                 onMouseEnter={() => handleMouseEnter(item.text, !!item.dropdownItems)}
                 onMouseLeave={handleMouseLeave}
               >
-                <button
-                  className="text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors flex items-center space-x-1"
-                >
-                  <span>{item.text}</span>
-                  {item.dropdownItems && <ChevronDown className="w-4 h-4" />}
-                </button>
-                <DropdownMenu
-                  items={item.dropdownItems}
-                  isOpen={openDropdown === item.text}
-                />
+                {item.dropdownItems ? (
+                  <div className="relative">
+                    <div className="text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer">
+                      <span>{item.text}</span>
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
+                    <DropdownMenu
+                      items={item.dropdownItems}
+                      isOpen={openDropdown === item.text}
+                    />
+                  </div>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className="text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors block"
+                  >
+                    {item.text}
+                  </Link>
+                )}
               </div>
             ))}
           </div>
 
           {/* Desktop Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button 
-              onClick={() => router.push(buttons.signin.href)} 
-              variant="ghost"
-              className="text-gray-300 hover:text-white hover:bg-gray-800"
-            >
-              {buttons.signin.text}
-            </Button>
-            <Button 
-              onClick={() => router.push(buttons.signup.href)} 
-              variant="purple"
-            >
-              {buttons.signup.text}
-            </Button>
+            <Link href={buttons.signin.href}>
+              <Button 
+                variant="ghost"
+                className="text-gray-300 hover:text-white hover:bg-gray-800"
+              >
+                {buttons.signin.text}
+              </Button>
+            </Link>
+            <Link href={buttons.signup.href}>
+              <Button 
+                variant="purple"
+              >
+                {buttons.signup.text}
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -140,46 +151,57 @@ export const Header: React.FC = () => {
             <div className="space-y-1">
               {navigation.map((item: NavigationItem) => (
                 <div key={item.text}>
-                  <button
-                    onClick={() => setOpenDropdown(openDropdown === item.text ? null : item.text)}
-                    className="w-full text-left flex items-center justify-between text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors"
-                  >
-                    <span>{item.text}</span>
-                    {item.dropdownItems && (
-                      <ChevronDown className={`w-4 h-4 transform transition-transform ${
-                        openDropdown === item.text ? 'rotate-180' : ''
-                      }`} />
-                    )}
-                  </button>
-                  {openDropdown === item.text && item.dropdownItems && (
-                    <div className="pl-4 space-y-1 mt-1">
-                      {item.dropdownItems.map((subItem) => (
-                        <Link
-                          key={subItem.text}
-                          href={subItem.href}
-                          className="block text-gray-400 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors"
-                        >
-                          {subItem.text}
-                        </Link>
-                      ))}
-                    </div>
+                  {item.dropdownItems ? (
+                    <>
+                      <div
+                        onClick={() => setOpenDropdown(openDropdown === item.text ? null : item.text)}
+                        className="w-full text-left flex items-center justify-between text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <span>{item.text}</span>
+                        <ChevronDown className={`w-4 h-4 transform transition-transform ${
+                          openDropdown === item.text ? 'rotate-180' : ''
+                        }`} />
+                      </div>
+                      {openDropdown === item.text && (
+                        <div className="pl-4 space-y-1 mt-1">
+                          {item.dropdownItems.map((subItem) => (
+                            <Link
+                              key={subItem.text}
+                              href={subItem.href}
+                              className="block text-gray-400 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors"
+                            >
+                              {subItem.text}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="block text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors"
+                    >
+                      {item.text}
+                    </Link>
                   )}
                 </div>
               ))}
               <div className="pt-4 space-y-2">
-                <Button 
-                  onClick={() => router.push(buttons.signin.href)}
-                  variant="ghost" 
-                  className="w-full text-gray-300 hover:text-white hover:bg-gray-800"
-                >
-                  {buttons.signin.text}
-                </Button>
-                <Button 
-                  onClick={() => router.push(buttons.signup.href)}
-                  className="w-full bg-indigo-600 hover:bg-indigo-600 text-white"
-                >
-                  {buttons.signup.text}
-                </Button>
+                <Link href={buttons.signin.href} className="block w-full">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full text-gray-300 hover:text-white hover:bg-gray-800"
+                  >
+                    {buttons.signin.text}
+                  </Button>
+                </Link>
+                <Link href={buttons.signup.href} className="block w-full">
+                  <Button 
+                    className="w-full bg-indigo-600 hover:bg-indigo-600 text-white"
+                  >
+                    {buttons.signup.text}
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

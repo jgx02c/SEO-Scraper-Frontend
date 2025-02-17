@@ -1,0 +1,8 @@
+__turbopack_load_page_chunks__("/security", [
+  "static/chunks/[root of the server]__556444._.js",
+  "static/chunks/node_modules_next_05bcdd._.js",
+  "static/chunks/node_modules_react-dom_82bb97._.js",
+  "static/chunks/node_modules_53e540._.js",
+  "static/chunks/src_pages_security_5771e1._.js",
+  "static/chunks/src_pages_security_80019b._.js"
+])
