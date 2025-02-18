@@ -15,7 +15,7 @@ interface SubmitWebsiteResponse {
         throw new Error('No authentication token found');
       }
   
-      const response = await fetch(`http://127.0.0.1:8000/api/website/analyze`, {
+      const response = await fetch(`https://leaps-scraper.onrender.com/api/website/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
