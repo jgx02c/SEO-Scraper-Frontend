@@ -9,6 +9,16 @@
       "static/chunks/src_pages__app_5771e1._.js",
       "static/chunks/src_pages__app_3aea2c._.js"
     ],
+    "/": [
+      "static/chunks/[root of the server]__622703._.js",
+      "static/chunks/node_modules_next_03a9f7._.js",
+      "static/chunks/node_modules_react-dom_82bb97._.js",
+      "static/chunks/f4bb4_lodash_c3686a._.js",
+      "static/chunks/node_modules_recharts_es6_681e7d._.js",
+      "static/chunks/node_modules_0423a6._.js",
+      "static/chunks/src_pages_index_5771e1._.js",
+      "static/chunks/src_pages_index_646d99._.js"
+    ],
     "/_error": [
       "static/chunks/[root of the server]__31723f._.js",
       "static/chunks/node_modules_react-dom_82bb97._.js",
@@ -17,31 +27,13 @@
       "static/chunks/src_pages__error_5771e1._.js",
       "static/chunks/src_pages__error_ba917a._.js"
     ],
-    "/security": [
-      "static/chunks/[root of the server]__556444._.js",
+    "/pricing": [
+      "static/chunks/[root of the server]__3de83c._.js",
       "static/chunks/node_modules_next_05bcdd._.js",
       "static/chunks/node_modules_react-dom_82bb97._.js",
-      "static/chunks/node_modules_53e540._.js",
-      "static/chunks/src_pages_security_5771e1._.js",
-      "static/chunks/src_pages_security_80019b._.js"
-    ],
-    "/": [
-      "static/chunks/[root of the server]__622703._.js",
-      "static/chunks/node_modules_next_03a9f7._.js",
-      "static/chunks/node_modules_react-dom_82bb97._.js",
-      "static/chunks/f4bb4_lodash_c3686a._.js",
-      "static/chunks/node_modules_recharts_es6_681e7d._.js",
-      "static/chunks/node_modules_7764c4._.js",
-      "static/chunks/src_pages_index_5771e1._.js",
-      "static/chunks/src_pages_index_eddc64._.js"
-    ],
-    "/case-studies": [
-      "static/chunks/[root of the server]__624e5e._.js",
-      "static/chunks/node_modules_next_05bcdd._.js",
-      "static/chunks/node_modules_react-dom_82bb97._.js",
-      "static/chunks/node_modules_62f746._.js",
-      "static/chunks/src_pages_case-studies_5771e1._.js",
-      "static/chunks/src_pages_case-studies_f30140._.js"
+      "static/chunks/node_modules_73e8a6._.js",
+      "static/chunks/src_pages_pricing_5771e1._.js",
+      "static/chunks/src_pages_pricing_541ef2._.js"
     ]
   },
   "devFiles": [],

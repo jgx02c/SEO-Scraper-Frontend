@@ -9,8 +9,8 @@
     "static/chunks/node_modules_next_03a9f7._.js",
     "static/chunks/node_modules_react-dom_82bb97._.js",
     "static/chunks/f4bb4_lodash_c3686a._.js",
-    "static/chunks/node_modules_recharts_es6_681e7d._.js",
-    "static/chunks/node_modules_7764c4._.js"
+    "static/chunks/node_modules_recharts_es6_9e1dcf._.js",
+    "static/chunks/node_modules_01f2e9._.js"
   ],
   "source": "entry"
 });

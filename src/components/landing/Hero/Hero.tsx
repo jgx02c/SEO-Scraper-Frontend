@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Wand2 } from 'lucide-react';
+import { 
+  ArrowRight, 
+  Wand2,
+  Bot
+} from 'lucide-react';
 
 const platforms = [
   { name: 'Shopify', color: 'from-green-400 to-green-600' },
@@ -17,6 +21,7 @@ export const Hero = () => {
   const [platformIndex, setPlatformIndex] = useState(0);
   const [delta, setDelta] = useState(200);
   const [showIntegration, setShowIntegration] = useState(false);
+  const [websiteUrl, setWebsiteUrl] = useState('');
 
   useEffect(() => {
     let ticker = setInterval(() => {
@@ -47,35 +52,37 @@ export const Hero = () => {
     }
   };
 
+  const handleStartScan = () => {
+    if (websiteUrl) {
+      router.push(`/scan?url=${encodeURIComponent(websiteUrl)}`);
+    }
+  };
+
   return (
     <section className="pt-32 pb-20 px-4">
       <div className="max-w-7xl mx-auto text-center">
-        <div className="inline-flex items-center px-4 py-2 bg-indigo-900/30 rounded-full text-indigo-400 mb-4 space-x-2">
-          <Wand2 className="w-4 h-4" />
-          <span>AI-Powered SEO Team</span>
-        </div>
+        <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
+          AI Agents that Master
+          <br />
+          Your SEO Strategy
+        </h1>
         
-        <div className="relative mb-6">
-          <h1 className="text-5xl md:text-6xl font-bold text-white">
-            Your SEO Team That
-          </h1>
-          <div className="h-20 flex items-center justify-center">
-            <div className="flex items-center space-x-4">
-              <span className="text-5xl md:text-6xl font-bold text-white">Integrates with</span>
-              <div className="relative h-16">
-                <span className={`text-5xl md:text-6xl font-bold bg-gradient-to-r ${platforms[platformIndex].color} bg-clip-text text-transparent`}>
-                  {currentPlatform}
-                </span>
-                <span className="animate-pulse ml-1 text-5xl md:text-6xl font-bold text-white">|</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed">
+          Deploy intelligent agents that automatically optimize your SEO, track competitors, 
+          and adjust your strategy in real-time. Never fall behind in search rankings again.
+        </p>
 
-        <div className={`transition-all duration-500 transform ${showIntegration ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <div className="flex items-center justify-center space-x-4 mb-12">
+        <div className="mb-16">
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <p className="text-xl md:text-2xl text-gray-300">Integrates with</p>
+            <span className={`text-xl md:text-2xl font-semibold bg-gradient-to-r ${platforms[platformIndex].color} bg-clip-text text-transparent`}>
+              {currentPlatform}
+            </span>
+            <span className="text-xl md:text-2xl animate-pulse">|</span>
+          </div>
+          <div className="flex items-center justify-center space-x-4 mb-4">
             <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center">
-              <Wand2 className="w-8 h-8 text-indigo-400" />
+              <Bot className="w-8 h-8 text-indigo-400" />
             </div>
             <ArrowRight className="w-6 h-6 text-gray-400 animate-bounce" />
             <div className={`w-16 h-16 bg-gradient-to-r ${platforms[platformIndex].color} rounded-lg flex items-center justify-center`}>
@@ -84,31 +91,31 @@ export const Hero = () => {
           </div>
         </div>
 
-        <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
-          Deploy your personalized AI SEO team that seamlessly integrates with your existing website. Get expert optimization, content strategy, and ranking improvements without changing platforms.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Button
-            variant="default"
-            size="lg"
-            className="bg-indigo-600 hover:bg-indigo-500 text-white text-base font-semibold"
-            onClick={() => router.push('/signup')}
-          >
-            Start Free Trial
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="text-indigo-400 border-indigo-400 hover:bg-indigo-400/10 text-base font-semibold"
-            onClick={() => router.push('/demo')}
-          >
-            Watch Demo
-          </Button>
-        </div>
-
-        <div className="text-gray-400 text-sm">
-          Trusted by growing businesses worldwide • No credit card required
+        <div className="max-w-xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <input
+              type="text"
+              placeholder="Enter your website URL"
+              value={websiteUrl}
+              onChange={(e) => setWebsiteUrl(e.target.value)}
+              className="flex-1 h-14 px-4 rounded-lg bg-white/90 border border-gray-300 
+                         text-gray-900 text-lg placeholder-gray-500 
+                         focus:outline-none focus:border-indigo-500"
+            />
+            <Button
+              size="lg"
+              className="h-14 px-8 bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold whitespace-nowrap"
+              onClick={handleStartScan}
+            >
+              <span className="flex items-center">
+                Get Free SEO Scan
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </span>
+            </Button>
+          </div>
+          <p className="text-gray-400">
+            Instant analysis • No credit card required
+          </p>
         </div>
       </div>
     </section>
