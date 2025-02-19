@@ -3,6 +3,8 @@
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
   "/_error": "pages/_error.js",
-  "/pricing": "pages/pricing.js",
-  "/about": "pages/about.js"
+  "/signin": "pages/signin.js",
+  "/signup": "pages/signup.js",
+  "/onboarding": "pages/onboarding.js",
+  "/dashboard": "pages/dashboard.js"
 }

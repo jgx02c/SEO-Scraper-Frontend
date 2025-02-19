@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { submitWebsiteForAnalysis } from "./api/onboardingAPI";
+import { submitWebsiteForAnalysis, checkAnalysisStatus } from "./api/onboardingAPI";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LineChart, Bot, Rocket } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
+interface ScanStatus {
+  pages_scanned: number;
+  total_pages: number;
+  current_step: string;
+  estimated_time_remaining: number;
+  progress_percentage: number;
+}
+
+interface ScanStatus {
+  pages_scanned: number;
+  total_pages: number;
+  current_step: string;
+  estimated_time_remaining: number;
+  progress_percentage: number;
+}
 
 const OnboardingPage = () => {
   const router = useRouter();
@@ -14,26 +30,107 @@ const OnboardingPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
+  const [scanStatus, setScanStatus] = useState<ScanStatus>({
+    pages_scanned: 0,
+    total_pages: 0,
+    current_step: "",
+    estimated_time_remaining: 300,
+    progress_percentage: 0
+  });
+  
   const totalSteps = 3;
+  const POLLING_INTERVAL = 5000; // 5 seconds
+  
+  // Setup polling effect
+  useEffect(() => {
+    let pollTimer: NodeJS.Timeout | null = null;
+    
+    const poll = async () => {
+      console.log('Starting poll iteration, isProcessing:', isProcessing);
+      if (!isProcessing) return;
+
+      try {
+        const data = await checkAnalysisStatus();
+        console.log('Poll response data:', data);
+        
+        if (!data.success) {
+          console.error('Poll response indicates failure:', data);
+          throw new Error(data.error || 'Failed to check status');
+        }
+
+        // Update scan status even if we're in an intermediate state
+        setScanStatus({
+          pages_scanned: data.pages_scanned || 0,
+          total_pages: data.total_pages || 0,
+          current_step: data.current_step || "initializing",
+          estimated_time_remaining: data.estimated_time_remaining || 300,
+          progress_percentage: data.progress_percentage || 0
+        });
+
+        // Get status with fallbacks
+        const scanStatus = data.scan_status || data.status || 'processing';
+        console.log('Current scan status:', scanStatus);
+
+        if (scanStatus === 'completed' || scanStatus === 'complete') {
+          console.log('Analysis complete, preparing for dashboard redirect');
+          setIsProcessing(false);
+          router.push("/dashboard");
+        } else if (scanStatus === 'error') {
+          console.error('Scan reported error status:', data.error_message);
+          setError(data.error_message || 'An error occurred during processing');
+          setIsProcessing(false);
+        } else {
+          console.log('Processing continues, scheduling next poll');
+          pollTimer = setTimeout(poll, POLLING_INTERVAL);
+        }
+      } catch (err) {
+        console.error('Error during poll:', err);
+        // Don't stop polling on temporary errors, unless isProcessing is false
+        if (isProcessing) {
+          console.log('Scheduling retry despite error');
+          pollTimer = setTimeout(poll, POLLING_INTERVAL);
+        }
+      }
+    };
+
+    if (isProcessing) {
+      console.log('Initial poll setup');
+      poll();
+    }
+
+    return () => {
+      if (pollTimer) {
+        console.log('Cleaning up poll timer');
+        clearTimeout(pollTimer);
+      }
+    };
+  }, [isProcessing, router]);
 
   const handleUrlSubmit = async () => {
     if (!websiteUrl) {
       setError("Please enter your website URL");
-      return;
+      return false;
     }
     
     setIsLoading(true);
     setError("");
     
     try {
+      console.log('Submitting website for analysis:', websiteUrl);
       const result = await submitWebsiteForAnalysis(websiteUrl);
+      console.log('Submission result:', result);
       
       if (!result.success) {
-        throw new Error(result.error);
+        console.error('Submission failed:', result.error);
+        throw new Error(result.error || 'Submission failed');
       }
 
+      console.log('Setting processing state to true');
+      setIsProcessing(true);
+      startPolling();
       return true;
     } catch (err) {
+      console.error('Error during submission:', err);
       setError(err instanceof Error ? err.message : "Failed to submit website. Please try again.");
       setIsLoading(false);
       return false;
@@ -42,37 +139,81 @@ const OnboardingPage = () => {
 
   const checkProcessingStatus = async () => {
     try {
-      const response = await fetch('/api/check-status');
-      const data = await response.json();
+      console.log('Checking processing status...');
+      const data = await checkAnalysisStatus();
+      console.log('Status response:', data);
 
-      if (data.status === 'complete') {
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to check status');
+      }
+
+      setScanStatus({
+        pages_scanned: data.pages_scanned || 0,
+        total_pages: data.total_pages || 0,
+        current_step: data.current_step || "initializing",
+        estimated_time_remaining: data.estimated_time_remaining || 300,
+        progress_percentage: data.progress_percentage || 0
+      });
+
+      // Handle different status cases with type guards
+      const scanStatus = data.scan_status || 'unknown';
+      const status = data.status || 'unknown';
+
+      if (scanStatus === 'completed' || status === 'complete') {
+        console.log('Analysis complete, redirecting to dashboard');
         router.push("/dashboard");
-      } else if (data.status === 'processing') {
-        // Check again after 30 seconds
-        setTimeout(checkProcessingStatus, 30000);
+      } else if (scanStatus === 'error' || status === 'error') {
+        const errorMessage = data.error_message || data.error || 'Processing failed';
+        console.error('Processing error:', errorMessage);
+        setError(errorMessage);
+        setIsProcessing(false);
+      } else if (['initializing', 'scanning', 'generating_report', 'processing'].includes(scanStatus)) {
+        console.log('Still processing, continuing to poll...');
+        setTimeout(checkProcessingStatus, POLLING_INTERVAL);
       } else {
-        throw new Error('Processing failed');
+        console.error('Unknown status:', scanStatus);
+        setError('Unknown processing status');
+        setIsProcessing(false);
       }
     } catch (err) {
+      console.error('Status check error:', err);
       setError("Error checking status. Please contact support.");
       setIsLoading(false);
       setIsProcessing(false);
     }
   };
 
-  const handleNext = () => {
+  const startPolling = () => {
+    checkProcessingStatus();
+  };
+
+  const formatTimeRemaining = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const handleNext = async () => {
+    console.log('handleNext called, current step:', step);
+    
     if (step === 2 && !websiteUrl) {
       setError("Please enter your website URL");
       return;
     }
     
     if (step === 2) {
-      handleUrlSubmit().then(() => {
+      console.log('Attempting URL submission');
+      const success = await handleUrlSubmit();
+      console.log('URL submission result:', success);
+      if (success) {
+        console.log('Moving to next step');
         setStep(step + 1);
-      });
+      }
     } else if (step === 3) {
+      console.log('Redirecting to dashboard');
       router.push("/dashboard");
     } else {
+      console.log('Moving to next step');
       setStep(step + 1);
     }
   };
@@ -90,23 +231,40 @@ const OnboardingPage = () => {
     }
   };
 
+  // Processing screen with detailed status
   if (isProcessing) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-2xl space-y-8 text-center">
           <Bot className="w-16 h-16 text-blue-400 mx-auto animate-pulse" />
-          <h2 className="text-2xl font-bold text-white">Preparing Your Dashboard</h2>
-          <p className="text-gray-400">
-            We're analyzing your website and gathering competitive insights. 
-            This process typically takes 5-10 minutes. You'll be automatically 
-            redirected when it's ready.
-          </p>
-          <div className="w-full max-w-md mx-auto">
-            <Progress 
-              value={100}
-              className="w-full h-2 bg-gray-700 animate-pulse"
-            />
+          <h2 className="text-2xl font-bold text-white">Analyzing Your Website</h2>
+          
+          <div className="space-y-4">
+            <p className="text-gray-400">
+              Current Step: {scanStatus.current_step}
+            </p>
+            
+            <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700">
+              <div className="flex justify-between text-sm text-gray-400 mb-2">
+                <span>Pages Scanned: {scanStatus.pages_scanned}</span>
+                <span>Total Pages: {scanStatus.total_pages || 'Calculating...'}</span>
+              </div>
+              <Progress 
+                value={scanStatus.progress_percentage}
+                className="w-full h-2 bg-gray-700"
+              />
+            </div>
+            
+            <p className="text-gray-400">
+              Estimated Time Remaining: {formatTimeRemaining(scanStatus.estimated_time_remaining)}
+            </p>
           </div>
+
+          {error && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
         </div>
       </div>
     );
@@ -189,15 +347,15 @@ const OnboardingPage = () => {
 
           <Button
             onClick={handleNext}
-            disabled={isLoading}
+            disabled={step === 2 && isLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-lg transition-all duration-200 ease-in-out flex items-center justify-center space-x-2"
           >
             <span>
-              {isLoading ? "Processing..." : 
+              {step === 2 && isLoading ? "Processing..." : 
                step === totalSteps ? "Go to Dashboard" : 
                step === 2 ? "Start Analysis" : "Continue"}
             </span>
-            {isLoading && (
+            {step === 2 && isLoading && (
               <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
