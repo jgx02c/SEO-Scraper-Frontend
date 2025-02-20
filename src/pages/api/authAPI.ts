@@ -22,7 +22,7 @@ interface UserState {
 
 export const signIn = async (email: string, password: string): Promise<AuthResponse> => {
   try {
-    const response = await fetch(`https://leaps-scraper.onrender.com/api/auth/signin`, {
+    const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/auth/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ export const signIn = async (email: string, password: string): Promise<AuthRespo
 
 export const signUp = async (email: string, password: string): Promise<AuthResponse> => {
   try {
-    const response = await fetch(`https://leaps-scraper.onrender.com/api/auth/signup`, {
+    const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ export const signUp = async (email: string, password: string): Promise<AuthRespo
 
 export const forgotPassword = async (email: string): Promise<AuthResponse> => {
   try {
-    const response = await fetch(`https://leaps-scraper.onrender.com/api/auth/forgot-password`, {
+    const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/auth/forgot-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ export const forgotPassword = async (email: string): Promise<AuthResponse> => {
 
 export const resetPassword = async (token: string, newPassword: string): Promise<AuthResponse> => {
   try {
-    const response = await fetch(`https://leaps-scraper.onrender.com/api/auth/reset-password`, {
+    const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/auth/reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export const checkUserState = async (): Promise<UserState | null> => {
       throw new Error('No authentication token found');
     }
 
-    const response = await fetch(`https://leaps-scraper.onrender.com/api/user/state`, {
+    const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/user/state`, {
       headers: {
         'Authorization': `Bearer ${token}`
       },
@@ -180,7 +180,7 @@ export const updateOnboardingStatus = async (completed: boolean): Promise<AuthRe
       throw new Error('No authentication token found');
     }
 
-    const response = await fetch(`https://leaps-scraper.onrender.com/api/user/onboarding`, {
+    const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/user/onboarding`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
