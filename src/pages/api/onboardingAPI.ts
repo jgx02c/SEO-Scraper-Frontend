@@ -29,7 +29,7 @@ export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisRes
     }
 
     console.log('Making API request to analyze endpoint');
-    const response = await fetch(`https://render-reverse-proxy-u71r.onrender.com/api/website/analyze`, {
+    const response = await fetch(`https://render-reverse-proxy-3ap6.onrender.com/api/website/analyze`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
     }
 
     console.log('Requesting status update...');
-    const response = await fetch(`https://render-reverse-proxy-u71r.onrender.com/api/website/status`, {
+    const response = await fetch(`https://render-reverse-proxy-3ap6.onrender.com/api/website/status`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
