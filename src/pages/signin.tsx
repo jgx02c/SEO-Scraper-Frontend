@@ -45,6 +45,7 @@ const SignInPage = () => {
       if (!userState.hasCompletedOnboarding) {
         router.push("/onboarding");
       } else {
+        console.log("The user has finished the onbording");
         router.push("/dashboard");
       }
     } catch (err) {

@@ -166,7 +166,7 @@ const submitWebsiteForAnalysis = async (url)=>{
             throw new Error('No authentication token found');
         }
         console.log('Making API request to analyze endpoint');
-        const response = await fetch(`https://leaps-scraper.onrender.com/api/website/analyze`, {
+        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/website/analyze`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ const checkAnalysisStatus = async ()=>{
             throw new Error('No authentication token found');
         }
         console.log('Requesting status update...');
-        const response = await fetch(`https://leaps-scraper.onrender.com/api/website/status`, {
+        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/website/status`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
