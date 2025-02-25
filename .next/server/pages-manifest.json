@@ -1,9 +1,10 @@
 {
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
-  "/dashboard": "pages/dashboard.js",
-  "/signin": "pages/signin.js",
+  "/": "pages/index.js",
   "/_error": "pages/_error.js",
+  "/signin": "pages/signin.js",
+  "/signup": "pages/signup.js",
   "/onboarding": "pages/onboarding.js",
-  "/": "pages/index.js"
+  "/dashboard": "pages/dashboard.js"
 }
