@@ -1,8 +1,8 @@
 __turbopack_load_page_chunks__("/privacy", [
-  "static/chunks/[root of the server]__07aae8._.js",
-  "static/chunks/node_modules_next_05bcdd._.js",
+  "static/chunks/node_modules_next_0f88d9._.js",
   "static/chunks/node_modules_react-dom_82bb97._.js",
-  "static/chunks/node_modules_debed7._.js",
-  "static/chunks/src_pages_privacy_5771e1._.js",
-  "static/chunks/src_pages_privacy_f79335._.js"
+  "static/chunks/node_modules_1b5afe._.js",
+  "static/chunks/[root of the server]__e2dcd6._.js",
+  "static/chunks/src_pages_signin_5771e1._.js",
+  "static/chunks/src_pages_signin_e7d3a0._.js"
 ])

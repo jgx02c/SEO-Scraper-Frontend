@@ -351,16 +351,35 @@ var { r: __turbopack_require__, f: __turbopack_module_context__, i: __turbopack_
 {
 // utils/auth-api.ts
 __turbopack_esm__({
-    "checkUserState": (()=>checkUserState),
     "forgotPassword": (()=>forgotPassword),
+    "logout": (()=>logout),
     "resetPassword": (()=>resetPassword),
     "signIn": (()=>signIn),
-    "signUp": (()=>signUp),
-    "updateOnboardingStatus": (()=>updateOnboardingStatus)
+    "signUp": (()=>signUp)
 });
+// Define a global base URL
+const BASE_URL = 'http://127.0.0.1:8000';
+// Helper function to handle API responses
+const handleResponse = async (response)=>{
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.detail || 'API request failed');
+    }
+    return data;
+};
+// Helper function to get auth header
+const getAuthHeader = ()=>{
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    return {
+        'Authorization': `Bearer ${token}`
+    };
+};
 const signIn = async (email, password)=>{
     try {
-        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/auth/signin`, {
+        const response = await fetch(`${BASE_URL}/api/auth/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -370,10 +389,7 @@ const signIn = async (email, password)=>{
                 password
             })
         });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.detail || 'Failed to sign in');
-        }
+        const data = await handleResponse(response);
         // Store JWT token
         if (data.token) {
             localStorage.setItem('jwt_token', data.token);
@@ -391,22 +407,21 @@ const signIn = async (email, password)=>{
         };
     }
 };
-const signUp = async (email, password)=>{
+const signUp = async (email, password, name)=>{
     try {
-        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/auth/signup`, {
+        const userData = {
+            email,
+            password,
+            name
+        };
+        const response = await fetch(`${BASE_URL}/api/auth/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                email,
-                password
-            })
+            body: JSON.stringify(userData)
         });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.detail || 'Failed to sign up');
-        }
+        const data = await handleResponse(response);
         // Store JWT token
         if (data.token) {
             localStorage.setItem('jwt_token', data.token);
@@ -426,7 +441,7 @@ const signUp = async (email, password)=>{
 };
 const forgotPassword = async (email)=>{
     try {
-        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/auth/forgot-password`, {
+        const response = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -435,10 +450,7 @@ const forgotPassword = async (email)=>{
                 email
             })
         });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.detail || 'Failed to process request');
-        }
+        const data = await handleResponse(response);
         return {
             success: true,
             message: data.message
@@ -452,7 +464,7 @@ const forgotPassword = async (email)=>{
 };
 const resetPassword = async (token, newPassword)=>{
     try {
-        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/auth/reset-password`, {
+        const response = await fetch(`${BASE_URL}/api/auth/reset-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -462,10 +474,7 @@ const resetPassword = async (token, newPassword)=>{
                 new_password: newPassword
             })
         });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.detail || 'Failed to reset password');
-        }
+        const data = await handleResponse(response);
         return {
             success: true,
             message: data.message
@@ -477,57 +486,9 @@ const resetPassword = async (token, newPassword)=>{
         };
     }
 };
-const checkUserState = async ()=>{
-    try {
-        const token = localStorage.getItem('jwt_token');
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/user/state`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        if (!response.ok) {
-            throw new Error('Failed to fetch user state');
-        }
-        const data = await response.json();
-        return data.state;
-    } catch (error) {
-        console.error('Error checking user state:', error);
-        return null;
-    }
-};
-const updateOnboardingStatus = async (completed)=>{
-    try {
-        const token = localStorage.getItem('jwt_token');
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/user/onboarding`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                completed
-            })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.detail || 'Failed to update onboarding status');
-        }
-        return {
-            success: true,
-            message: data.message
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An unknown error occurred'
-        };
-    }
+const logout = ()=>{
+    localStorage.removeItem('jwt_token');
+// Add any other cleanup needed
 };
 }}),
 "[project]/src/pages/signin.tsx [ssr] (ecmascript)": ((__turbopack_context__) => {

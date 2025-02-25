@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { submitWebsiteForAnalysis, checkAnalysisStatus } from "./api/onboardingAPI";
+import { submitWebsiteForAnalysis, checkAnalysisStatus } from "@/api/website-api";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LineChart, Bot, Rocket } from "lucide-react";

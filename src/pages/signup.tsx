@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { signUp } from "./api/authAPI";
+import { signUp } from "@/api/auth-api";
 
 interface FormState {
   email: string;

@@ -1038,8 +1038,14 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/react/index.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/ui/card.tsx [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dashboard$2f$tabs$2f$Overview$2f$OverviewSkeletion$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/dashboard/tabs/Overview/OverviewSkeletion.tsx [client] (ecmascript)");
+(()=>{
+    const e = new Error("Cannot find module '@/utils/overviewAPI'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
 ;
 var _s = __turbopack_refresh__.signature();
+;
 ;
 ;
 ;
@@ -1047,35 +1053,79 @@ const Overview = ({ stats })=>{
     _s();
     const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(true);
     const [data, setData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Overview.useEffect": ()=>{
-            const fetchOverviewData = {
-                "Overview.useEffect.fetchOverviewData": async ()=>{
+            const loadOverviewData = {
+                "Overview.useEffect.loadOverviewData": async ()=>{
                     try {
-                        // Simulate API call
-                        await new Promise({
-                            "Overview.useEffect.fetchOverviewData": (resolve)=>setTimeout(resolve, 1500)
-                        }["Overview.useEffect.fetchOverviewData"]);
-                        // Replace with actual API call
-                        const response = await fetch('https://scope-fastapi-194s.onrender.com/api/dashboard/overview');
-                        if (!response.ok) throw new Error('Failed to fetch overview data');
-                        const data = await response.json();
-                        setData(data);
-                    } catch (error) {
-                        console.error('Error fetching overview data:', error);
+                        setIsLoading(true);
+                        // Using the API function from the separate file
+                        const response = await fetchOverviewData();
+                        if (response.success && response.data) {
+                            setData(response.data);
+                        } else {
+                            setError(response.error || 'Failed to load overview data');
+                        }
+                    } catch (err) {
+                        console.error('Error loading overview data:', err);
+                        setError('An unexpected error occurred');
                     } finally{
                         setIsLoading(false);
                     }
                 }
-            }["Overview.useEffect.fetchOverviewData"];
-            fetchOverviewData();
+            }["Overview.useEffect.loadOverviewData"];
+            loadOverviewData();
         }
     }["Overview.useEffect"], []);
     if (isLoading) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$dashboard$2f$tabs$2f$Overview$2f$OverviewSkeletion$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
             fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
-            lineNumber: 36,
+            lineNumber: 40,
             columnNumber: 12
+        }, this);
+    }
+    if (error) {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "space-y-6",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    className: "text-2xl font-semibold text-white",
+                    children: "Overview"
+                }, void 0, false, {
+                    fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
+                    lineNumber: 46,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Card"], {
+                    className: "bg-gray-800/50 backdrop-blur-xl border-gray-700",
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["CardContent"], {
+                        className: "p-6 text-red-400",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            children: [
+                                "Error: ",
+                                error
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
+                            lineNumber: 49,
+                            columnNumber: 13
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
+                        lineNumber: 48,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
+                    lineNumber: 47,
+                    columnNumber: 9
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
+            lineNumber: 45,
+            columnNumber: 7
         }, this);
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1086,7 +1136,7 @@ const Overview = ({ stats })=>{
                 children: "Overview"
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
-                lineNumber: 41,
+                lineNumber: 58,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1095,36 +1145,46 @@ const Overview = ({ stats })=>{
                     className: "bg-gray-800/50 backdrop-blur-xl border-gray-700",
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["CardContent"], {
                         className: "p-6",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            children: "Overview Content"
-                        }, void 0, false, {
-                            fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
-                            lineNumber: 46,
-                            columnNumber: 13
-                        }, this)
-                    }, void 0, false, {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                children: "Overview Content"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
+                                lineNumber: 63,
+                                columnNumber: 13
+                            }, this),
+                            data && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("pre", {
+                                className: "text-xs overflow-auto",
+                                children: JSON.stringify(data, null, 2)
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
+                                lineNumber: 64,
+                                columnNumber: 22
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
-                        lineNumber: 45,
+                        lineNumber: 62,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
-                    lineNumber: 44,
+                    lineNumber: 61,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
-                lineNumber: 42,
+                lineNumber: 59,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/tabs/Overview/Overview.tsx",
-        lineNumber: 40,
+        lineNumber: 57,
         columnNumber: 5
     }, this);
 };
-_s(Overview, "LtZYNukHLKbHpMh85ZP+0jQDHH0=");
+_s(Overview, "Ejqx0yYTv64a6DPlcEDqUtqVFQ8=");
 _c = Overview;
 var _c;
 __turbopack_refresh__.register(_c, "Overview");
@@ -2452,6 +2512,8 @@ __turbopack_esm__({
     "ApiError": (()=>ApiError),
     "api": (()=>api)
 });
+// Define global base URL
+const BASE_URL = 'http://127.0.0.1:8000';
 class ApiError extends Error {
     status;
     constructor(status, message){
@@ -2461,7 +2523,7 @@ class ApiError extends Error {
 }
 const api = {
     async validateToken (token) {
-        const response = await fetch('https://scope-fastapi-194s.onrender.com/api/auth/validate', {
+        const response = await fetch(`${BASE_URL}/api/auth/validate`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -2476,7 +2538,7 @@ const api = {
         return data.user;
     },
     async getUserProfile (token) {
-        const response = await fetch('https://scope-fastapi-194s.onrender.com/api/user/profile', {
+        const response = await fetch(`${BASE_URL}/api/user/profile`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -3024,7 +3086,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 
 var { r: __turbopack_require__, f: __turbopack_module_context__, i: __turbopack_import__, s: __turbopack_esm__, v: __turbopack_export_value__, n: __turbopack_export_namespace__, c: __turbopack_cache__, M: __turbopack_modules__, l: __turbopack_load__, j: __turbopack_dynamic__, P: __turbopack_resolve_absolute_path__, U: __turbopack_relative_url__, R: __turbopack_resolve_module_id_path__, b: __turbopack_worker_blob_url__, g: global, __dirname, m: module, e: exports, t: __turbopack_require_real__ } = __turbopack_context__;
 {
-const PAGE_PATH = "/dashboard";
+const PAGE_PATH = "/terms";
 (window.__NEXT_P = window.__NEXT_P || []).push([
     PAGE_PATH,
     ()=>{

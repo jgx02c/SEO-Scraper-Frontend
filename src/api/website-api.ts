@@ -1,4 +1,7 @@
-// utils/api.ts
+// utils/website-api.ts
+
+// Define global base URL
+const BASE_URL = 'http://127.0.0.1:8000';
 
 interface AnalysisResponse {
   success: boolean;
@@ -27,29 +30,30 @@ export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisRes
     if (!token) {
       throw new Error('No authentication token found');
     }
-
+    
     console.log('Making API request to analyze endpoint');
-    const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/website/analyze`, {
+    // Update the endpoint to match the new structure
+    const response = await fetch(`${BASE_URL}/api/data/analysis/start`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ url })
+      body: JSON.stringify({ website_url: url })
     });
-
+    
     console.log('Received response:', response.status);
     const data = await response.json();
     console.log('Response data:', data);
-
+    
     if (!response.ok) {
       throw new Error(data.detail || data.message || 'Failed to submit website');
     }
-
+    
     return {
       success: true,
       message: data.message,
-      url: data.url,
+      url: data.website_url || url,
       status: data.status,
       scan_status: data.scan_status,
       business_id: data.business_id
@@ -69,24 +73,25 @@ export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
     if (!token) {
       throw new Error('No authentication token found');
     }
-
+    
     console.log('Requesting status update...');
-    const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/website/status`, {
+    // Update the endpoint to match the new structure
+    const response = await fetch(`${BASE_URL}/api/data/analysis/status`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
     });
-
+    
     console.log('Status response received:', response.status);
     const data = await response.json();
     console.log('Status data:', data);
-
+    
     if (!response.ok) {
       throw new Error(data.detail || 'Failed to check status');
     }
-
+    
     return {
       success: true,
       status: data.status,
@@ -100,11 +105,47 @@ export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
       business_id: data.business_id,
       report_generated: data.report_generated,
       last_updated: data.last_updated,
-      website_url: data.website_url,
-      isComplete: data.isComplete
+      website_url: data.websiteUrl || data.website_url,
+      isComplete: data.status === 'complete' || data.isComplete
     };
   } catch (error) {
     console.error('Error checking status:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'An unknown error occurred'
+    };
+  }
+};
+
+export const getAnalysisData = async () => {
+  try {
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    const response = await fetch(`${BASE_URL}/api/data/analysis`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to retrieve analysis data');
+    }
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to retrieve analysis data');
+    }
+    
+    return {
+      success: true,
+      data: data.data
+    };
+  } catch (error) {
+    console.error('Error retrieving analysis data:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'An unknown error occurred'

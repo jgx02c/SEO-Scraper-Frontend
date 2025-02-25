@@ -154,10 +154,12 @@ module.exports = mod;
 var { r: __turbopack_require__, f: __turbopack_module_context__, i: __turbopack_import__, s: __turbopack_esm__, v: __turbopack_export_value__, n: __turbopack_export_namespace__, c: __turbopack_cache__, M: __turbopack_modules__, l: __turbopack_load__, j: __turbopack_dynamic__, P: __turbopack_resolve_absolute_path__, U: __turbopack_relative_url__, R: __turbopack_resolve_module_id_path__, b: __turbopack_worker_blob_url__, g: global, __dirname, x: __turbopack_external_require__, y: __turbopack_external_import__, z: __turbopack_require_stub__ } = __turbopack_context__;
 {
 // utils/api.ts
+// Define global base URL
 __turbopack_esm__({
     "checkAnalysisStatus": (()=>checkAnalysisStatus),
     "submitWebsiteForAnalysis": (()=>submitWebsiteForAnalysis)
 });
+const BASE_URL = 'http://127.0.0.1:8000';
 const submitWebsiteForAnalysis = async (url)=>{
     try {
         console.log('Starting website submission for URL:', url);
@@ -166,7 +168,7 @@ const submitWebsiteForAnalysis = async (url)=>{
             throw new Error('No authentication token found');
         }
         console.log('Making API request to analyze endpoint');
-        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/website/analyze`, {
+        const response = await fetch(`${BASE_URL}/api/website/analyze`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -205,7 +207,7 @@ const checkAnalysisStatus = async ()=>{
             throw new Error('No authentication token found');
         }
         console.log('Requesting status update...');
-        const response = await fetch(`https://scope-fastapi-194s.onrender.com/api/website/status`, {
+        const response = await fetch(`${BASE_URL}/api/website/status`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

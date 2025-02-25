@@ -27,7 +27,7 @@ import {
   HelpCircle,
   LogOut
 } from 'lucide-react';
-import { api } from '../api/dashboardAPI';
+import { api } from '@/api/dashboard-api';
 import type { UserProfile } from './types';
 
 // Navigation data - could be moved to a separate file
