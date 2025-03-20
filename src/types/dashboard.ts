@@ -18,6 +18,17 @@ export interface UserMenuItem {
   icon: string;
 }
 
+export interface UserProfile {
+  id?: string;
+  name?: string;
+  email: string;
+  company?: string;
+  role?: string;
+  hasCompletedOnboarding?: boolean;
+  roles?: string[];
+  website_url?: string;
+}
+
 export interface NavigationData {
   mainNavigation: NavigationItem[];
   userMenu: UserMenuItem[];
@@ -29,17 +40,6 @@ export interface DashboardData {
 }
 
 // types/dashboard.ts
-
-export interface UserProfile {
-  id?: string;
-  email: string;
-  name?: string;
-  company?: string;
-  role?: string;
-  hasCompletedOnboarding: boolean;
-  roles?: string[];
-  website_url?: string;
-}
 
 export interface AnalysisState {
   status: string;

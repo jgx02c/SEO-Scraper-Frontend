@@ -1,3 +1,16 @@
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown";
+import { Button } from "@/components/ui/button";
+import { Activity, Loader2 } from "lucide-react";
+import { ComponentLoader } from "@/components/dashboard/shared/ComponentLoader";
 import { 
   LayoutDashboard, 
   LineChart, 
@@ -14,7 +27,7 @@ import {
   HelpCircle,
   LogOut
 } from 'lucide-react';
-import { NavigationItem, UserMenuItem, UserProfile } from './types';
+import { NavigationItem, UserMenuItem, UserProfile } from '@/types/dashboard';
 
 // Dummy data (you might want to move this to a separate JSON file later)
 const navigationData = {

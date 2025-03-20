@@ -38,15 +38,15 @@ const SignInPage = () => {
       // Check user's onboarding status
       const userState = await checkUserState();
       
-      if (!userState) {
+      if (!userState.success || !userState.state) {
         throw new Error('Failed to get user state');
       }
 
       // Route based on onboarding status
-      if (!userState.hasCompletedOnboarding) {
+      if (!userState.state.hasCompletedOnboarding) {
         router.push("/onboarding");
       } else {
-        console.log("The user has finished the onbording");
+        console.log("The user has finished the onboarding");
         router.push("/dashboard");
       }
     } catch (err) {

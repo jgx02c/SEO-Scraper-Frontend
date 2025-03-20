@@ -28,7 +28,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { api } from '@/api/dashboard-api';
-import type { UserProfile } from './types';
+import type { UserProfile } from '@/types/dashboard';
 
 // Navigation data - could be moved to a separate file
 const navigationData = {

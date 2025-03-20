@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, CheckCircle, AlertTriangle, AlertCircle, FileText, Gauge } from "lucide-react";
 import OverviewSkeleton from './OverviewSkeletion';
-import { fetchOverviewData } from '@/pages/api/overviewAPI';
+import { fetchOverviewData } from '@/api/dashboard-api';
 
 // Interface for our SEO report data structure
 interface SeoReportData {

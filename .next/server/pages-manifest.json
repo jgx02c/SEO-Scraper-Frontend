@@ -1,7 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_document": "pages/_document.js",
-  "/signin": "pages/signin.js",
-  "/_error": "pages/_error.js",
-  "/onboarding": "pages/onboarding.js"
-}
+{"/_app":"pages/_app.js","/_error":"pages/_error.js","/_document":"pages/_document.js","/about":"pages/about.html","/blog/[postId]":"pages/blog/[postId].html","/blog":"pages/blog.html","/careers":"pages/careers.html","/dashboard":"pages/dashboard.html","/case-studies":"pages/case-studies.html","/":"pages/index.html","/onboarding":"pages/onboarding.html","/pricing":"pages/pricing.html","/privacy":"pages/privacy.html","/security":"pages/security.html","/signin":"pages/signin.html","/signup":"pages/signup.html","/terms":"pages/terms.html","/dashboard/parsedata":"pages/dashboard/parsedata.html","/404":"pages/404.html"}

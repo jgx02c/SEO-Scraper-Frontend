@@ -11,6 +11,63 @@ export class ApiError extends Error {
   }
 }
 
+interface SeoReportData {
+  business_id: string;
+  report_date: string;
+  filename: string;
+  insights_count: {
+    "Immediate Action Required": number;
+    "Needs Attention": number;
+    "Good Practice": number;
+  };
+  total_insights: number;
+  page_reports: Array<{
+    website_url: string;
+    insights_count: {
+      "Immediate Action Required": number;
+      "Needs Attention": number;
+      "Good Practice": number;
+    };
+    error_citations: Array<any>;
+  }>;
+}
+
+interface OverviewResponse {
+  success: boolean;
+  data?: SeoReportData;
+  error?: string;
+}
+
+export const fetchOverviewData = async (): Promise<OverviewResponse> => {
+  const token = localStorage.getItem('jwt_token');
+  if (!token) {
+    throw new ApiError(401, 'No authentication token found');
+  }
+
+  const response = await fetch(`${BASE_URL}/api/seo/overview`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    throw new ApiError(response.status, 'Failed to fetch overview data');
+  }
+
+  const data = await response.json();
+  if (!data.success) {
+    return {
+      success: false,
+      error: data.error || 'Failed to fetch overview data'
+    };
+  }
+
+  return {
+    success: true,
+    data: data.report
+  };
+};
+
 export const api = {
   async validateToken(token: string): Promise<UserProfile> {
     const response = await fetch(`${BASE_URL}/api/auth/me`, {
@@ -159,5 +216,7 @@ export const api = {
     }
 
     return data.state;
-  }
+  },
+
+  fetchOverviewData,
 };
