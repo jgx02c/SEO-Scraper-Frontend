@@ -51,7 +51,13 @@ export const checkUserState = async (): Promise<UserStateResponse> => {
     const headers = getAuthHeader();
     
     const response = await fetch(`${BASE_URL}/api/users/state`, {
-      headers
+      method: 'GET',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'include'
     });
 
     const data = await handleResponse(response);
