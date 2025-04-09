@@ -1,46 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# SEO Scraper Frontend
+
+A modern web application built with Next.js that provides comprehensive SEO analysis, competitor tracking, and website optimization tools. This project serves as the frontend interface for the SEO Scraper tool, offering an intuitive dashboard for managing and analyzing SEO data.
+
+## Developer
+- **Developer**: Joshua Goodman
+- **GitHub**: [jgx02c](https://github.com/jgx02c)
+- **Project**: SEO Scraper Frontend
+
+## Features
+
+- 📊 **Interactive Dashboard**: Comprehensive overview of SEO metrics and website performance
+- 🔍 **Competitor Analysis**: Track and analyze competitor websites and strategies
+- 📈 **Traffic Analytics**: Detailed traffic analysis and performance metrics
+- 📑 **Reports**: Generate and view detailed SEO and performance reports
+- 🤖 **AI Integration**: AI-powered content suggestions and SEO improvements
+- 💬 **Chat Interface**: Interactive chat system for SEO queries and assistance
+- 📱 **Responsive Design**: Fully responsive interface that works on all devices
+- 🎯 **Ad Campaign Tracking**: Monitor and analyze advertising campaign performance
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Custom components with shadcn/ui
+- **Charts**: Recharts
+- **State Management**: React Context
+- **Authentication**: Custom auth implementation
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+ 
+- npm or yarn
+- Git
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/jgx02c/SEO-Scraper-Frontend.git
+   cd SEO-Scraper-Frontend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+
+## Project Structure
+
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
-
-
-## Layout
 src/
 ├── pages/
 │   ├── dashboard/
@@ -63,3 +85,43 @@ src/
 │   └── ui/                # Generic UI components
 └── types/
     └── dashboard.ts       # Dashboard-related types
+```
+
+## Key Features Breakdown
+
+### Dashboard
+- Overview tab with key metrics
+- Traffic analysis
+- Analytics reporting
+- File management
+- Ad campaign tracking
+- Competitor analysis
+- AI-powered suggestions
+- Interactive chat support
+
+### Landing Page
+- Modern, responsive design
+- Feature showcases
+- Pricing information
+- Case studies
+- Blog section
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Deployment
+
+The application is configured for deployment on Vercel. For other deployment options, please refer to the [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying).
+
+## Support
+
+For support, please open an issue in the GitHub repository or contact the developer directly.
+
+---
+
+Built with ❤️ by Joshua Goodman
