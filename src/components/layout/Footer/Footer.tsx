@@ -65,13 +65,8 @@ export const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Contact</h3>
             <ul className="space-y-3">
               <li>
-                <a href="mailto:contact@scopelabs.ai" className="text-gray-400 hover:text-indigo-400 transition-colors">
-                  contact@scopelabs.ai
-                </a>
-              </li>
-              <li>
-                <a href="https://scopelabs.ai" className="text-gray-400 hover:text-indigo-400 transition-colors">
-                  scopelabs.ai
+                <a href="mailto:contact@scopelabsai.com" className="text-gray-400 hover:text-indigo-400 transition-colors">
+                  contact@scopelabsai.com
                 </a>
               </li>
             </ul>
@@ -82,7 +77,7 @@ export const Footer = () => {
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              © 2024 Scope Labs. All rights reserved.
+              © 2025 Scope Labs. All rights reserved.
             </div>
             <div className="flex space-x-6">
               {social.map((item) => (

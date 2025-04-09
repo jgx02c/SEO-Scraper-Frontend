@@ -1,0 +1,88 @@
+{
+  "userProfile": {
+    "id": "1",
+    "name": "John Doe",
+    "email": "john@scopelabs.com",
+    "company": "Scope Labs",
+    "role": "Admin"
+  },
+  "navigationData": {
+    "mainNavigation": [
+      { 
+        "id": "overview", 
+        "label": "Overview", 
+        "icon": "LayoutDashboard" 
+      },
+      {
+        "id": "traffic",
+        "label": "Traffic",
+        "icon": "LineChart",
+        "subItems": [
+          { "id": "website-traffic", "label": "Website Traffic" },
+          { "id": "social-traffic", "label": "Social Media Traffic" },
+          { "id": "ads-performance", "label": "Ads Performance" }
+        ]
+      },
+      {
+        "id": "analytics",
+        "label": "Analytics",
+        "icon": "BarChart2",
+        "subItems": [
+          { "id": "seo-performance", "label": "SEO Performance" },
+          { "id": "user-behavior", "label": "User Behavior" },
+          { "id": "historical-data", "label": "Historical Data" }
+        ]
+      },
+      {
+        "id": "content",
+        "label": "Content",
+        "icon": "FileText",
+        "subItems": [
+          { "id": "pages", "label": "Pages" },
+          { "id": "blog-posts", "label": "Blog Posts" },
+          { "id": "media", "label": "Media Library" }
+        ]
+      },
+      {
+        "id": "projects",
+        "label": "Projects",
+        "icon": "Folder",
+        "subItems": [
+          { "id": "active-projects", "label": "Active Projects" },
+          { "id": "archived", "label": "Archived" }
+        ]
+      },
+      {
+        "id": "campaigns",
+        "label": "Campaigns",
+        "icon": "Radio",
+        "subItems": [
+          { "id": "email", "label": "Email Campaigns" },
+          { "id": "social", "label": "Social Campaigns" }
+        ]
+      },
+      {
+        "id": "search",
+        "label": "Search Console",
+        "icon": "Search"
+      },
+      {
+        "id": "integrations",
+        "label": "Integrations",
+        "icon": "Cpu"
+      },
+      {
+        "id": "messages",
+        "label": "Messages",
+        "icon": "MessageSquare"
+      }
+    ],
+    "userMenu": [
+      { "id": "profile", "label": "Profile Settings", "icon": "User" },
+      { "id": "billing", "label": "Billing", "icon": "CreditCard" },
+      { "id": "settings", "label": "Account Settings", "icon": "Settings" },
+      { "id": "help", "label": "Help & Support", "icon": "HelpCircle" },
+      { "id": "logout", "label": "Sign Out", "icon": "LogOut" }
+    ]
+  }
+}

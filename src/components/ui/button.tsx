@@ -1,10 +1,9 @@
-// components/Button.tsx
 import React, { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   children: ReactNode;
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'purple';
   size?: 'default' | 'sm' | 'lg' | 'icon';
 }
 
@@ -15,7 +14,8 @@ const getVariantStyles = (variant: ButtonProps['variant'] = 'default') => {
     outline: 'border border-gray-300 bg-transparent hover:bg-gray-100',
     secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
     ghost: 'hover:bg-gray-100',
-    link: 'text-blue-600 underline-offset-4 hover:underline'
+    link: 'text-blue-600 underline-offset-4 hover:underline',
+    purple: 'bg-indigo-600 text-white hover:bg-indigo-600'
   };
   return variants[variant];
 };
@@ -24,7 +24,7 @@ const getSizeStyles = (size: ButtonProps['size'] = 'default') => {
   const sizes = {
     default: 'h-9 px-4 py-2',
     sm: 'h-8 px-3 py-1 text-sm',
-    lg: 'h-10 px-8 py-3',
+    lg: 'h-12 px-8 py-3',
     icon: 'h-9 w-9 p-2'
   };
   return sizes[size];
