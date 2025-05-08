@@ -169,7 +169,6 @@ const submitWebsiteForAnalysis = async (url)=>{
             throw new Error('No authentication token found');
         }
         console.log('Making API request to analyze endpoint');
-        // Update the endpoint to match the new structure
         const response = await fetch(`${BASE_URL}/api/data/analysis/start`, {
             method: 'POST',
             headers: {
@@ -209,7 +208,6 @@ const checkAnalysisStatus = async ()=>{
             throw new Error('No authentication token found');
         }
         console.log('Requesting status update...');
-        // Update the endpoint to match the new structure
         const response = await fetch(`${BASE_URL}/api/data/analysis/status`, {
             method: 'GET',
             headers: {

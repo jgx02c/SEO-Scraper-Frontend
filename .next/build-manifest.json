@@ -34,6 +34,22 @@
       "static/chunks/[root of the server]__c875ed._.js",
       "static/chunks/src_pages_signin_5771e1._.js",
       "static/chunks/src_pages_signin_7a2c92._.js"
+    ],
+    "/signup": [
+      "static/chunks/node_modules_next_0f88d9._.js",
+      "static/chunks/node_modules_react-dom_82bb97._.js",
+      "static/chunks/node_modules_097b17._.js",
+      "static/chunks/[root of the server]__3e7a37._.js",
+      "static/chunks/src_pages_signup_5771e1._.js",
+      "static/chunks/src_pages_signup_e795ae._.js"
+    ],
+    "/onboarding": [
+      "static/chunks/node_modules_next_71458a._.js",
+      "static/chunks/node_modules_react-dom_82bb97._.js",
+      "static/chunks/node_modules_3802c5._.js",
+      "static/chunks/[root of the server]__5dda11._.js",
+      "static/chunks/src_pages_onboarding_5771e1._.js",
+      "static/chunks/src_pages_onboarding_8bdfd5._.js"
     ]
   },
   "devFiles": [],

@@ -32,7 +32,6 @@ export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisRes
     }
     
     console.log('Making API request to analyze endpoint');
-    // Update the endpoint to match the new structure
     const response = await fetch(`${BASE_URL}/api/data/analysis/start`, {
       method: 'POST',
       headers: {
@@ -75,7 +74,6 @@ export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
     }
     
     console.log('Requesting status update...');
-    // Update the endpoint to match the new structure
     const response = await fetch(`${BASE_URL}/api/data/analysis/status`, {
       method: 'GET',
       headers: {

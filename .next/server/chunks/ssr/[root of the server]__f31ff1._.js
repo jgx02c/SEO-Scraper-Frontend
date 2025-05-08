@@ -390,9 +390,11 @@ const signIn = async (email, password)=>{
             })
         });
         const data = await handleResponse(response);
-        // Store JWT token
+        // Store JWT token from backend response
         if (data.token) {
             localStorage.setItem('jwt_token', data.token);
+        } else {
+            throw new Error('No token received from server');
         }
         return {
             success: true,
@@ -422,7 +424,29 @@ const signUp = async (email, password, name)=>{
             body: JSON.stringify(userData)
         });
         const data = await handleResponse(response);
-        // Store JWT token
+        // If email confirmation is required, return that response
+        if (data.requires_confirmation) {
+            return {
+                success: true,
+                message: data.message,
+                requires_confirmation: true,
+                user: {
+                    id: data.id,
+                    email: data.email,
+                    name: data.name,
+                    hasCompletedOnboarding: false,
+                    company: null,
+                    role: null,
+                    roles: [
+                        'user'
+                    ],
+                    website_url: null,
+                    analysis_status: null,
+                    current_business_id: null
+                }
+            };
+        }
+        // Otherwise, proceed with normal signup flow
         if (data.token) {
             localStorage.setItem('jwt_token', data.token);
         }
