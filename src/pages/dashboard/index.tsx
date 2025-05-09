@@ -122,7 +122,8 @@ const DashboardPage = () => {
   };
 
   const handleLogout = async () => {
-    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     router.push('/signin');
   };
 

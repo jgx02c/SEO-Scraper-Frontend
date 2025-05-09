@@ -53,19 +53,24 @@ const SignUpPage = () => {
 
     try {
       const result = await signUp(formData.email, formData.password);
+      console.log('Signup result:', { 
+        hasSession: !!result.session,
+        message: result.message 
+      });
 
-      if (!result.success) {
-        throw new Error(result.error);
-      }
-
-      if (result.requires_confirmation) {
+      // If email confirmation is required (session is null)
+      if (!result.session) {
         setShowConfirmation(true);
         setConfirmationEmail(result.user?.email || formData.email);
         return;
       }
 
       // If no confirmation required, proceed with normal flow
-      router.push("/onboarding");
+      if (!result.profile.has_completed_onboarding) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

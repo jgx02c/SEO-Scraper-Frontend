@@ -565,16 +565,24 @@ const BASE_URL = 'http://127.0.0.1:8000';
 const submitWebsiteForAnalysis = async (url)=>{
     try {
         console.log('Starting website submission for URL:', url);
-        const token = localStorage.getItem('jwt_token');
+        const token = localStorage.getItem('access_token');
+        console.log('Retrieved token:', token ? 'Token exists' : 'No token found');
+        console.log('Token format check:', {
+            length: token?.length,
+            startsWithBearer: token?.startsWith('Bearer '),
+            format: token ? `${token.substring(0, 10)}...` : 'none'
+        });
         if (!token) {
             throw new Error('No authentication token found');
         }
+        // Ensure token is properly formatted
+        const authToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
         console.log('Making API request to analyze endpoint');
         const response = await fetch(`${BASE_URL}/api/data/analysis/start`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': authToken
             },
             body: JSON.stringify({
                 website_url: url
@@ -584,6 +592,12 @@ const submitWebsiteForAnalysis = async (url)=>{
         const data = await response.json();
         console.log('Response data:', data);
         if (!response.ok) {
+            console.error('Error response:', {
+                status: response.status,
+                statusText: response.statusText,
+                data: data,
+                headers: Object.fromEntries(response.headers.entries())
+            });
             throw new Error(data.detail || data.message || 'Failed to submit website');
         }
         return {
@@ -604,7 +618,7 @@ const submitWebsiteForAnalysis = async (url)=>{
 };
 const checkAnalysisStatus = async ()=>{
     try {
-        const token = localStorage.getItem('jwt_token');
+        const token = localStorage.getItem('access_token');
         if (!token) {
             throw new Error('No authentication token found');
         }
@@ -648,7 +662,7 @@ const checkAnalysisStatus = async ()=>{
 };
 const getAnalysisData = async ()=>{
     try {
-        const token = localStorage.getItem('jwt_token');
+        const token = localStorage.getItem('access_token');
         if (!token) {
             throw new Error('No authentication token found');
         }

@@ -39,7 +39,7 @@ const handleResponse = async (response: Response) => {
 
 // Helper function to get auth header
 const getAuthHeader = () => {
-  const token = localStorage.getItem('jwt_token');
+  const token = localStorage.getItem('access_token');
   if (!token) {
     throw new Error('No authentication token found');
   }

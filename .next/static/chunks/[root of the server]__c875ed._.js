@@ -777,23 +777,16 @@ const signIn = async (email, password)=>{
             })
         });
         const data = await handleResponse(response);
-        // Store JWT token from backend response
-        if (data.token) {
-            localStorage.setItem('jwt_token', data.token);
+        // Store tokens from session
+        if (data.session) {
+            localStorage.setItem('access_token', data.session.access_token);
+            localStorage.setItem('refresh_token', data.session.refresh_token);
         } else {
-            throw new Error('No token received from server');
+            throw new Error('No session data received from server');
         }
-        return {
-            success: true,
-            token: data.token,
-            token_type: data.token_type,
-            user: data.user
-        };
+        return data;
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An unknown error occurred'
-        };
+        throw error;
     }
 };
 const signUp = async (email, password, name)=>{
@@ -811,43 +804,16 @@ const signUp = async (email, password, name)=>{
             body: JSON.stringify(userData)
         });
         const data = await handleResponse(response);
-        // If email confirmation is required, return that response
-        if (data.requires_confirmation) {
-            return {
-                success: true,
-                message: data.message,
-                requires_confirmation: true,
-                user: {
-                    id: data.id,
-                    email: data.email,
-                    name: data.name,
-                    hasCompletedOnboarding: false,
-                    company: null,
-                    role: null,
-                    roles: [
-                        'user'
-                    ],
-                    website_url: null,
-                    analysis_status: null,
-                    current_business_id: null
-                }
-            };
+        // Store tokens from session
+        if (data.session) {
+            localStorage.setItem('access_token', data.session.access_token);
+            localStorage.setItem('refresh_token', data.session.refresh_token);
+        } else {
+            throw new Error('No session data received from server');
         }
-        // Otherwise, proceed with normal signup flow
-        if (data.token) {
-            localStorage.setItem('jwt_token', data.token);
-        }
-        return {
-            success: true,
-            token: data.token,
-            token_type: data.token_type,
-            user: data.user
-        };
+        return data;
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An unknown error occurred'
-        };
+        throw error;
     }
 };
 const forgotPassword = async (email)=>{

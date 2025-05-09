@@ -740,6 +740,7 @@ var { r: __turbopack_require__, f: __turbopack_module_context__, i: __turbopack_
 // Define a global base URL
 __turbopack_esm__({
     "forgotPassword": (()=>forgotPassword),
+    "getAuthHeader": (()=>getAuthHeader),
     "logout": (()=>logout),
     "resetPassword": (()=>resetPassword),
     "signIn": (()=>signIn),
@@ -754,14 +755,21 @@ const handleResponse = async (response)=>{
     }
     return data;
 };
-// Helper function to get auth header
 const getAuthHeader = ()=>{
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('access_token');
     if (!token) {
         throw new Error('No authentication token found');
     }
+    // Ensure token is properly formatted with Bearer prefix
+    const authToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+    console.log('Auth header format check:', {
+        originalLength: token.length,
+        formattedLength: authToken.length,
+        startsWithBearer: authToken.startsWith('Bearer '),
+        format: `${authToken.substring(0, 15)}...`
+    });
     return {
-        'Authorization': `Bearer ${token}`
+        'Authorization': authToken
     };
 };
 const signIn = async (email, password)=>{
@@ -777,23 +785,31 @@ const signIn = async (email, password)=>{
             })
         });
         const data = await handleResponse(response);
-        // Store JWT token from backend response
-        if (data.token) {
-            localStorage.setItem('jwt_token', data.token);
+        console.log('Sign in response:', {
+            hasSession: !!data.session,
+            hasAccessToken: !!data.session?.access_token,
+            tokenLength: data.session?.access_token?.length,
+            tokenFormat: data.session?.access_token ? `${data.session.access_token.substring(0, 10)}...` : 'none'
+        });
+        // Store tokens from session
+        if (data.session) {
+            // Store raw token without Bearer prefix
+            localStorage.setItem('access_token', data.session.access_token);
+            localStorage.setItem('refresh_token', data.session.refresh_token);
+            // Verify token was stored
+            const storedToken = localStorage.getItem('access_token');
+            console.log('Token storage verification:', {
+                stored: !!storedToken,
+                length: storedToken?.length,
+                format: storedToken ? `${storedToken.substring(0, 10)}...` : 'none'
+            });
         } else {
-            throw new Error('No token received from server');
+            throw new Error('No session data received from server');
         }
-        return {
-            success: true,
-            token: data.token,
-            token_type: data.token_type,
-            user: data.user
-        };
+        return data;
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An unknown error occurred'
-        };
+        console.error('Sign in error:', error);
+        throw error;
     }
 };
 const signUp = async (email, password, name)=>{
@@ -803,6 +819,7 @@ const signUp = async (email, password, name)=>{
             password,
             name
         };
+        console.log('Attempting to sign up user with email:', email);
         const response = await fetch(`${BASE_URL}/api/auth/signup`, {
             method: 'POST',
             headers: {
@@ -810,96 +827,82 @@ const signUp = async (email, password, name)=>{
             },
             body: JSON.stringify(userData)
         });
-        const data = await handleResponse(response);
-        // If email confirmation is required, return that response
-        if (data.requires_confirmation) {
+        const data = await response.json();
+        console.log('Sign up response:', {
+            hasUser: !!data.user,
+            hasSession: !!data.session,
+            message: data.message
+        });
+        if (!response.ok) {
+            throw new Error(data.detail || data.message || 'Signup failed');
+        }
+        // Handle case where signup is successful but email confirmation is required
+        if (!data.session) {
+            console.log('Signup successful but email confirmation required');
             return {
-                success: true,
-                message: data.message,
-                requires_confirmation: true,
-                user: {
-                    id: data.id,
-                    email: data.email,
-                    name: data.name,
-                    hasCompletedOnboarding: false,
-                    company: null,
-                    role: null,
-                    roles: [
-                        'user'
-                    ],
+                user: data.user,
+                session: null,
+                profile: {
+                    id: data.user.id,
+                    name: data.user.user_metadata?.name || '',
+                    has_completed_onboarding: false,
+                    company: data.user.user_metadata?.company || null,
+                    role: data.user.user_metadata?.role || '',
+                    roles: [],
                     website_url: null,
                     analysis_status: null,
-                    current_business_id: null
-                }
+                    current_business_id: null,
+                    created_at: data.user.created_at,
+                    updated_at: data.user.updated_at
+                },
+                message: data.message || 'Please check your email to confirm your account'
             };
         }
-        // Otherwise, proceed with normal signup flow
-        if (data.token) {
-            localStorage.setItem('jwt_token', data.token);
+        // Store tokens from session (if available)
+        if (data.session) {
+            localStorage.setItem('access_token', data.session.access_token);
+            localStorage.setItem('refresh_token', data.session.refresh_token);
+            // Verify token was stored
+            const storedToken = localStorage.getItem('access_token');
+            console.log('Token storage verification:', {
+                stored: !!storedToken,
+                length: storedToken?.length
+            });
         }
-        return {
-            success: true,
-            token: data.token,
-            token_type: data.token_type,
-            user: data.user
-        };
+        return data;
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An unknown error occurred'
-        };
+        console.error('Sign up error:', error);
+        throw error;
     }
 };
 const forgotPassword = async (email)=>{
-    try {
-        const response = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email
-            })
-        });
-        const data = await handleResponse(response);
-        return {
-            success: true,
-            message: data.message
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An unknown error occurred'
-        };
-    }
+    const response = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email
+        })
+    });
+    await handleResponse(response);
 };
 const resetPassword = async (token, newPassword)=>{
-    try {
-        const response = await fetch(`${BASE_URL}/api/auth/reset-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                token,
-                new_password: newPassword
-            })
-        });
-        const data = await handleResponse(response);
-        return {
-            success: true,
-            message: data.message
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : 'An unknown error occurred'
-        };
-    }
+    const response = await fetch(`${BASE_URL}/api/auth/reset-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token,
+            new_password: newPassword
+        })
+    });
+    await handleResponse(response);
 };
 const logout = ()=>{
-    localStorage.removeItem('jwt_token');
-// Add any other cleanup needed
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_refresh__.registerExports(module, globalThis.$RefreshHelpers$);
@@ -970,16 +973,22 @@ const SignUpPage = ()=>{
         setIsLoading(true);
         try {
             const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$auth$2d$api$2e$ts__$5b$client$5d$__$28$ecmascript$29$__["signUp"])(formData.email, formData.password);
-            if (!result.success) {
-                throw new Error(result.error);
-            }
-            if (result.requires_confirmation) {
+            console.log('Signup result:', {
+                hasSession: !!result.session,
+                message: result.message
+            });
+            // If email confirmation is required (session is null)
+            if (!result.session) {
                 setShowConfirmation(true);
                 setConfirmationEmail(result.user?.email || formData.email);
                 return;
             }
             // If no confirmation required, proceed with normal flow
-            router.push("/onboarding");
+            if (!result.profile.has_completed_onboarding) {
+                router.push("/onboarding");
+            } else {
+                router.push("/dashboard");
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
         } finally{
@@ -994,7 +1003,7 @@ const SignUpPage = ()=>{
                     className: "absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"
                 }, void 0, false, {
                     fileName: "[project]/src/pages/signup.tsx",
-                    lineNumber: 79,
+                    lineNumber: 84,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1011,17 +1020,17 @@ const SignUpPage = ()=>{
                                             className: "h-8 w-8 text-indigo-400"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/signup.tsx",
-                                            lineNumber: 85,
+                                            lineNumber: 90,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/signup.tsx",
-                                        lineNumber: 84,
+                                        lineNumber: 89,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/signup.tsx",
-                                    lineNumber: 83,
+                                    lineNumber: 88,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -1029,7 +1038,7 @@ const SignUpPage = ()=>{
                                     children: "Check Your Email"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/signup.tsx",
-                                    lineNumber: 88,
+                                    lineNumber: 93,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1041,13 +1050,13 @@ const SignUpPage = ()=>{
                                             children: confirmationEmail
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/signup.tsx",
-                                            lineNumber: 90,
+                                            lineNumber: 95,
                                             columnNumber: 50
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/signup.tsx",
-                                    lineNumber: 89,
+                                    lineNumber: 94,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1055,13 +1064,13 @@ const SignUpPage = ()=>{
                                     children: "Please check your email and click the confirmation link to activate your account."
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/signup.tsx",
-                                    lineNumber: 92,
+                                    lineNumber: 97,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/signup.tsx",
-                            lineNumber: 82,
+                            lineNumber: 87,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1073,24 +1082,24 @@ const SignUpPage = ()=>{
                                 children: "Return to Sign In"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signup.tsx",
-                                lineNumber: 98,
+                                lineNumber: 103,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/pages/signup.tsx",
-                            lineNumber: 97,
+                            lineNumber: 102,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/signup.tsx",
-                    lineNumber: 81,
+                    lineNumber: 86,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/pages/signup.tsx",
-            lineNumber: 78,
+            lineNumber: 83,
             columnNumber: 7
         }, this);
     }
@@ -1101,7 +1110,7 @@ const SignUpPage = ()=>{
                 className: "absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"
             }, void 0, false, {
                 fileName: "[project]/src/pages/signup.tsx",
-                lineNumber: 114,
+                lineNumber: 119,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1115,7 +1124,7 @@ const SignUpPage = ()=>{
                             className: "h-4 w-4 mr-2 flex-shrink-0"
                         }, void 0, false, {
                             fileName: "[project]/src/pages/signup.tsx",
-                            lineNumber: 123,
+                            lineNumber: 128,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1123,18 +1132,18 @@ const SignUpPage = ()=>{
                             children: "Back to home"
                         }, void 0, false, {
                             fileName: "[project]/src/pages/signup.tsx",
-                            lineNumber: 124,
+                            lineNumber: 129,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/signup.tsx",
-                    lineNumber: 118,
+                    lineNumber: 123,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/signup.tsx",
-                lineNumber: 117,
+                lineNumber: 122,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1148,7 +1157,7 @@ const SignUpPage = ()=>{
                                 children: "Create an Account"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signup.tsx",
-                                lineNumber: 130,
+                                lineNumber: 135,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1156,13 +1165,13 @@ const SignUpPage = ()=>{
                                 children: "Start your journey with us"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signup.tsx",
-                                lineNumber: 131,
+                                lineNumber: 136,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/signup.tsx",
-                        lineNumber: 129,
+                        lineNumber: 134,
                         columnNumber: 9
                     }, this),
                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Alert"], {
@@ -1171,12 +1180,12 @@ const SignUpPage = ()=>{
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/src/pages/signup.tsx",
-                            lineNumber: 136,
+                            lineNumber: 141,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/pages/signup.tsx",
-                        lineNumber: 135,
+                        lineNumber: 140,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1195,7 +1204,7 @@ const SignUpPage = ()=>{
                                                 children: "Email"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signup.tsx",
-                                                lineNumber: 143,
+                                                lineNumber: 148,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1212,13 +1221,13 @@ const SignUpPage = ()=>{
                                                 disabled: isLoading
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signup.tsx",
-                                                lineNumber: 146,
+                                                lineNumber: 151,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/signup.tsx",
-                                        lineNumber: 142,
+                                        lineNumber: 147,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1230,7 +1239,7 @@ const SignUpPage = ()=>{
                                                 children: "Password"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signup.tsx",
-                                                lineNumber: 158,
+                                                lineNumber: 163,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1247,7 +1256,7 @@ const SignUpPage = ()=>{
                                                 disabled: isLoading
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signup.tsx",
-                                                lineNumber: 161,
+                                                lineNumber: 166,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1255,13 +1264,13 @@ const SignUpPage = ()=>{
                                                 children: "Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signup.tsx",
-                                                lineNumber: 171,
+                                                lineNumber: 176,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/signup.tsx",
-                                        lineNumber: 157,
+                                        lineNumber: 162,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1273,7 +1282,7 @@ const SignUpPage = ()=>{
                                                 children: "Confirm Password"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signup.tsx",
-                                                lineNumber: 177,
+                                                lineNumber: 182,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1290,19 +1299,19 @@ const SignUpPage = ()=>{
                                                 disabled: isLoading
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/signup.tsx",
-                                                lineNumber: 180,
+                                                lineNumber: 185,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/signup.tsx",
-                                        lineNumber: 176,
+                                        lineNumber: 181,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/signup.tsx",
-                                lineNumber: 141,
+                                lineNumber: 146,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1316,7 +1325,7 @@ const SignUpPage = ()=>{
                                             className: "mr-2 h-4 w-4 animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/signup.tsx",
-                                            lineNumber: 201,
+                                            lineNumber: 206,
                                             columnNumber: 17
                                         }, this),
                                         "Creating account..."
@@ -1324,13 +1333,13 @@ const SignUpPage = ()=>{
                                 }, void 0, true) : "Create Account"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signup.tsx",
-                                lineNumber: 193,
+                                lineNumber: 198,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/signup.tsx",
-                        lineNumber: 140,
+                        lineNumber: 145,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1341,7 +1350,7 @@ const SignUpPage = ()=>{
                                 children: "Or"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/signup.tsx",
-                                lineNumber: 211,
+                                lineNumber: 216,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1355,31 +1364,31 @@ const SignUpPage = ()=>{
                                         children: "Sign in"
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/signup.tsx",
-                                        lineNumber: 215,
+                                        lineNumber: 220,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/pages/signup.tsx",
-                                lineNumber: 213,
+                                lineNumber: 218,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/signup.tsx",
-                        lineNumber: 210,
+                        lineNumber: 215,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/pages/signup.tsx",
-                lineNumber: 128,
+                lineNumber: 133,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/pages/signup.tsx",
-        lineNumber: 112,
+        lineNumber: 117,
         columnNumber: 5
     }, this);
 };

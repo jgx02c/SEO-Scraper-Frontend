@@ -29,27 +29,33 @@ const SignInPage = () => {
     setIsLoading(true);
 
     try {
+      console.log('Attempting to sign in...');
       const result = await signIn(formData.email, formData.password);
+      console.log('Sign in response:', {
+        hasSession: !!result.session,
+        hasAccessToken: !!result.session?.access_token,
+        hasProfile: !!result.profile
+      });
 
-      if (!result.success || !result.token) {
-        throw new Error(result.error || 'Failed to sign in');
-      }
-
-      // Check user's onboarding status
-      const userState = await checkUserState();
-      
-      if (!userState.success || !userState.state) {
-        throw new Error('Failed to get user state');
+      // Check if profile exists
+      if (!result.profile) {
+        console.log("No profile in response - fetching user state");
+        
+        // Default to onboarding if no profile exists
+        console.log("Redirecting to onboarding (default)");
+        router.push("/onboarding");
+        return;
       }
 
       // Route based on onboarding status
-      if (!userState.state.hasCompletedOnboarding) {
+      if (!result.profile.has_completed_onboarding) {
         router.push("/onboarding");
       } else {
         console.log("The user has finished the onboarding");
         router.push("/dashboard");
       }
     } catch (err) {
+      console.error('Sign in error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
       setIsLoading(false);
     }
@@ -66,13 +72,9 @@ const SignInPage = () => {
     setIsLoading(true);
 
     try {
-      const result = await forgotPassword(formData.email);
-
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to send reset email');
-      }
-
-      // Show success message in alert but keep it friendly
+      await forgotPassword(formData.email);
+      
+      // Show success message
       setError('Password reset instructions sent to your email');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

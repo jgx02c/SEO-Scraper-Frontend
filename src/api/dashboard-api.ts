@@ -39,7 +39,7 @@ interface OverviewResponse {
 }
 
 export const fetchOverviewData = async (): Promise<OverviewResponse> => {
-  const token = localStorage.getItem('jwt_token');
+  const token = localStorage.getItem('access_token');
   if (!token) {
     throw new ApiError(401, 'No authentication token found');
   }
@@ -111,7 +111,7 @@ export const api = {
     isAuthenticated: boolean;
     profile?: UserProfile;
   }> {
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('access_token');
     
     if (!token) {
       return { isAuthenticated: false };
@@ -137,7 +137,8 @@ export const api = {
     } catch (error) {
       // If there's an auth error, clear the token
       if (error instanceof ApiError && error.status === 401) {
-        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         return { isAuthenticated: false };
       }
       throw error; // Re-throw other errors
@@ -145,7 +146,7 @@ export const api = {
   },
 
   async updateUserProfile(profile: Partial<UserProfile>): Promise<UserProfile> {
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('access_token');
     if (!token) {
       throw new ApiError(401, 'No authentication token found');
     }
@@ -172,7 +173,7 @@ export const api = {
   },
 
   async completeOnboarding(profile: Partial<UserProfile>): Promise<boolean> {
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('access_token');
     if (!token) {
       throw new ApiError(401, 'No authentication token found');
     }
@@ -195,7 +196,7 @@ export const api = {
   },
 
   async getUserState() {
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('access_token');
     if (!token) {
       throw new ApiError(401, 'No authentication token found');
     }
@@ -219,4 +220,36 @@ export const api = {
   },
 
   fetchOverviewData,
+};
+
+export const logout = () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+};
+
+export const getUserProfile = async (): Promise<UserProfileResponse> => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new ApiError(401, 'No authentication token found');
+  }
+
+  // ... rest of the function ...
+};
+
+export const updateUserProfile = async (profile: Partial<UserProfile>): Promise<UserProfileResponse> => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new ApiError(401, 'No authentication token found');
+  }
+
+  // ... rest of the function ...
+};
+
+export const completeOnboarding = async (profile: Partial<UserProfile>): Promise<boolean> => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    throw new ApiError(401, 'No authentication token found');
+  }
+
+  // ... rest of the function ...
 };

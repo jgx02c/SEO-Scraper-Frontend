@@ -1,4 +1,5 @@
 // utils/website-api.ts
+import { getAuthHeader } from './auth-api';
 
 // Define global base URL
 const BASE_URL = 'http://127.0.0.1:8000';
@@ -7,11 +8,11 @@ interface AnalysisResponse {
   success: boolean;
   message?: string;
   url?: string;
-  status?: string;
-  scan_status?: string;  // Added for different scan states
+  status?: 'processing' | 'scanning' | 'generating_report' | 'completed' | 'error';
+  scan_status?: string;
   error?: string;
-  error_message?: string;  // Added for detailed error messages
-  business_id?: string;
+  error_message?: string;
+  analysis_id?: string;  // Changed from business_id
   pages_scanned?: number;
   total_pages?: number;
   current_step?: string;
@@ -19,26 +20,24 @@ interface AnalysisResponse {
   progress_percentage?: number;
   report_generated?: boolean;
   last_updated?: string;
-  website_url?: string;
   isComplete?: boolean;
 }
 
 export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisResponse> => {
   try {
     console.log('Starting website submission for URL:', url);
-    const token = localStorage.getItem('jwt_token');
-    if (!token) {
-      throw new Error('No authentication token found');
-    }
+    
+    // Get properly formatted auth header
+    const headers = {
+      'Content-Type': 'application/json',
+      ...getAuthHeader()
+    };
     
     console.log('Making API request to analyze endpoint');
     const response = await fetch(`${BASE_URL}/api/data/analysis/start`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ website_url: url })
+      headers,
+      body: JSON.stringify({ url })
     });
     
     console.log('Received response:', response.status);
@@ -46,16 +45,22 @@ export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisRes
     console.log('Response data:', data);
     
     if (!response.ok) {
+      console.error('Error response:', {
+        status: response.status,
+        statusText: response.statusText,
+        data: data,
+        headers: Object.fromEntries(response.headers.entries())
+      });
       throw new Error(data.detail || data.message || 'Failed to submit website');
     }
     
     return {
       success: true,
       message: data.message,
-      url: data.website_url || url,
+      url: data.url || url,
       status: data.status,
       scan_status: data.scan_status,
-      business_id: data.business_id
+      analysis_id: data.analysis_id
     };
   } catch (error) {
     console.error('Error in submitWebsiteForAnalysis:', error);
@@ -68,7 +73,7 @@ export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisRes
 
 export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
   try {
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('access_token');
     if (!token) {
       throw new Error('No authentication token found');
     }
@@ -100,10 +105,9 @@ export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
       current_step: data.current_step,
       estimated_time_remaining: data.estimated_time_remaining,
       progress_percentage: data.progress_percentage,
-      business_id: data.business_id,
+      analysis_id: data.business_id,
       report_generated: data.report_generated,
       last_updated: data.last_updated,
-      website_url: data.websiteUrl || data.website_url,
       isComplete: data.status === 'complete' || data.isComplete
     };
   } catch (error) {
@@ -117,7 +121,7 @@ export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
 
 export const getAnalysisData = async () => {
   try {
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('access_token');
     if (!token) {
       throw new Error('No authentication token found');
     }
