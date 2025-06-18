@@ -1,14 +1,47 @@
 // utils/dashboard-api.ts
 import { UserProfile } from '@/types/dashboard';
 
-// Define global base URL
-const BASE_URL = 'http://127.0.0.1:8000';
+// Define global base URL with environment variable support
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(
+    public status: number, 
+    message: string,
+    public code?: string,
+    public details?: unknown
+  ) {
     super(message);
     this.name = 'ApiError';
   }
+}
+
+// Helper function to handle API responses with better error information
+const handleApiResponse = async (response: Response) => {
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new ApiError(
+      response.status,
+      `Failed to parse response: ${response.statusText}`,
+      'PARSE_ERROR'
+    );
+  }
+  
+  if (!response.ok) {
+    const message = data.detail || data.message || data.error || `HTTP ${response.status}: ${response.statusText}`;
+    throw new ApiError(response.status, message, data.code, data);
+  }
+  
+  return data;
+};
+
+interface ErrorCitation {
+  id: string;
+  message: string;
+  severity: string;
+  [key: string]: unknown;
 }
 
 interface SeoReportData {
@@ -28,7 +61,7 @@ interface SeoReportData {
       "Needs Attention": number;
       "Good Practice": number;
     };
-    error_citations: Array<any>;
+    error_citations: ErrorCitation[];
   }>;
 }
 
@@ -41,31 +74,35 @@ interface OverviewResponse {
 export const fetchOverviewData = async (): Promise<OverviewResponse> => {
   const token = localStorage.getItem('access_token');
   if (!token) {
-    throw new ApiError(401, 'No authentication token found');
+    throw new ApiError(401, 'No authentication token found', 'NO_TOKEN');
   }
 
-  const response = await fetch(`${BASE_URL}/api/seo/overview`, {
-    headers: {
-      'Authorization': `Bearer ${token}`
+  try {
+    const response = await fetch(`${BASE_URL}/api/seo/overview`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const data = await handleApiResponse(response);
+    
+    if (!data.success) {
+      return {
+        success: false,
+        error: data.error || 'Failed to fetch overview data'
+      };
     }
-  });
 
-  if (!response.ok) {
-    throw new ApiError(response.status, 'Failed to fetch overview data');
-  }
-
-  const data = await response.json();
-  if (!data.success) {
     return {
-      success: false,
-      error: data.error || 'Failed to fetch overview data'
+      success: true,
+      data: data.report
     };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw new ApiError(500, 'Network error occurred', 'NETWORK_ERROR', error);
   }
-
-  return {
-    success: true,
-    data: data.report
-  };
 };
 
 export const api = {
@@ -225,31 +262,4 @@ export const api = {
 export const logout = () => {
   localStorage.removeItem('access_token');
   localStorage.removeItem('refresh_token');
-};
-
-export const getUserProfile = async (): Promise<UserProfileResponse> => {
-  const token = localStorage.getItem('access_token');
-  if (!token) {
-    throw new ApiError(401, 'No authentication token found');
-  }
-
-  // ... rest of the function ...
-};
-
-export const updateUserProfile = async (profile: Partial<UserProfile>): Promise<UserProfileResponse> => {
-  const token = localStorage.getItem('access_token');
-  if (!token) {
-    throw new ApiError(401, 'No authentication token found');
-  }
-
-  // ... rest of the function ...
-};
-
-export const completeOnboarding = async (profile: Partial<UserProfile>): Promise<boolean> => {
-  const token = localStorage.getItem('access_token');
-  if (!token) {
-    throw new ApiError(401, 'No authentication token found');
-  }
-
-  // ... rest of the function ...
 };

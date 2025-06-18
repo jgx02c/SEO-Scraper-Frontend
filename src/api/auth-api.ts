@@ -1,6 +1,18 @@
 // utils/auth-api.ts
-// Define a global base URL
-const BASE_URL = 'http://127.0.0.1:8000';
+// Define a global base URL with environment variable support
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
+interface UserMetadata {
+  name?: string;
+  company?: string;
+  role?: string;
+  [key: string]: unknown;
+}
+
+interface AppMetadata {
+  provider: string;
+  providers: string[];
+}
 
 interface AuthResponse {
   user: {
@@ -8,11 +20,8 @@ interface AuthResponse {
     email: string;
     created_at: string;
     updated_at: string;
-    app_metadata: {
-      provider: string;
-      providers: string[];
-    };
-    user_metadata: Record<string, any>;
+    app_metadata: AppMetadata;
+    user_metadata: UserMetadata;
     aud: string;
     role: string;
   };
@@ -39,11 +48,8 @@ interface AuthResponse {
       email: string;
       created_at: string;
       updated_at: string;
-      app_metadata: {
-        provider: string;
-        providers: string[];
-      };
-      user_metadata: Record<string, any>;
+      app_metadata: AppMetadata;
+      user_metadata: UserMetadata;
       aud: string;
       role: string;
     };
@@ -51,12 +57,34 @@ interface AuthResponse {
   message?: string;
 }
 
-// Helper function to handle API responses
+// Enhanced error class for better error handling
+export class AuthError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+    public code?: string
+  ) {
+    super(message);
+    this.name = 'AuthError';
+  }
+}
+
+// Helper function to handle API responses with better error information
 const handleResponse = async (response: Response) => {
-  const data = await response.json();
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new AuthError(
+      response.status,
+      `Failed to parse response: ${response.statusText}`,
+      'PARSE_ERROR'
+    );
+  }
   
   if (!response.ok) {
-    throw new Error(data.detail || 'API request failed');
+    const message = data.detail || data.message || `HTTP ${response.status}: ${response.statusText}`;
+    throw new AuthError(response.status, message, data.code);
   }
   
   return data as AuthResponse;

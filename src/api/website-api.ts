@@ -1,8 +1,41 @@
 // utils/website-api.ts
 import { getAuthHeader } from './auth-api';
 
-// Define global base URL
-const BASE_URL = 'http://127.0.0.1:8000';
+// Define global base URL with environment variable support
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
+export class WebsiteApiError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+    public code?: string,
+    public details?: unknown
+  ) {
+    super(message);
+    this.name = 'WebsiteApiError';
+  }
+}
+
+// Helper function to handle API responses
+const handleApiResponse = async (response: Response) => {
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new WebsiteApiError(
+      response.status,
+      `Failed to parse response: ${response.statusText}`,
+      'PARSE_ERROR'
+    );
+  }
+  
+  if (!response.ok) {
+    const message = data.detail || data.message || data.error || `HTTP ${response.status}: ${response.statusText}`;
+    throw new WebsiteApiError(response.status, message, data.code, data);
+  }
+  
+  return data;
+};
 
 interface AnalysisResponse {
   success: boolean;
@@ -41,18 +74,8 @@ export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisRes
     });
     
     console.log('Received response:', response.status);
-    const data = await response.json();
+    const data = await handleApiResponse(response);
     console.log('Response data:', data);
-    
-    if (!response.ok) {
-      console.error('Error response:', {
-        status: response.status,
-        statusText: response.statusText,
-        data: data,
-        headers: Object.fromEntries(response.headers.entries())
-      });
-      throw new Error(data.detail || data.message || 'Failed to submit website');
-    }
     
     return {
       success: true,
@@ -64,6 +87,14 @@ export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisRes
     };
   } catch (error) {
     console.error('Error in submitWebsiteForAnalysis:', error);
+    
+    if (error instanceof WebsiteApiError) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+    
     return {
       success: false,
       error: error instanceof Error ? error.message : 'An unknown error occurred'

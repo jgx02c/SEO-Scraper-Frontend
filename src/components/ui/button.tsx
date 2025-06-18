@@ -15,7 +15,7 @@ const getVariantStyles = (variant: ButtonProps['variant'] = 'default') => {
     secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
     ghost: 'hover:bg-gray-100',
     link: 'text-blue-600 underline-offset-4 hover:underline',
-    purple: 'bg-indigo-600 text-white hover:bg-indigo-600'
+    purple: 'bg-indigo-600 text-white hover:bg-indigo-700'
   };
   return variants[variant];
 };

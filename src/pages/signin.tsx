@@ -1,69 +1,85 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import Link from "next/link";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import { signIn, forgotPassword } from "@/api/auth-api";
-import { checkUserState } from '@/api/user-api'
-
-interface FormState {
-  email: string;
-  password: string;
-}
+import { signIn, forgotPassword, AuthError } from "@/api/auth-api";
+import { useToastHelpers } from "@/components/ui/toast";
+import { AuthLayout, AuthFooter } from "@/components/auth/AuthLayout";
+import { SignInForm } from "@/components/auth/SignInForm";
+import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm";
 
 const SignInPage = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState<FormState>({
-    email: "",
-    password: ""
-  });
+  const { success, error: showError, info } = useToastHelpers();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignIn = async (email: string, password: string) => {
     setError(null);
     setIsLoading(true);
 
     try {
       console.log('Attempting to sign in...');
-      const result = await signIn(formData.email, formData.password);
+      const result = await signIn(email, password);
       console.log('Sign in response:', {
         hasSession: !!result.session,
         hasAccessToken: !!result.session?.access_token,
         hasProfile: !!result.profile
       });
 
+      success('Successfully signed in!', 'Welcome back');
+
       // Check if profile exists
       if (!result.profile) {
-        console.log("No profile in response - fetching user state");
-        
-        // Default to onboarding if no profile exists
-        console.log("Redirecting to onboarding (default)");
+        console.log("No profile in response - redirecting to onboarding");
+        info('Please complete your profile setup');
         router.push("/onboarding");
         return;
       }
 
       // Route based on onboarding status
       if (!result.profile.has_completed_onboarding) {
+        console.log("User hasn't completed onboarding - redirecting to onboarding");
+        info('Please complete the onboarding process');
         router.push("/onboarding");
       } else {
-        console.log("The user has finished the onboarding");
+        console.log("User has completed onboarding - redirecting to dashboard");
         router.push("/dashboard");
       }
     } catch (err) {
       console.error('Sign in error:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      
+      if (err instanceof AuthError) {
+        // Handle specific auth errors with better messaging
+        switch (err.status) {
+          case 401:
+            showError('Invalid email or password', 'Authentication Failed');
+            setError('Invalid email or password. Please check your credentials and try again.');
+            break;
+          case 429:
+            showError('Too many attempts. Please try again later.', 'Rate Limited');
+            setError('Too many sign in attempts. Please wait before trying again.');
+            break;
+          case 500:
+            showError('Server error. Please try again later.', 'Server Error');
+            setError('Something went wrong on our end. Please try again in a moment.');
+            break;
+          default:
+            showError(err.message, 'Sign In Failed');
+            setError(err.message);
+        }
+      } else {
+        const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred during sign in';
+        showError(errorMessage, 'Sign In Failed');
+        setError(errorMessage);
+      }
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.email) {
+  const handleForgotPassword = async (email: string) => {
+    if (!email) {
+      showError('Please enter your email address', 'Email Required');
       setError('Please enter your email address');
       return;
     }
@@ -72,168 +88,52 @@ const SignInPage = () => {
     setIsLoading(true);
 
     try {
-      await forgotPassword(formData.email);
+      await forgotPassword(email);
       
-      // Show success message
+      success('Password reset instructions sent to your email', 'Email Sent');
       setError('Password reset instructions sent to your email');
+      
+      // Auto switch back to sign in after success
+      setTimeout(() => {
+        setShowForgotPassword(false);
+        setError(null);
+      }, 3000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      if (err instanceof AuthError) {
+        showError(err.message, 'Reset Failed');
+        setError(err.message);
+      } else {
+        const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+        showError(errorMessage, 'Reset Failed');
+        setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-900/20 to-gray-900 flex flex-col items-center justify-center p-6 relative">
-      {/* Background pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-      
-      {/* Back button */}
-      <div className="absolute top-6 left-6">
-        <Button
-          variant="ghost"
-          onClick={() => router.push("/")}
-          className="text-gray-400 hover:text-indigo-400 hover:bg-transparent h-auto py-2 flex items-center"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="text-left">Back to home</span>
-        </Button>
-      </div>
-
-      <div className="w-full max-w-md space-y-8 bg-gray-800/50 backdrop-blur-xl p-8 rounded-xl border border-gray-700/50 relative z-10">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white">Welcome Back</h2>
-          <p className="mt-2 text-gray-400">
-            {showForgotPassword ? "Reset your password" : "Sign in to your account"}
-          </p>
-        </div>
-
-        {error && (
-          <Alert variant={error.includes('sent to your email') ? 'default' : 'destructive'}>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {!showForgotPassword ? (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-gray-300">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  required
-                  placeholder="you@example.com"
-                  className="w-full bg-gray-700/50 text-white border-gray-600"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium text-gray-300">
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  className="w-full bg-gray-700/50 text-white border-gray-600"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => setShowForgotPassword(true)}
-                className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
-              >
-                Forgot your password?
-              </button>
-            </div>
-
-            <Button 
-              type="submit" 
-              variant="purple"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
-                </>
-              ) : (
-                "Sign In"
-              )}
-            </Button>
-          </form>
-        ) : (
-          <form onSubmit={handleForgotPassword} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="reset-email" className="text-sm font-medium text-gray-300">
-                Email
-              </label>
-              <Input
-                id="reset-email"
-                type="email"
-                required
-                placeholder="you@example.com"
-                className="w-full bg-gray-700/50 text-white border-gray-600"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                disabled={isLoading}
-              />
-            </div>
-
-            <div className="space-y-4">
-              <Button 
-                type="submit" 
-                variant="purple"
-                className="w-full"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending reset link...
-                  </>
-                ) : (
-                  "Send Reset Link"
-                )}
-              </Button>
-              <Button 
-                type="button"
-                variant="outline"
-                className="w-full text-indigo-400 border-indigo-600 hover:bg-indigo-600/10"
-                onClick={() => setShowForgotPassword(false)}
-                disabled={isLoading}
-              >
-                Back to Sign In
-              </Button>
-            </div>
-          </form>
-        )}
-
-        <div className="space-y-4 text-center">
-          <p className="text-gray-400">Or</p>
-
-          <p className="text-gray-400">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-indigo-400 hover:text-indigo-300 transition-colors">
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+    <AuthLayout
+      title="Welcome Back"
+      subtitle={showForgotPassword ? "Reset your password" : "Sign in to your account"}
+      footer={!showForgotPassword ? <AuthFooter /> : null}
+    >
+      {!showForgotPassword ? (
+        <SignInForm
+          onSubmit={handleSignIn}
+          isLoading={isLoading}
+          error={error}
+          onForgotPassword={() => setShowForgotPassword(true)}
+        />
+      ) : (
+        <ForgotPasswordForm
+          onSubmit={handleForgotPassword}
+          onBack={() => setShowForgotPassword(false)}
+          isLoading={isLoading}
+          error={error}
+        />
+      )}
+    </AuthLayout>
   );
 };
 

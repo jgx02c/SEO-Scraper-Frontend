@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { submitWebsiteForAnalysis, checkAnalysisStatus } from "@/api/website-api";
+import { submitWebsiteForAnalysis, checkAnalysisStatus, WebsiteApiError } from "@/api/website-api";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LineChart, Bot, Rocket } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToastHelpers } from "@/components/ui/toast";
 
 interface ScanStatus {
   pages_scanned: number;
@@ -25,6 +26,7 @@ interface ScanStatus {
 
 const OnboardingPage = () => {
   const router = useRouter();
+  const { success, error: showError, info } = useToastHelpers();
   const [step, setStep] = useState(1);
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -73,11 +75,14 @@ const OnboardingPage = () => {
 
         if (scanStatus === 'completed' || scanStatus === 'complete') {
           console.log('Analysis complete, preparing for dashboard redirect');
+          success('Website analysis completed successfully!', 'Analysis Complete');
           setIsProcessing(false);
           router.push("/dashboard");
         } else if (scanStatus === 'error') {
           console.error('Scan reported error status:', data.error_message);
-          setError(data.error_message || 'An error occurred during processing');
+          const errorMsg = data.error_message || 'An error occurred during processing';
+          showError(errorMsg, 'Analysis Error');
+          setError(errorMsg);
           setIsProcessing(false);
         } else {
           console.log('Processing continues, scheduling next poll');
@@ -108,7 +113,9 @@ const OnboardingPage = () => {
 
   const handleUrlSubmit = async () => {
     if (!websiteUrl) {
-      setError("Please enter your website URL");
+      const errorMsg = "Please enter your website URL";
+      setError(errorMsg);
+      showError(errorMsg, "URL Required");
       return false;
     }
     
@@ -117,21 +124,52 @@ const OnboardingPage = () => {
     
     try {
       console.log('Submitting website for analysis:', websiteUrl);
+      info('Starting website analysis...', 'Analysis Started');
+      
       const result = await submitWebsiteForAnalysis(websiteUrl);
       console.log('Submission result:', result);
       
       if (!result.success) {
         console.error('Submission failed:', result.error);
-        throw new Error(result.error || 'Submission failed');
+        const errorMsg = result.error || 'Submission failed';
+        showError(errorMsg, 'Analysis Failed');
+        throw new Error(errorMsg);
       }
 
       console.log('Setting processing state to true');
+      success('Website submitted successfully! Analysis is starting...', 'Submission Complete');
       setIsProcessing(true);
       startPolling();
       return true;
     } catch (err) {
       console.error('Error during submission:', err);
-      setError(err instanceof Error ? err.message : "Failed to submit website. Please try again.");
+      
+      if (err instanceof WebsiteApiError) {
+        // Handle specific API errors
+        switch (err.status) {
+          case 400:
+            showError('Invalid website URL. Please check and try again.', 'Invalid URL');
+            setError('Invalid website URL. Please check and try again.');
+            break;
+          case 401:
+            showError('Authentication expired. Please sign in again.', 'Authentication Error');
+            setError('Authentication expired. Please sign in again.');
+            router.push('/signin');
+            break;
+          case 429:
+            showError('Too many requests. Please wait before trying again.', 'Rate Limited');
+            setError('Too many requests. Please wait before trying again.');
+            break;
+          default:
+            showError(err.message, 'Analysis Failed');
+            setError(err.message);
+        }
+      } else {
+        const errorMsg = err instanceof Error ? err.message : "Failed to submit website. Please try again.";
+        showError(errorMsg, 'Submission Error');
+        setError(errorMsg);
+      }
+      
       setIsLoading(false);
       return false;
     }
@@ -159,7 +197,7 @@ const OnboardingPage = () => {
       const scanStatus = data.scan_status || 'unknown';
       const status = data.status || 'unknown';
 
-      if (scanStatus === 'completed' || status === 'complete') {
+      if (scanStatus === 'completed' || status === 'completed') {
         console.log('Analysis complete, redirecting to dashboard');
         router.push("/dashboard");
       } else if (scanStatus === 'error' || status === 'error') {
@@ -309,7 +347,7 @@ const OnboardingPage = () => {
 
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white text-center">Let's Analyze Your Website</h2>
+              <h2 className="text-2xl font-bold text-white text-center">Let&apos;s Analyze Your Website</h2>
               <p className="text-gray-400 text-center">
                 Enter your website URL to begin the competitive analysis.
               </p>
