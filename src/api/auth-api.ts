@@ -2,60 +2,7 @@
 // Define a global base URL with environment variable support
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
-interface UserMetadata {
-  name?: string;
-  company?: string;
-  role?: string;
-  [key: string]: unknown;
-}
-
-interface AppMetadata {
-  provider: string;
-  providers: string[];
-}
-
-interface AuthResponse {
-  user: {
-    id: string;
-    email: string;
-    created_at: string;
-    updated_at: string;
-    app_metadata: AppMetadata;
-    user_metadata: UserMetadata;
-    aud: string;
-    role: string;
-  };
-  profile: {
-    id: string;
-    name: string;
-    has_completed_onboarding: boolean;
-    company: string | null;
-    role: string;
-    roles: string[];
-    website_url: string | null;
-    analysis_status: string | null;
-    current_business_id: string | null;
-    created_at: string;
-    updated_at: string;
-  };
-  session: {
-    access_token: string;
-    refresh_token: string;
-    expires_in: number;
-    expires_at: number;
-    user: {
-      id: string;
-      email: string;
-      created_at: string;
-      updated_at: string;
-      app_metadata: AppMetadata;
-      user_metadata: UserMetadata;
-      aud: string;
-      role: string;
-    };
-  } | null;
-  message?: string;
-}
+import type { AuthResponse } from '@/types/auth';
 
 // Enhanced error class for better error handling
 export class AuthError extends Error {

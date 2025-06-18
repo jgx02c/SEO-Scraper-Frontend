@@ -13,10 +13,7 @@ import type {
   AuthState, 
   SignInCredentials, 
   SignUpCredentials, 
-  ForgotPasswordData,
-  User,
-  UserProfile,
-  Session
+  ForgotPasswordData
 } from '@/types/auth';
 
 const INITIAL_STATE: AuthState = {

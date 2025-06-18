@@ -8,21 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToastHelpers } from "@/components/ui/toast";
 
-interface ScanStatus {
-  pages_scanned: number;
-  total_pages: number;
-  current_step: string;
-  estimated_time_remaining: number;
-  progress_percentage: number;
-}
-
-interface ScanStatus {
-  pages_scanned: number;
-  total_pages: number;
-  current_step: string;
-  estimated_time_remaining: number;
-  progress_percentage: number;
-}
+import type { ScanStatus } from '@/types/api';
 
 const OnboardingPage = () => {
   const router = useRouter();

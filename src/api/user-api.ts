@@ -1,5 +1,5 @@
 // utils/user-api.ts
-import { UserProfile } from '@/types/dashboard';
+import { UserProfile } from '@/types/auth';
 
 // Define global base URL
 const BASE_URL = 'http://127.0.0.1:8000';

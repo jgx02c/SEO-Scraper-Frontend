@@ -1,6 +1,4 @@
 // utils/dashboard-api.ts
-import { UserProfile } from '@/types/dashboard';
-
 // Define global base URL with environment variable support
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
@@ -37,39 +35,8 @@ const handleApiResponse = async (response: Response) => {
   return data;
 };
 
-interface ErrorCitation {
-  id: string;
-  message: string;
-  severity: string;
-  [key: string]: unknown;
-}
-
-interface SeoReportData {
-  business_id: string;
-  report_date: string;
-  filename: string;
-  insights_count: {
-    "Immediate Action Required": number;
-    "Needs Attention": number;
-    "Good Practice": number;
-  };
-  total_insights: number;
-  page_reports: Array<{
-    website_url: string;
-    insights_count: {
-      "Immediate Action Required": number;
-      "Needs Attention": number;
-      "Good Practice": number;
-    };
-    error_citations: ErrorCitation[];
-  }>;
-}
-
-interface OverviewResponse {
-  success: boolean;
-  data?: SeoReportData;
-  error?: string;
-}
+import type { OverviewResponse } from '@/types/api';
+import type { UserProfile } from '@/types/auth';
 
 export const fetchOverviewData = async (): Promise<OverviewResponse> => {
   const token = localStorage.getItem('access_token');

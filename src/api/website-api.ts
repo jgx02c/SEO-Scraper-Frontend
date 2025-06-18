@@ -37,24 +37,7 @@ const handleApiResponse = async (response: Response) => {
   return data;
 };
 
-interface AnalysisResponse {
-  success: boolean;
-  message?: string;
-  url?: string;
-  status?: 'processing' | 'scanning' | 'generating_report' | 'completed' | 'error';
-  scan_status?: string;
-  error?: string;
-  error_message?: string;
-  analysis_id?: string;  // Changed from business_id
-  pages_scanned?: number;
-  total_pages?: number;
-  current_step?: string;
-  estimated_time_remaining?: number;
-  progress_percentage?: number;
-  report_generated?: boolean;
-  last_updated?: string;
-  isComplete?: boolean;
-}
+import type { AnalysisResponse } from '@/types/api';
 
 export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisResponse> => {
   try {
