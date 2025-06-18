@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+import type { UserProfile } from './auth';
 
 export interface SubItem {
   id: string;
@@ -16,17 +16,6 @@ export interface UserMenuItem {
   id: string;
   label: string;
   icon: string;
-}
-
-export interface UserProfile {
-  id?: string;
-  name?: string;
-  email: string;
-  company?: string;
-  role?: string;
-  hasCompletedOnboarding?: boolean;
-  roles?: string[];
-  website_url?: string;
 }
 
 export interface NavigationData {
