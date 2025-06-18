@@ -1,30 +1,63 @@
 // components/dashboard/index.ts
 // Overview
-export * from './tabs/Overview';
+export { Overview } from './tabs/Overview';
 
-// Traffic
-export * from './tabs/Traffic';
+// Website management components
+export { WebsiteList, AddWebsite } from './tabs/Websites';
 
-// Analytics
-export * from './tabs/Analytics';
+// Scan management components  
+export { ScanDashboard } from './tabs/Scans';
 
-// Reports
-export * from './tabs/Reports';
+// Traffic components
+export { 
+  WebsiteTraffic,
+  SocialMediaTraffic,
+  AdsPerformance
+} from './tabs/Traffic';
 
-// Files
-export * from './tabs/Files';
+// Analytics components
+export {
+  SEOPerformance,
+  UserBehavior,
+  HistoricalData
+} from './tabs/Analytics';
 
-// Ads
-export * from './tabs/Ads';
+// Competitor analysis components
+export {
+  CompetitorGrid,
+  CompetitorDetails
+} from './tabs/CompetitorLookup';
 
-// Competitor Lookup
-export * from './tabs/CompetitorLookup';
+// Files components
+export {
+  ScrapedWebpages,
+  CompetitorData,
+  ReportsDocuments
+} from './tabs/Files';
 
-// AI & Automation
-export * from './tabs/AI';
+// Reports components
+export {
+  SEOReports,
+  CompetitorReports,
+  AdsReports,
+  TrafficReports
+} from './tabs/Reports';
 
-// Chat
-export * from './tabs/Chat';
+// Ads components
+export {
+  MyAds,
+  CompetitorAds
+} from './tabs/Ads';
 
-// Shared Components
-export * from './shared/ComponentLoader';
+// AI components
+export {
+  AIContentGeneration,
+  AIFixes,
+  AlertsMonitoring
+} from './tabs/AI';
+
+// Chat component
+export { ChatInterface } from './tabs/Chat';
+
+// Shared components
+export { ComponentLoader } from './shared/ComponentLoader';

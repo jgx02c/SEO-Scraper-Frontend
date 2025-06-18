@@ -94,6 +94,10 @@ export const signIn = async (email: string, password: string): Promise<AuthRespo
     return data;
   } catch (error) {
     console.error('Sign in error:', error);
+    // Handle network errors specifically
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new AuthError(503, 'Unable to connect to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
+    }
     throw error;
   }
 };
@@ -161,32 +165,52 @@ export const signUp = async (email: string, password: string, name?: string): Pr
     return data;
   } catch (error) {
     console.error('Sign up error:', error);
+    // Handle network errors specifically
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new AuthError(503, 'Unable to connect to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
+    }
     throw error;
   }
 };
 
 export const forgotPassword = async (email: string): Promise<void> => {
-  const response = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email }),
-  });
+  try {
+    const response = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
 
-  await handleResponse(response);
+    await handleResponse(response);
+  } catch (error) {
+    // Handle network errors specifically
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new AuthError(503, 'Unable to connect to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
+    }
+    throw error;
+  }
 };
 
 export const resetPassword = async (token: string, newPassword: string): Promise<void> => {
-  const response = await fetch(`${BASE_URL}/api/auth/reset-password`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ token, new_password: newPassword }),
-  });
+  try {
+    const response = await fetch(`${BASE_URL}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token, new_password: newPassword }),
+    });
 
-  await handleResponse(response);
+    await handleResponse(response);
+  } catch (error) {
+    // Handle network errors specifically
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new AuthError(503, 'Unable to connect to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
+    }
+    throw error;
+  }
 };
 
 export const logout = () => {

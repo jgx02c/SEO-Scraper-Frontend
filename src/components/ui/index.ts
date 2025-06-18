@@ -3,6 +3,7 @@ export { Input } from './input';
 export { Alert, AlertDescription } from './alert';
 export { Badge } from './badge';
 export { Card } from './card';
+export { DevNotice } from './dev-notice';
 export { Dialog } from './dialog';
 export { Progress } from './progress';
 export { Skeleton } from './skeleton';

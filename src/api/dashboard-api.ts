@@ -74,41 +74,59 @@ export const fetchOverviewData = async (): Promise<OverviewResponse> => {
 
 export const api = {
   async validateToken(token: string): Promise<UserProfile> {
-    const response = await fetch(`${BASE_URL}/api/auth/me`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
+    try {
+      const response = await fetch(`${BASE_URL}/api/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new ApiError(response.status, 'Invalid token');
       }
-    });
-    
-    if (!response.ok) {
-      throw new ApiError(response.status, 'Invalid token');
+      
+      const data = await response.json();
+      if (!data.success) {
+        throw new ApiError(401, data.error || 'Invalid token');
+      }
+      
+      return data.user;
+    } catch (error) {
+      // Handle network errors (TypeError: Failed to fetch)
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new ApiError(503, 'Unable to connect to authentication server', 'NETWORK_ERROR');
+      }
+      // Re-throw API errors as-is
+      throw error;
     }
-    
-    const data = await response.json();
-    if (!data.success) {
-      throw new ApiError(401, data.error || 'Invalid token');
-    }
-    
-    return data.user;
   },
   
   async getUserProfile(token: string): Promise<UserProfile> {
-    const response = await fetch(`${BASE_URL}/api/users/profile`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
+    try {
+      const response = await fetch(`${BASE_URL}/api/users/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new ApiError(response.status, 'Failed to fetch user profile');
       }
-    });
-    
-    if (!response.ok) {
-      throw new ApiError(response.status, 'Failed to fetch user profile');
+      
+      const data = await response.json();
+      if (!data.success) {
+        throw new ApiError(response.status, data.error || 'Failed to fetch user profile');
+      }
+      
+      return data.profile;
+    } catch (error) {
+      // Handle network errors (TypeError: Failed to fetch)
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new ApiError(503, 'Unable to connect to user service', 'NETWORK_ERROR');
+      }
+      // Re-throw API errors as-is
+      throw error;
     }
-    
-    const data = await response.json();
-    if (!data.success) {
-      throw new ApiError(response.status, data.error || 'Failed to fetch user profile');
-    }
-    
-    return data.profile;
   },
   
   async checkAuth(): Promise<{
@@ -139,13 +157,14 @@ export const api = {
         profile
       };
     } catch (error) {
-      // If there's an auth error, clear the token
-      if (error instanceof ApiError && error.status === 401) {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        return { isAuthenticated: false };
-      }
-      throw error; // Re-throw other errors
+      console.warn('Auth check failed:', error);
+      
+      // Clear tokens on any auth-related error
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      
+      // Return false for any error (network errors, 401s, etc.)
+      return { isAuthenticated: false };
     }
   },
 
