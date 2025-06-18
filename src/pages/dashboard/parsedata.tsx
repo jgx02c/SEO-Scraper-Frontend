@@ -27,7 +27,8 @@ import {
   HelpCircle,
   LogOut
 } from 'lucide-react';
-import { NavigationItem, UserMenuItem, UserProfile } from '@/types/dashboard';
+import { NavigationItem, UserMenuItem } from '@/types/dashboard';
+import { UserProfile } from '@/types/auth';
 
 // Dummy data (you might want to move this to a separate JSON file later)
 const navigationData = {

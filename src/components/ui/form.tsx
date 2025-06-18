@@ -115,7 +115,7 @@ export const FormError: React.FC<FormErrorProps> = ({ error, className = '' }) =
 
 // Form Success Display
 interface FormSuccessProps {
-  message: string | null;
+  message?: string | null;
   className?: string;
 }
 
@@ -161,7 +161,7 @@ interface AuthFormTemplateProps {
   onSubmit: (e: React.FormEvent) => void;
   isLoading: boolean;
   error: string | null;
-  success?: string | null;
+  success?: string | null | undefined;
   children: ReactNode;
   submitText: string;
   loadingText?: string;
