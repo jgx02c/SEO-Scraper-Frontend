@@ -90,6 +90,17 @@ export const useAuth = () => {
     try {
       const result = await apiSignIn(credentials.email, credentials.password);
       
+      console.log('Sign in result structure:', {
+        hasResult: !!result,
+        hasUser: !!result?.user,
+        hasSession: !!result?.session,
+        hasProfile: !!result?.profile,
+        sessionKeys: result?.session ? Object.keys(result.session) : [],
+        userKeys: result?.user ? Object.keys(result.user) : [],
+        resultKeys: result ? Object.keys(result) : [],
+        fullResult: result
+      });
+      
       if (result.session && result.profile) {
         updateAuthState({
           isAuthenticated: true,
@@ -112,7 +123,11 @@ export const useAuth = () => {
 
         return { success: true };
       } else {
-        throw new Error('Invalid response from server');
+        const missingFields = [];
+        if (!result.session) missingFields.push('session');
+        if (!result.profile) missingFields.push('profile');
+        
+        throw new Error(`Invalid response from server - missing: ${missingFields.join(', ')}. Check console for full response details.`);
       }
     } catch (error) {
       console.error('Sign in error:', error);

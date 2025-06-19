@@ -1,6 +1,6 @@
 // utils/auth-api.ts
-// Define a global base URL with environment variable support
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+// Define a global base URL with environment variable support and fallback
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 import type { AuthResponse } from '@/types/auth';
 
@@ -18,10 +18,19 @@ export class AuthError extends Error {
 
 // Helper function to handle API responses with better error information
 const handleResponse = async (response: Response) => {
+  // Check if response is JSON
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    const text = await response.text();
+    console.error('Non-JSON response received:', text.substring(0, 200));
+    throw new AuthError(response.status, 'Server returned non-JSON response. Please check if the API server is running.', 'INVALID_RESPONSE');
+  }
+
   let data;
   try {
     data = await response.json();
-  } catch {
+  } catch (error) {
+    console.error('JSON parsing error:', error);
     throw new AuthError(
       response.status,
       `Failed to parse response: ${response.statusText}`,
@@ -58,6 +67,9 @@ export const getAuthHeader = () => {
 
 export const signIn = async (email: string, password: string): Promise<AuthResponse> => {
   try {
+    console.log('Attempting to sign in user with email:', email);
+    console.log('API URL:', `${BASE_URL}/api/auth/signin`);
+    
     const response = await fetch(`${BASE_URL}/api/auth/signin`, {
       method: 'POST',
       headers: {
@@ -66,12 +78,18 @@ export const signIn = async (email: string, password: string): Promise<AuthRespo
       body: JSON.stringify({ email, password }),
     });
 
+    console.log('Response status:', response.status);
+    
     const data = await handleResponse(response);
     console.log('Sign in response:', {
       hasSession: !!data.session,
+      hasUser: !!data.user,
+      hasProfile: !!data.profile,
       hasAccessToken: !!data.session?.access_token,
       tokenLength: data.session?.access_token?.length,
-      tokenFormat: data.session?.access_token ? `${data.session.access_token.substring(0, 10)}...` : 'none'
+      tokenFormat: data.session?.access_token ? `${data.session.access_token.substring(0, 10)}...` : 'none',
+      responseKeys: Object.keys(data),
+      fullResponse: data
     });
 
     // Store tokens from session
@@ -94,11 +112,38 @@ export const signIn = async (email: string, password: string): Promise<AuthRespo
     return data;
   } catch (error) {
     console.error('Sign in error:', error);
-    // Handle network errors specifically
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new AuthError(503, 'Unable to connect to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
+    
+    // Handle different types of network errors
+    if (error instanceof TypeError) {
+      const errorMessage = error.message.toLowerCase();
+      
+      if (errorMessage.includes('fetch') || errorMessage.includes('network request failed')) {
+        throw new AuthError(503, 'Unable to connect to authentication server. Please check your internet connection and try again.', 'NETWORK_ERROR');
+      }
+      
+      if (errorMessage.includes('name or service not known') || errorMessage.includes('getaddrinfo')) {
+        throw new AuthError(503, 'Authentication server is unreachable. The server may be down or the URL is incorrect. Please contact support if this persists.', 'SERVER_UNREACHABLE');
+      }
+      
+      if (errorMessage.includes('connection refused') || errorMessage.includes('econnrefused')) {
+        throw new AuthError(503, 'Connection to authentication server was refused. The server may not be running on the expected port.', 'CONNECTION_REFUSED');
+      }
+      
+      if (errorMessage.includes('timeout') || errorMessage.includes('etimedout')) {
+        throw new AuthError(504, 'Request to authentication server timed out. Please check your connection and try again.', 'TIMEOUT');
+      }
+      
+      // Generic network error fallback
+      throw new AuthError(503, 'Network error occurred while connecting to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
     }
-    throw error;
+    
+    // Handle AuthError instances (don't re-wrap)
+    if (error instanceof AuthError) {
+      throw error;
+    }
+    
+    // Handle other unexpected errors
+    throw new AuthError(500, 'An unexpected error occurred during sign in. Please try again.', 'UNKNOWN_ERROR');
   }
 };
 
@@ -106,6 +151,7 @@ export const signUp = async (email: string, password: string, name?: string): Pr
   try {
     const userData = { email, password, name };
     console.log('Attempting to sign up user with email:', email);
+    console.log('API URL:', `${BASE_URL}/api/auth/signup`);
     
     const response = await fetch(`${BASE_URL}/api/auth/signup`, {
       method: 'POST',
@@ -115,6 +161,17 @@ export const signUp = async (email: string, password: string, name?: string): Pr
       body: JSON.stringify(userData),
     });
 
+    console.log('Response status:', response.status);
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await response.text();
+      console.error('Non-JSON response received:', text.substring(0, 200));
+      throw new AuthError(response.status, 'Server returned non-JSON response. Please check if the API server is running.', 'INVALID_RESPONSE');
+    }
+
     const data = await response.json();
     console.log('Sign up response:', {
       hasUser: !!data.user,
@@ -123,7 +180,7 @@ export const signUp = async (email: string, password: string, name?: string): Pr
     });
     
     if (!response.ok) {
-      throw new Error(data.detail || data.message || 'Signup failed');
+      throw new AuthError(response.status, data.detail || data.message || 'Signup failed', data.code);
     }
 
     // Handle case where signup is successful but email confirmation is required
@@ -165,16 +222,46 @@ export const signUp = async (email: string, password: string, name?: string): Pr
     return data;
   } catch (error) {
     console.error('Sign up error:', error);
-    // Handle network errors specifically
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new AuthError(503, 'Unable to connect to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
+    
+    // Handle different types of network errors
+    if (error instanceof TypeError) {
+      const errorMessage = error.message.toLowerCase();
+      
+      if (errorMessage.includes('fetch') || errorMessage.includes('network request failed')) {
+        throw new AuthError(503, 'Unable to connect to authentication server. Please check your internet connection and try again.', 'NETWORK_ERROR');
+      }
+      
+      if (errorMessage.includes('name or service not known') || errorMessage.includes('getaddrinfo')) {
+        throw new AuthError(503, 'Authentication server is unreachable. The server may be down or the URL is incorrect. Please contact support if this persists.', 'SERVER_UNREACHABLE');
+      }
+      
+      if (errorMessage.includes('connection refused') || errorMessage.includes('econnrefused')) {
+        throw new AuthError(503, 'Connection to authentication server was refused. The server may not be running on the expected port.', 'CONNECTION_REFUSED');
+      }
+      
+      if (errorMessage.includes('timeout') || errorMessage.includes('etimedout')) {
+        throw new AuthError(504, 'Request to authentication server timed out. Please check your connection and try again.', 'TIMEOUT');
+      }
+      
+      // Generic network error fallback
+      throw new AuthError(503, 'Network error occurred while connecting to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
     }
-    throw error;
+    
+    // Handle AuthError instances (don't re-wrap)
+    if (error instanceof AuthError) {
+      throw error;
+    }
+    
+    // Handle other unexpected errors
+    throw new AuthError(500, 'An unexpected error occurred during signup. Please try again.', 'UNKNOWN_ERROR');
   }
 };
 
 export const forgotPassword = async (email: string): Promise<void> => {
   try {
+    console.log('Requesting password reset for email:', email);
+    console.log('API URL:', `${BASE_URL}/api/auth/forgot-password`);
+    
     const response = await fetch(`${BASE_URL}/api/auth/forgot-password`, {
       method: 'POST',
       headers: {
@@ -185,16 +272,47 @@ export const forgotPassword = async (email: string): Promise<void> => {
 
     await handleResponse(response);
   } catch (error) {
-    // Handle network errors specifically
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new AuthError(503, 'Unable to connect to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
+    console.error('Forgot password error:', error);
+    
+    // Handle different types of network errors
+    if (error instanceof TypeError) {
+      const errorMessage = error.message.toLowerCase();
+      
+      if (errorMessage.includes('fetch') || errorMessage.includes('network request failed')) {
+        throw new AuthError(503, 'Unable to connect to authentication server. Please check your internet connection and try again.', 'NETWORK_ERROR');
+      }
+      
+      if (errorMessage.includes('name or service not known') || errorMessage.includes('getaddrinfo')) {
+        throw new AuthError(503, 'Authentication server is unreachable. The server may be down or the URL is incorrect. Please contact support if this persists.', 'SERVER_UNREACHABLE');
+      }
+      
+      if (errorMessage.includes('connection refused') || errorMessage.includes('econnrefused')) {
+        throw new AuthError(503, 'Connection to authentication server was refused. The server may not be running on the expected port.', 'CONNECTION_REFUSED');
+      }
+      
+      if (errorMessage.includes('timeout') || errorMessage.includes('etimedout')) {
+        throw new AuthError(504, 'Request to authentication server timed out. Please check your connection and try again.', 'TIMEOUT');
+      }
+      
+      // Generic network error fallback
+      throw new AuthError(503, 'Network error occurred while connecting to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
     }
-    throw error;
+    
+    // Handle AuthError instances (don't re-wrap)
+    if (error instanceof AuthError) {
+      throw error;
+    }
+    
+    // Handle other unexpected errors
+    throw new AuthError(500, 'An unexpected error occurred during password reset request. Please try again.', 'UNKNOWN_ERROR');
   }
 };
 
 export const resetPassword = async (token: string, newPassword: string): Promise<void> => {
   try {
+    console.log('Resetting password with token');
+    console.log('API URL:', `${BASE_URL}/api/auth/reset-password`);
+    
     const response = await fetch(`${BASE_URL}/api/auth/reset-password`, {
       method: 'POST',
       headers: {
@@ -205,11 +323,39 @@ export const resetPassword = async (token: string, newPassword: string): Promise
 
     await handleResponse(response);
   } catch (error) {
-    // Handle network errors specifically
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new AuthError(503, 'Unable to connect to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
+    console.error('Reset password error:', error);
+    
+    // Handle different types of network errors
+    if (error instanceof TypeError) {
+      const errorMessage = error.message.toLowerCase();
+      
+      if (errorMessage.includes('fetch') || errorMessage.includes('network request failed')) {
+        throw new AuthError(503, 'Unable to connect to authentication server. Please check your internet connection and try again.', 'NETWORK_ERROR');
+      }
+      
+      if (errorMessage.includes('name or service not known') || errorMessage.includes('getaddrinfo')) {
+        throw new AuthError(503, 'Authentication server is unreachable. The server may be down or the URL is incorrect. Please contact support if this persists.', 'SERVER_UNREACHABLE');
+      }
+      
+      if (errorMessage.includes('connection refused') || errorMessage.includes('econnrefused')) {
+        throw new AuthError(503, 'Connection to authentication server was refused. The server may not be running on the expected port.', 'CONNECTION_REFUSED');
+      }
+      
+      if (errorMessage.includes('timeout') || errorMessage.includes('etimedout')) {
+        throw new AuthError(504, 'Request to authentication server timed out. Please check your connection and try again.', 'TIMEOUT');
+      }
+      
+      // Generic network error fallback
+      throw new AuthError(503, 'Network error occurred while connecting to authentication server. Please check your connection and try again.', 'NETWORK_ERROR');
     }
-    throw error;
+    
+    // Handle AuthError instances (don't re-wrap)
+    if (error instanceof AuthError) {
+      throw error;
+    }
+    
+    // Handle other unexpected errors
+    throw new AuthError(500, 'An unexpected error occurred during password reset. Please try again.', 'UNKNOWN_ERROR');
   }
 };
 

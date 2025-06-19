@@ -1,7 +1,7 @@
 // V2 Website API - Comprehensive SEO Scraper Backend Integration
 import { getAuthHeader } from './auth-api';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export class WebsiteApiV2Error extends Error {
   constructor(

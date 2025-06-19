@@ -142,6 +142,10 @@ const OnboardingPage = () => {
             setError('Authentication expired. Please sign in again.');
             router.push('/signin');
             break;
+          case 404:
+            showError('User profile not found. Please try signing in again.', 'Profile Error');
+            setError('User profile not found. Please try signing in again.');
+            break;
           case 429:
             showError('Too many requests. Please wait before trying again.', 'Rate Limited');
             setError('Too many requests. Please wait before trying again.');

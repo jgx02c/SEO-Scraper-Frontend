@@ -11,7 +11,7 @@ interface DevNoticeProps {
 export const DevNotice: React.FC<DevNoticeProps> = ({ 
   title = "Backend Server Not Available",
   message = "The authentication server appears to be offline. Please start your backend server to continue.",
-  serverUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'
+  serverUrl = process.env.NEXT_PUBLIC_API_URL
 }) => {
   return (
     <Card className="bg-yellow-900/20 border-yellow-500/50 max-w-2xl mx-auto">

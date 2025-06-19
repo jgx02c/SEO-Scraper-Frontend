@@ -1,6 +1,6 @@
 // utils/dashboard-api.ts
 // Define global base URL with environment variable support
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export class ApiError extends Error {
   constructor(

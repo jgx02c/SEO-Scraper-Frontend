@@ -1,7 +1,7 @@
 // services/chatApi.ts
 import { Conversation, Message, ChatSettings } from '@/types';
 
-const BASE_URL = 'https://leaps-scraper.onrender.com';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const chatApi = {
   getSettings: async (): Promise<ChatSettings> => {
