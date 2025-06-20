@@ -87,18 +87,15 @@ export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisRes
 
 export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
   try {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      throw new Error('No authentication token found');
-    }
+    const headers = {
+      'Content-Type': 'application/json',
+      ...getAuthHeader(),
+    };
     
     console.log('Requesting status update...');
-    const response = await fetch(`${BASE_URL}/api/data/analysis/status`, {
+    const response = await fetch(`${BASE_URL}/api/v2/websites/snapshots/current/status`, {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
+      headers,
     });
     
     console.log('Status response received:', response.status);
@@ -106,26 +103,34 @@ export const checkAnalysisStatus = async (): Promise<AnalysisResponse> => {
     console.log('Status data:', data);
     
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new WebsiteApiError(401, 'Authentication failed. Please sign in again.', 'UNAUTHENTICATED');
+      }
       throw new Error(data.detail || 'Failed to check status');
     }
     
     return {
       success: true,
       status: data.status,
-      scan_status: data.scan_status,
+      scan_status: data.status,
       error_message: data.error_message,
-      pages_scanned: data.pages_scanned,
-      total_pages: data.total_pages,
-      current_step: data.current_step,
-      estimated_time_remaining: data.estimated_time_remaining,
-      progress_percentage: data.progress_percentage,
-      analysis_id: data.business_id,
-      report_generated: data.report_generated,
-      last_updated: data.last_updated,
-      isComplete: data.status === 'complete' || data.isComplete
+      pages_scanned: data.pages_scraped || 0,
+      total_pages: data.pages_discovered || 0,
+      current_step: data.current_step || "Starting scan...",
+      estimated_time_remaining: 300,
+      progress_percentage: data.pages_discovered > 0 ? Math.round((data.pages_scraped / data.pages_discovered) * 100) : 0,
+      analysis_id: data.snapshot_id,
+      website_id: data.website_id,
+      base_url: data.base_url,
+      pages_failed: data.pages_failed || 0,
+      completed_at: data.completed_at,
+      isComplete: data.status === 'completed'
     };
   } catch (error) {
     console.error('Error checking status:', error);
+    if (error instanceof WebsiteApiError) {
+      throw error;
+    }
     return {
       success: false,
       error: error instanceof Error ? error.message : 'An unknown error occurred'

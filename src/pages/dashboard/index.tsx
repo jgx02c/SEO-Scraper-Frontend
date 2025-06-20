@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown";
 import { Button } from "@/components/ui/button";
-import { Activity, Loader2 } from "lucide-react";
+import { Activity, Loader2, WifiOff } from "lucide-react";
 import { ComponentLoader } from "@/components/dashboard/shared/ComponentLoader";
 import { 
   LayoutDashboard, 
@@ -148,7 +148,23 @@ const iconComponents = {
 
 const InitialLoadingSkeleton = () => (
   <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-900/20 to-gray-900 flex items-center justify-center">
-    <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+    <div className="text-center space-y-4">
+      <Loader2 className="h-8 w-8 animate-spin text-indigo-400 mx-auto" />
+      <p className="text-gray-400">Loading dashboard...</p>
+    </div>
+  </div>
+);
+
+const AuthErrorFallback = ({ onRetry }: { onRetry: () => void }) => (
+  <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-900/20 to-gray-900 flex items-center justify-center">
+    <div className="text-center space-y-4 max-w-md">
+      <WifiOff className="h-12 w-12 text-red-400 mx-auto" />
+      <h2 className="text-xl font-semibold text-white">Connection Issue</h2>
+      <p className="text-gray-400">Unable to connect to the dashboard. Please check your connection and try again.</p>
+      <Button onClick={onRetry} className="bg-indigo-600 hover:bg-indigo-700">
+        Retry Connection
+      </Button>
+    </div>
   </div>
 );
 
@@ -158,26 +174,30 @@ const DashboardPage = () => {
   const [activeSubItem, setActiveSubItem] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [authError, setAuthError] = useState(false);
+
+  const initializeDashboard = async () => {
+    try {
+      setIsInitializing(true);
+      setAuthError(false);
+      
+      const { isAuthenticated, profile } = await api.checkAuth();
+      
+      if (!isAuthenticated) {
+        router.push('/signin');
+        return;
+      }
+
+      setUserProfile(profile!);
+    } catch (error) {
+      console.error('Dashboard initialization error:', error);
+      setAuthError(true);
+    } finally {
+      setIsInitializing(false);
+    }
+  };
 
   useEffect(() => {
-    const initializeDashboard = async () => {
-      try {
-        const { isAuthenticated, profile } = await api.checkAuth();
-        
-        if (!isAuthenticated) {
-          router.push('/signin');
-          return;
-        }
-
-        setUserProfile(profile!);
-      } catch (error) {
-        console.error('Dashboard initialization error:', error);
-        router.push('/signin');
-      } finally {
-        setIsInitializing(false);
-      }
-    };
-
     initializeDashboard();
   }, [router]);
 
@@ -192,7 +212,23 @@ const DashboardPage = () => {
     router.push('/signin');
   };
 
-  if (isInitializing || !userProfile) {
+  const handleRetryAuth = () => {
+    initializeDashboard();
+  };
+
+  // Show loading only during initial auth check
+  if (isInitializing) {
+    return <InitialLoadingSkeleton />;
+  }
+
+  // Show auth error fallback
+  if (authError) {
+    return <AuthErrorFallback onRetry={handleRetryAuth} />;
+  }
+
+  // If no user profile, redirect to signin
+  if (!userProfile) {
+    router.push('/signin');
     return <InitialLoadingSkeleton />;
   }
 

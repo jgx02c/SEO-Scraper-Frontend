@@ -44,7 +44,7 @@ export interface OverviewResponse {
   error?: string;
 }
 
-export type AnalysisStatus = 'processing' | 'scanning' | 'generating_report' | 'completed' | 'error' | 'unknown';
+export type AnalysisStatus = 'processing' | 'scanning' | 'generating_report' | 'completed' | 'error' | 'unknown' | 'crawling';
 
 export interface AnalysisResponse {
   success: boolean;
@@ -63,6 +63,10 @@ export interface AnalysisResponse {
   report_generated?: boolean;
   last_updated?: string;
   isComplete?: boolean;
+  website_id?: string;
+  base_url?: string;
+  pages_failed?: number;
+  completed_at?: string;
 }
 
 export interface ScanStatus {

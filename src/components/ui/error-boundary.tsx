@@ -1,17 +1,17 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import React, { Component, ReactNode } from 'react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from './button';
+import { Card, CardContent } from './card';
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  componentName?: string;
 }
 
 interface State {
   hasError: boolean;
   error?: Error;
-  errorInfo?: ErrorInfo;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -20,84 +20,57 @@ export class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false };
   }
 
-  public static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
-    this.setState({
-      error,
-      errorInfo,
-    });
-
-    // Call the optional onError callback
-    if (this.props.onError) {
-      this.props.onError(error, errorInfo);
-    }
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error Boundary caught an error:', error, errorInfo);
   }
 
-  private handleRetry = () => {
-    this.setState({ hasError: false, error: undefined, errorInfo: undefined });
+  handleRetry = () => {
+    this.setState({ hasError: false, error: undefined });
   };
 
-  private handleGoHome = () => {
-    window.location.href = '/';
-  };
-
-  public render() {
+  render() {
     if (this.state.hasError) {
-      // Custom fallback UI
       if (this.props.fallback) {
         return this.props.fallback;
       }
 
-      // Default fallback UI
       return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-900/20 to-gray-900 flex flex-col items-center justify-center p-6">
-          <div className="max-w-md w-full space-y-8 bg-gray-800/50 backdrop-blur-xl p-8 rounded-xl border border-gray-700/50 text-center">
-            <div className="space-y-4">
-              <AlertTriangle className="w-16 h-16 text-red-400 mx-auto" />
-              <h2 className="text-2xl font-bold text-white">Something went wrong</h2>
-              <p className="text-gray-400">
-                We&apos;re sorry, but something unexpected happened. Please try refreshing the page or contact support if the problem persists.
-              </p>
-            </div>
-
-            {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div className="mt-6 p-4 bg-red-900/20 border border-red-700/50 rounded-lg text-left">
-                <h3 className="text-sm font-semibold text-red-400 mb-2">Error Details (Development)</h3>
-                <pre className="text-xs text-red-300 overflow-auto">
-                  {this.state.error.toString()}
-                </pre>
-                {this.state.errorInfo && (
-                  <pre className="text-xs text-red-300 mt-2 overflow-auto">
-                    {this.state.errorInfo.componentStack}
-                  </pre>
+        <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700">
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <AlertCircle className="h-12 w-12 text-red-400 mx-auto" />
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Something went wrong in {this.props.componentName || 'this section'}
+                </h3>
+                <p className="text-gray-400 mb-2">
+                  An unexpected error occurred. Please try reloading this section.
+                </p>
+                {process.env.NODE_ENV === 'development' && this.state.error && (
+                  <details className="text-left text-xs text-gray-500 mt-4 p-2 bg-gray-900 rounded">
+                    <summary className="cursor-pointer">Error details</summary>
+                    <pre className="mt-2 whitespace-pre-wrap">
+                      {this.state.error.message}
+                      {this.state.error.stack}
+                    </pre>
+                  </details>
                 )}
               </div>
-            )}
-
-            <div className="flex space-x-3">
-              <Button
-                onClick={this.handleRetry}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
+              <Button 
+                onClick={this.handleRetry} 
+                variant="outline" 
+                className="border-gray-600 hover:bg-gray-700"
               >
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className="h-4 w-4 mr-2" />
                 Try Again
               </Button>
-              <Button
-                onClick={this.handleGoHome}
-                variant="outline"
-                className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700"
-              >
-                <Home className="w-4 h-4 mr-2" />
-                Go Home
-              </Button>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       );
     }
 
@@ -107,7 +80,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
 // Hook-based error boundary for functional components
 export const useErrorHandler = () => {
-  return (error: Error, errorInfo?: ErrorInfo) => {
+  return (error: Error, errorInfo?: React.ErrorInfo) => {
     console.error('Error caught by useErrorHandler:', error, errorInfo);
     // You could integrate this with your error reporting service
     // e.g., Sentry, LogRocket, etc.
@@ -118,10 +91,10 @@ export const useErrorHandler = () => {
 export const withErrorBoundary = <P extends object>(
   Component: React.ComponentType<P>,
   fallback?: ReactNode,
-  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  componentName?: string
 ) => {
   const WrappedComponent = (props: P) => (
-    <ErrorBoundary fallback={fallback} onError={onError}>
+    <ErrorBoundary fallback={fallback} componentName={componentName || Component.displayName || Component.name}>
       <Component {...props} />
     </ErrorBoundary>
   );

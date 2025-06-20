@@ -46,36 +46,47 @@ const OnboardingPage = () => {
           throw new Error(data.error || 'Failed to check status');
         }
 
-        // Update scan status even if we're in an intermediate state
+        // Update scan status with the new API response format
         setScanStatus({
           pages_scanned: data.pages_scanned || 0,
           total_pages: data.total_pages || 0,
-          current_step: data.current_step || "initializing",
+          current_step: data.current_step || "Starting scan...",
           estimated_time_remaining: data.estimated_time_remaining || 300,
           progress_percentage: data.progress_percentage || 0
         });
 
-        // Get status with fallbacks
-        const scanStatus = data.scan_status || data.status || 'processing';
-        console.log('Current scan status:', scanStatus);
+        // Check the status field directly (new API format)
+        const currentStatus = data.status;
+        console.log('Current scan status:', currentStatus);
 
-        if (scanStatus === 'completed' || scanStatus === 'complete') {
-          console.log('Analysis complete, preparing for dashboard redirect');
+        if (currentStatus === 'completed') {
+          console.log('Analysis complete, showing completion screen');
           success('Website analysis completed successfully!', 'Analysis Complete');
           setIsProcessing(false);
-          router.push("/dashboard");
-        } else if (scanStatus === 'error') {
+          setStep(3); // Move to completion screen instead of redirecting immediately
+        } else if (currentStatus === 'error') {
           console.error('Scan reported error status:', data.error_message);
           const errorMsg = data.error_message || 'An error occurred during processing';
           showError(errorMsg, 'Analysis Error');
           setError(errorMsg);
           setIsProcessing(false);
-        } else {
+        } else if (currentStatus === 'crawling' || currentStatus === 'processing') {
           console.log('Processing continues, scheduling next poll');
+          pollTimer = setTimeout(poll, POLLING_INTERVAL);
+        } else {
+          console.log('Unknown status, continuing to poll:', currentStatus);
           pollTimer = setTimeout(poll, POLLING_INTERVAL);
         }
       } catch (err) {
         console.error('Error during poll:', err);
+        
+        if (err instanceof WebsiteApiError && err.status === 401) {
+          showError('Your session has expired. Please sign in again.', 'Authentication Error');
+          router.push('/signin');
+          setIsProcessing(false);
+          return;
+        }
+
         // Don't stop polling on temporary errors, unless isProcessing is false
         if (isProcessing) {
           console.log('Scheduling retry despite error');
@@ -223,18 +234,23 @@ const OnboardingPage = () => {
             
             <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700">
               <div className="flex justify-between text-sm text-gray-400 mb-2">
-                <span>Pages Scanned: {scanStatus.pages_scanned}</span>
-                <span>Total Pages: {scanStatus.total_pages || 'Calculating...'}</span>
+                <span>Pages Scraped: {scanStatus.pages_scanned}</span>
+                <span>Pages Discovered: {scanStatus.total_pages || 'Discovering...'}</span>
               </div>
               <Progress 
                 value={scanStatus.progress_percentage}
                 className="w-full h-2 bg-gray-700"
               />
+              <div className="text-center text-xs text-gray-500 mt-1">
+                {scanStatus.progress_percentage}% complete
+              </div>
             </div>
             
-            <p className="text-gray-400">
-              Estimated Time Remaining: {formatTimeRemaining(scanStatus.estimated_time_remaining)}
-            </p>
+            {scanStatus.estimated_time_remaining > 0 && (
+              <p className="text-gray-400">
+                Estimated Time Remaining: {formatTimeRemaining(scanStatus.estimated_time_remaining)}
+              </p>
+            )}
           </div>
 
           {error && (
@@ -309,14 +325,14 @@ const OnboardingPage = () => {
 
           {step === 3 && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white text-center">Analysis in Progress</h2>
+              <h2 className="text-2xl font-bold text-white text-center">✅ Analysis Complete!</h2>
               <p className="text-gray-400 text-center">
-                Your website analysis has begun. You can now proceed to your dashboard.
+                Your website analysis has been completed successfully. You can now view your comprehensive SEO report and insights in the dashboard.
               </p>
-              <div className="bg-gray-900/50 p-4 rounded-lg">
-                <h3 className="text-white font-semibold mb-2">Initial Setup Complete</h3>
+              <div className="bg-green-900/20 border border-green-700/50 p-4 rounded-lg">
+                <h3 className="text-green-400 font-semibold mb-2">Analysis Results Ready</h3>
                 <p className="text-gray-400 text-sm">
-                  While your full analysis may take 5-10 minutes to complete, you can start exploring your dashboard now.
+                  Your full website analysis, competitor insights, and AI-powered recommendations are now available in your dashboard.
                 </p>
               </div>
             </div>
