@@ -73,62 +73,6 @@ export const fetchOverviewData = async (): Promise<OverviewResponse> => {
 };
 
 export const api = {
-  async validateToken(token: string): Promise<UserProfile> {
-    try {
-      const response = await fetch(`${BASE_URL}/api/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new ApiError(response.status, 'Invalid token');
-      }
-      
-      const data = await response.json();
-      if (!data.success) {
-        throw new ApiError(401, data.error || 'Invalid token');
-      }
-      
-      return data.user;
-    } catch (error) {
-      // Handle network errors (TypeError: Failed to fetch)
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new ApiError(503, 'Unable to connect to authentication server', 'NETWORK_ERROR');
-      }
-      // Re-throw API errors as-is
-      throw error;
-    }
-  },
-  
-  async getUserProfile(token: string): Promise<UserProfile> {
-    try {
-      const response = await fetch(`${BASE_URL}/api/users/profile`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new ApiError(response.status, 'Failed to fetch user profile');
-      }
-      
-      const data = await response.json();
-      if (!data.success) {
-        throw new ApiError(response.status, data.error || 'Failed to fetch user profile');
-      }
-      
-      return data.profile;
-    } catch (error) {
-      // Handle network errors (TypeError: Failed to fetch)
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new ApiError(503, 'Unable to connect to user service', 'NETWORK_ERROR');
-      }
-      // Re-throw API errors as-is
-      throw error;
-    }
-  },
-  
   async checkAuth(): Promise<{
     isAuthenticated: boolean;
     profile?: UserProfile;
@@ -139,33 +83,12 @@ export const api = {
       return { isAuthenticated: false };
     }
     
-    try {
-      // Run both requests in parallel to get full profile data
-      const [authUser, userProfile] = await Promise.all([
-        this.validateToken(token),
-        this.getUserProfile(token)
-      ]);
-      
-      // Merge auth user data with full profile
-      const profile = {
-        ...authUser,
-        ...userProfile
-      };
-      
-      return { 
-        isAuthenticated: true,
-        profile
-      };
-    } catch (error) {
-      console.warn('Auth check failed:', error);
-      
-      // Clear tokens on any auth-related error
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      
-      // Return false for any error (network errors, 401s, etc.)
-      return { isAuthenticated: false };
-    }
+    // Since backend now automatically creates user profiles during signup/signin,
+    // we just need to verify the token exists locally
+    return { 
+      isAuthenticated: true,
+      profile: undefined // Profile data comes from signin/signup responses
+    };
   },
 
   async updateUserProfile(profile: Partial<UserProfile>): Promise<UserProfile> {

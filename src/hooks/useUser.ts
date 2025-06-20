@@ -24,40 +24,6 @@ export const useUser = () => {
     setUserState(prev => ({ ...prev, ...updates }));
   }, []);
 
-  // Get user profile
-  const getUserProfile = useCallback(async () => {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      updateUserState({ error: 'No authentication token found' });
-      return null;
-    }
-
-    updateUserState({ isLoading: true, error: null });
-
-    try {
-      const profile = await api.getUserProfile(token);
-      
-      updateUserState({
-        profile,
-        isLoading: false,
-        error: null,
-      });
-
-      return profile;
-    } catch (error) {
-      console.error('Get user profile error:', error);
-      
-      const errorMessage = error instanceof ApiError ? error.message : 'Failed to fetch user profile';
-      updateUserState({
-        isLoading: false,
-        error: errorMessage,
-      });
-
-      showError(errorMessage, 'Profile Error');
-      return null;
-    }
-  }, [updateUserState, showError]);
-
   // Update user profile
   const updateUserProfile = useCallback(async (profileUpdates: Partial<UserProfile>) => {
     updateUserState({ isLoading: true, error: null });
@@ -95,13 +61,10 @@ export const useUser = () => {
       const isSuccess = await api.completeOnboarding(profileData);
       
       if (isSuccess) {
-        // Refresh profile data
-        const updatedProfile = await getUserProfile();
-        
         updateUserState({ isLoading: false });
         success('Onboarding completed successfully!', 'Welcome');
         
-        return updatedProfile;
+        return true;
       } else {
         throw new Error('Failed to complete onboarding');
       }
@@ -117,7 +80,7 @@ export const useUser = () => {
       showError(errorMessage, 'Onboarding Failed');
       return null;
     }
-  }, [updateUserState, success, showError, getUserProfile]);
+  }, [updateUserState, success, showError]);
 
   // Get user state
   const getUserState = useCallback(async () => {
@@ -150,6 +113,11 @@ export const useUser = () => {
     setUserState(INITIAL_STATE);
   }, []);
 
+  // Set profile from external source (like signin/signup)
+  const setProfile = useCallback((profile: UserProfile) => {
+    updateUserState({ profile });
+  }, [updateUserState]);
+
   // Computed properties
   const hasCompletedOnboarding = userState.profile?.has_completed_onboarding || false;
   const userName = userState.profile?.name || '';
@@ -171,11 +139,11 @@ export const useUser = () => {
     websiteUrl,
     
     // Actions
-    getUserProfile,
     updateUserProfile,
     completeOnboarding,
     getUserState,
     clearUserState,
+    setProfile,
     
     // Utilities
     updateUserState,

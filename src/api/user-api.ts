@@ -46,58 +46,6 @@ const getAuthHeader = () => {
   return { 'Authorization': `Bearer ${token}` };
 };
 
-export const checkUserState = async (): Promise<UserStateResponse> => {
-  try {
-    const headers = getAuthHeader();
-    
-    const response = await fetch(`${BASE_URL}/api/users/state`, {
-      method: 'GET',
-      headers: {
-        ...headers,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'include'
-    });
-
-    const data = await handleResponse(response);
-    
-    return {
-      success: true,
-      state: data.state
-    };
-  } catch (error) {
-    console.error('Error checking user state:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'An unknown error occurred'
-    };
-  }
-};
-
-export const getUserProfile = async (): Promise<UserProfileResponse> => {
-  try {
-    const headers = getAuthHeader();
-    
-    const response = await fetch(`${BASE_URL}/api/users/profile`, {
-      headers
-    });
-
-    const data = await handleResponse(response);
-    
-    return {
-      success: true,
-      profile: data.profile
-    };
-  } catch (error) {
-    console.error('Error getting user profile:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'An unknown error occurred'
-    };
-  }
-};
-
 export const updateUserProfile = async (profile: Partial<UserProfile>): Promise<UserProfileResponse> => {
   try {
     const headers = {

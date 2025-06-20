@@ -125,7 +125,6 @@ const OnboardingPage = () => {
       console.log('Setting processing state to true');
       success('Website submitted successfully! Analysis is starting...', 'Submission Complete');
       setIsProcessing(true);
-      startPolling();
       return true;
     } catch (err) {
       console.error('Error during submission:', err);
@@ -163,56 +162,6 @@ const OnboardingPage = () => {
       setIsLoading(false);
       return false;
     }
-  };
-
-  const checkProcessingStatus = async () => {
-    try {
-      console.log('Checking processing status...');
-      const data = await checkAnalysisStatus();
-      console.log('Status response:', data);
-
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to check status');
-      }
-
-      setScanStatus({
-        pages_scanned: data.pages_scanned || 0,
-        total_pages: data.total_pages || 0,
-        current_step: data.current_step || "initializing",
-        estimated_time_remaining: data.estimated_time_remaining || 300,
-        progress_percentage: data.progress_percentage || 0
-      });
-
-      // Handle different status cases with type guards
-      const scanStatus = data.scan_status || 'unknown';
-      const status = data.status || 'unknown';
-
-      if (scanStatus === 'completed' || status === 'completed') {
-        console.log('Analysis complete, redirecting to dashboard');
-        router.push("/dashboard");
-      } else if (scanStatus === 'error' || status === 'error') {
-        const errorMessage = data.error_message || data.error || 'Processing failed';
-        console.error('Processing error:', errorMessage);
-        setError(errorMessage);
-        setIsProcessing(false);
-      } else if (['initializing', 'scanning', 'generating_report', 'processing'].includes(scanStatus)) {
-        console.log('Still processing, continuing to poll...');
-        setTimeout(checkProcessingStatus, POLLING_INTERVAL);
-      } else {
-        console.error('Unknown status:', scanStatus);
-        setError('Unknown processing status');
-        setIsProcessing(false);
-      }
-    } catch (err) {
-      console.error('Status check error:', err);
-      setError("Error checking status. Please contact support.");
-      setIsLoading(false);
-      setIsProcessing(false);
-    }
-  };
-
-  const startPolling = () => {
-    checkProcessingStatus();
   };
 
   const formatTimeRemaining = (seconds: number): string => {
