@@ -41,32 +41,43 @@ import type { AnalysisResponse } from '@/types/api';
 
 export const submitWebsiteForAnalysis = async (url: string): Promise<AnalysisResponse> => {
   try {
-    console.log('Starting website submission for URL:', url);
+    console.log('Submitting new website for analysis to v2 endpoint:', url);
     
-    // Get properly formatted auth header
     const headers = {
       'Content-Type': 'application/json',
       ...getAuthHeader()
     };
     
-    console.log('Making API request to analyze endpoint');
-    const response = await fetch(`${BASE_URL}/api/data/analysis/start`, {
+    const body = {
+      name: "My Main Website", // Hardcoded as requested
+      base_url: url, // User input
+      website_type: "primary",
+      crawl_frequency_days: 7,
+      max_pages_per_crawl: 50,
+      tags: ["ecommerce", "main-site"],
+      notes: "Primary business website"
+    };
+
+    console.log('Making API request to POST /api/v2/websites/');
+    const response = await fetch(`${BASE_URL}/api/v2/websites/`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ url })
+      body: JSON.stringify(body)
     });
     
     console.log('Received response:', response.status);
     const data = await handleApiResponse(response);
     console.log('Response data:', data);
     
+    // The new endpoint starts the crawl immediately, so we can return a success state
+    // that indicates processing has begun.
     return {
       success: true,
-      message: data.message,
-      url: data.url || url,
-      status: data.status,
-      scan_status: data.scan_status,
-      analysis_id: data.analysis_id
+      message: data.message || 'Website submitted and analysis started.',
+      url: data.base_url || url,
+      status: 'processing',
+      scan_status: 'processing',
+      analysis_id: data.id // Assuming the response contains the new website ID
     };
   } catch (error) {
     console.error('Error in submitWebsiteForAnalysis:', error);
